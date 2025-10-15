@@ -7,7 +7,7 @@
 		>
 			<div style="background-color: coral">
 				<CitizenSelect
-					v-model="md"
+					v-model="citizen"
 					show-button
 				/>
 			</div>
@@ -31,6 +31,6 @@
 import { ref } from 'vue';
 import CitizenSelect from './components/CitizenSelect.vue';
 
-const md = ref<CitizenModelType>(null);
+const citizen = ref<CitizenModelType>(null);
 </script>
 
