@@ -1,0 +1,30 @@
+import type { Citizen } from './citizen.types';
+
+export const citizenFixture: Citizen = {
+	id: '65fgsds4651qsddf546s656f8',
+	name: 'Fernanda de Alcântara',
+	gender: 'F',
+	cpf_responsible: null,
+	mother_name: 'Tereza de Alcântara Sila',
+	cpf: '12345678901',
+	cns: '321651648943214',
+	birth_date: '1990-01-13',
+	phone: null,
+	cellphone: '87988887777',
+	email: null,
+	address: {
+		cep: '56330180',
+		street: 'Rua da Ingazeira',
+		number: 'S/N',
+		complement: null,
+		neighborhood: 'Areia Branca',
+		city: 'Petrolina',
+		uf: 'PE',
+	},
+	race: 'white',
+	co_cidadao: 1111,
+	is_dead: false,
+	pregnant: false,
+	identification_document: null,
+	issuing_agency: null,
+};
