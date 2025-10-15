@@ -6,6 +6,7 @@
 		:fluid
 	>
 		<CdsFlexbox
+			ref="selectContainer"
 			direction="column"
 			:fluid
 		>
@@ -59,7 +60,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, type Ref } from 'vue';
+import { ref, computed, watch, type Ref, useTemplateRef } from 'vue';
+import { onClickOutside } from '@vueuse/core';
 import { CitizenService } from '../services/citizen/citizen.services';
 import SelectDropdown from './InternalComponents/SelectDropdown.vue';
 
@@ -75,6 +77,8 @@ const props = withDefaults(defineProps<{
 	variant: 'green',
 	optionsField: 'name'
 });
+
+const selectContainer = useTemplateRef<HTMLDivElement>('selectContainer');
 
 const citizenService = new CitizenService();
 const internalValue = ref<CitizenModelType>(null) as Ref<CitizenModelType>;
@@ -106,6 +110,7 @@ function search() {
 		options.value = data;
 		isActive.value = true;
 	}).catch(error => {
+		isActive.value = false;
 		console.error('Error fetching citizens:', error);
 
 		const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -114,4 +119,8 @@ function search() {
 		isLoading.value = false;
 	});
 }
+
+onClickOutside(selectContainer, () => {
+	isActive.value = false
+})
 </script>
