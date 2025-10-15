@@ -2,22 +2,22 @@
 	"extends": "./tsconfig.app.json",
 	"include": [
 		"src/index.ts",
-		"src/types.ts", 
-		"src/components/**/*.vue", 
-		"src/components/**/*.ts", 
-		"src/services/**/*.ts", 
+		"src/types.ts",
+		"src/components/**/*.vue",
+		"src/components/**/*.ts",
+		"src/services/**/*.ts",
 		"env.d.ts"
 	],
 	"exclude": [
-		"src/App.vue", 
-		"src/main.ts", 
-		"src/**/*.spec.ts", 
-		"src/**/__tests__/*", 
+		"src/App.vue",
+		"src/main.ts",
+		"src/**/*.spec.ts",
+		"src/**/__tests__/*",
 		"**/*.test.ts",
 		"node_modules",
 		"dist",
 		"docs",
-		"**/*.md",
+		"**/*.md"
 	],
 	"compilerOptions": {
 		"declaration": true,

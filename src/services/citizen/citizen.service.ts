@@ -7,26 +7,36 @@ export class CitizenService {
 	async search(params: { searchString: string }): Promise<Citizen[]> {
 		const config = getConfig();
 
-		if (!config.apiBaseUrl || !config.endpoints || !config.endpoints.search) {
+		if (
+			!config.apiBaseUrl ||
+			!config.endpoints ||
+			!config.endpoints.search
+		) {
 			return this.searchMock(params.searchString);
 		}
 
 		try {
 			const endpoint = config.endpoints.search || '/citizens';
-			const response = await axios.get(`${config.apiBaseUrl}${endpoint}`, { params });
+			const response = await axios.get(
+				`${config.apiBaseUrl}${endpoint}`,
+				{ params }
+			);
 
 			const citizens = response.data.data ?? response.data;
-  			return citizens;
+			return citizens;
 		} catch (error) {
 			console.error('Error fetching citizens:', error);
 
-			const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+			const errorMessage =
+				error instanceof Error
+					? error.message
+					: 'Unknown error';
 			throw new Error(`Error fetching citizens: ${errorMessage}`);
 		}
 	}
 
 	private async searchMock(searchString: string): Promise<Citizen[]> {
-		const citizens = await new Promise<Citizen[]>((resolve) => {
+		const citizens = await new Promise<Citizen[]>(resolve => {
 			setTimeout(() => {
 				resolve(makeCitizens(150));
 			}, 1000);
@@ -35,7 +45,9 @@ export class CitizenService {
 		if (!searchString) return [];
 
 		return citizens.filter(citizen =>
-			citizen.name.toLowerCase().includes(searchString.toLowerCase())
+			citizen.name
+				.toLowerCase()
+				.includes(searchString.toLowerCase())
 		);
 	}
 }

@@ -10,12 +10,14 @@ const globalStubs = {
 		template: '<div><slot /></div>',
 	},
 	CdsTextInput: {
-		template: '<input v-model="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" @keydown="$emit(\'keydown\', $event)" @blur="$emit(\'blur\', $event)" />',
+		template:
+			'<input v-model="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" @keydown="$emit(\'keydown\', $event)" @blur="$emit(\'blur\', $event)" />',
 		props: ['modelValue', 'state', 'fluid'],
 		emits: ['update:modelValue', 'keydown', 'blur'],
 	},
 	CdsButton: {
-		template: '<button @click="$emit(\'button-click\', $event)"><slot>{{ text }}</slot></button>',
+		template:
+			'<button @click="$emit(\'button-click\', $event)"><slot>{{ text }}</slot></button>',
 		props: ['text', 'variant'],
 		emits: ['button-click'],
 	},
@@ -24,7 +26,8 @@ const globalStubs = {
 		props: ['as', 'fontWeight', 'noMargin'],
 	},
 	SelectDropdown: {
-		template: '<div v-if="options.length"><slot name="option" v-for="option in options" :option="option" /></div>',
+		template:
+			'<div v-if="options.length"><slot name="option" v-for="option in options" :option="option" /></div>',
 		props: ['modelValue', 'options', 'fluid', 'optionsField'],
 		emits: ['update:modelValue'],
 	},
@@ -107,7 +110,9 @@ describe('CitizenSelect', () => {
 		const button = wrapper.find('button');
 		await button.trigger('click');
 
-		expect(mockSearch).toHaveBeenCalledWith({ searchString: 'João' });
+		expect(mockSearch).toHaveBeenCalledWith({
+			searchString: 'João',
+		});
 	});
 
 	it('should call search when Enter is pressed', async () => {
@@ -138,9 +143,10 @@ describe('CitizenSelect', () => {
 		const input = wrapper.find('input');
 		await input.trigger('keydown.enter');
 
-		expect(mockSearch).toHaveBeenCalledWith({ searchString: 'Maria' });
+		expect(mockSearch).toHaveBeenCalledWith({
+			searchString: 'Maria',
+		});
 	});
-
 
 	it('should show dropdown with results after search', async () => {
 		const mockCitizens = [
@@ -183,7 +189,6 @@ describe('CitizenSelect', () => {
 		expect(wrapper.vm.options).toEqual(mockCitizens);
 		expect(wrapper.vm.isActive).toBe(true);
 	});
-
 
 	it('should update searchString when selecting a citizen object', async () => {
 		const mockCitizen = {
@@ -232,9 +237,10 @@ describe('CitizenSelect', () => {
 		await wrapper.vm.$nextTick();
 
 		expect(wrapper.emitted('update:modelValue')).toBeTruthy();
-		expect(wrapper.emitted('update:modelValue')![0][0]).toEqual(mockCitizen);
+		expect(wrapper.emitted('update:modelValue')![0][0]).toEqual(
+			mockCitizen
+		);
 	});
-
 
 	it('should use custom optionsField when provided', async () => {
 		const mockCitizen = {

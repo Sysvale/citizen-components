@@ -1,4 +1,11 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
+import {
+	describe,
+	it,
+	expect,
+	vi,
+	beforeEach,
+	type Mock,
+} from 'vitest';
 import { CitizenService } from './citizen.service';
 import { getConfig } from '../../config';
 import axios from 'axios';
@@ -22,7 +29,12 @@ describe('CitizenService', () => {
 	describe('search', () => {
 		it('should call API when config is properly set', async () => {
 			const mockCitizens = [
-				{ id: '1', name: 'João Silva', cpf: '123.456.789-00', cns: '123456789012345' },
+				{
+					id: '1',
+					name: 'João Silva',
+					cpf: '123.456.789-00',
+					cns: '123456789012345',
+				},
 			];
 
 			mockGetConfig.mockReturnValue({
@@ -36,19 +48,28 @@ describe('CitizenService', () => {
 				data: mockCitizens,
 			});
 
-			const result = await service.search({ searchString: 'João' });
-
-			expect(mockAxiosGet).toHaveBeenCalledWith('https://api.example.com/api/citizens', {
-				params: { searchString: 'João' },
+			const result = await service.search({
+				searchString: 'João',
 			});
+
+			expect(mockAxiosGet).toHaveBeenCalledWith(
+				'https://api.example.com/api/citizens',
+				{
+					params: { searchString: 'João' },
+				}
+			);
 
 			expect(result).toEqual(mockCitizens);
 		});
 
-
 		it('should use mock when apiBaseUrl is not configured', async () => {
 			const mockCitizens = [
-				{ id: '1', name: 'Pedro Oliveira', cpf: '111.222.333-44', cns: '111222333445566' },
+				{
+					id: '1',
+					name: 'Pedro Oliveira',
+					cpf: '111.222.333-44',
+					cns: '111222333445566',
+				},
 			];
 
 			mockGetConfig.mockReturnValue({
@@ -58,7 +79,9 @@ describe('CitizenService', () => {
 
 			mockMakeCitizens.mockReturnValue(mockCitizens);
 
-			const result = await service.search({ searchString: 'Pedro' });
+			const result = await service.search({
+				searchString: 'Pedro',
+			});
 
 			expect(mockAxiosGet).not.toHaveBeenCalled();
 			expect(mockMakeCitizens).toHaveBeenCalledWith(150);
@@ -67,7 +90,12 @@ describe('CitizenService', () => {
 
 		it('should use mock when endpoints are not configured', async () => {
 			const mockCitizens = [
-				{ id: '1', name: 'Ana Costa', cpf: '555.666.777-88', cns: '555666777889900' },
+				{
+					id: '1',
+					name: 'Ana Costa',
+					cpf: '555.666.777-88',
+					cns: '555666777889900',
+				},
 			];
 
 			mockGetConfig.mockReturnValue({
@@ -77,7 +105,9 @@ describe('CitizenService', () => {
 
 			mockMakeCitizens.mockReturnValue(mockCitizens);
 
-			const result = await service.search({ searchString: 'Ana' });
+			const result = await service.search({
+				searchString: 'Ana',
+			});
 
 			expect(mockAxiosGet).not.toHaveBeenCalled();
 			expect(result).toEqual(mockCitizens);
@@ -93,9 +123,9 @@ describe('CitizenService', () => {
 
 			mockAxiosGet.mockRejectedValue(new Error('Network error'));
 
-			await expect(service.search({ searchString: 'João' })).rejects.toThrow(
-				'Error fetching citizens: Network error'
-			);
+			await expect(
+				service.search({ searchString: 'João' })
+			).rejects.toThrow('Error fetching citizens: Network error');
 		});
 
 		it('should handle non-Error exceptions', async () => {
@@ -108,9 +138,9 @@ describe('CitizenService', () => {
 
 			mockAxiosGet.mockRejectedValue('String error');
 
-			await expect(service.search({ searchString: 'João' })).rejects.toThrow(
-				'Error fetching citizens: Unknown error'
-			);
+			await expect(
+				service.search({ searchString: 'João' })
+			).rejects.toThrow('Error fetching citizens: Unknown error');
 		});
 	});
 
@@ -124,7 +154,12 @@ describe('CitizenService', () => {
 
 		it('should return empty array when search string is empty', async () => {
 			mockMakeCitizens.mockReturnValue([
-				{ id: '1', name: 'João Silva', cpf: '123.456.789-00', cns: '123456789012345' },
+				{
+					id: '1',
+					name: 'João Silva',
+					cpf: '123.456.789-00',
+					cns: '123456789012345',
+				},
 			]);
 
 			const result = await service.search({ searchString: '' });
@@ -134,12 +169,29 @@ describe('CitizenService', () => {
 
 		it('should filter citizens by name (case insensitive)', async () => {
 			mockMakeCitizens.mockReturnValue([
-				{ id: '1', name: 'João Silva', cpf: '123.456.789-00', cns: '123456789012345' },
-				{ id: '2', name: 'Maria Silva', cpf: '987.654.321-00', cns: '987654321098765' },
-				{ id: '3', name: 'Pedro Santos', cpf: '111.222.333-44', cns: '111222333445566' },
+				{
+					id: '1',
+					name: 'João Silva',
+					cpf: '123.456.789-00',
+					cns: '123456789012345',
+				},
+				{
+					id: '2',
+					name: 'Maria Silva',
+					cpf: '987.654.321-00',
+					cns: '987654321098765',
+				},
+				{
+					id: '3',
+					name: 'Pedro Santos',
+					cpf: '111.222.333-44',
+					cns: '111222333445566',
+				},
 			]);
 
-			const result = await service.search({ searchString: 'silva' });
+			const result = await service.search({
+				searchString: 'silva',
+			});
 
 			expect(result).toHaveLength(2);
 			expect(result[0].name).toBe('João Silva');
@@ -148,9 +200,24 @@ describe('CitizenService', () => {
 
 		it('should filter citizens by partial name match', async () => {
 			mockMakeCitizens.mockReturnValue([
-				{ id: '1', name: 'João Silva', cpf: '123.456.789-00', cns: '123456789012345' },
-				{ id: '2', name: 'Maria Silva', cpf: '987.654.321-00', cns: '987654321098765' },
-				{ id: '3', name: 'Pedro Santos', cpf: '111.222.333-44', cns: '111222333445566' },
+				{
+					id: '1',
+					name: 'João Silva',
+					cpf: '123.456.789-00',
+					cns: '123456789012345',
+				},
+				{
+					id: '2',
+					name: 'Maria Silva',
+					cpf: '987.654.321-00',
+					cns: '987654321098765',
+				},
+				{
+					id: '3',
+					name: 'Pedro Santos',
+					cpf: '111.222.333-44',
+					cns: '111222333445566',
+				},
 			]);
 
 			const result = await service.search({ searchString: 'Jo' });
@@ -161,10 +228,17 @@ describe('CitizenService', () => {
 
 		it('should return empty array when no citizens match', async () => {
 			mockMakeCitizens.mockReturnValue([
-				{ id: '1', name: 'João Silva', cpf: '123.456.789-00', cns: '123456789012345' },
+				{
+					id: '1',
+					name: 'João Silva',
+					cpf: '123.456.789-00',
+					cns: '123456789012345',
+				},
 			]);
 
-			const result = await service.search({ searchString: 'xyz' });
+			const result = await service.search({
+				searchString: 'xyz',
+			});
 
 			expect(result).toEqual([]);
 		});

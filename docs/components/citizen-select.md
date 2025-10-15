@@ -6,10 +6,10 @@ Componente de busca e seleção de cidadãos com autocompletar.
 
 ```vue
 <template>
-  <CitizenSelect
-    v-model="selectedCitizen"
-    show-button
-  />
+	<CitizenSelect
+		v-model="selectedCitizen"
+		show-button
+	/>
 </template>
 
 <script setup lang="ts">
@@ -101,15 +101,13 @@ Campo do objeto Citizen usado para exibição no input.
 
 ```vue
 <template>
-  <CitizenSelect
-    v-model="citizen"
-    show-button
-    @update:model-value="onCitizenChange"
-  />
+	<CitizenSelect
+		v-model="citizen"
+		show-button
+		@update:model-value="onCitizenChange"
+	/>
 
-  <p v-if="citizen">
-    Cidadão selecionado: {{ citizen.name }}
-  </p>
+	<p v-if="citizen">Cidadão selecionado: {{ citizen.name }}</p>
 </template>
 
 <script setup lang="ts">
@@ -119,7 +117,7 @@ import { CitizenSelect, type Citizen } from 'citizen-components';
 const citizen = ref<Citizen | null>(null);
 
 function onCitizenChange(value: Citizen | null) {
-  console.log('Cidadão alterado:', value);
+	console.log('Cidadão alterado:', value);
 }
 </script>
 ```

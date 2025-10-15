@@ -35,15 +35,15 @@
 						</CdsText>
 					</CdsText>
 					<CdsText as="body-2">
-						<br>
+						<br />
 						CPF: {{ option['cpf'] }}
 					</CdsText>
 					<CdsText as="body-2">
-						<br>
+						<br />
 						CNS: {{ option['cns'] }}
 					</CdsText>
 					<CdsText as="body-2">
-						<br>
+						<br />
 						Data de nascimento: {{ option['birth_date'] }}
 					</CdsText>
 				</template>
@@ -67,27 +67,35 @@ import SelectDropdown from './InternalComponents/SelectDropdown.vue';
 
 const model = defineModel<CitizenModelType>('modelValue');
 
-const props = withDefaults(defineProps<{
-	showButton: boolean;
-	fluid?: boolean
-	variant?: string;
-	optionsField?: keyof Citizen;
-}>(), {
-	fluid: false,
-	variant: 'green',
-	optionsField: 'name'
-});
+const props = withDefaults(
+	defineProps<{
+		showButton: boolean;
+		fluid?: boolean;
+		variant?: string;
+		optionsField?: keyof Citizen;
+	}>(),
+	{
+		fluid: false,
+		variant: 'green',
+		optionsField: 'name',
+	}
+);
 
-const selectContainer = useTemplateRef<HTMLDivElement>('selectContainer');
+const selectContainer =
+	useTemplateRef<HTMLDivElement>('selectContainer');
 
 const citizenService = new CitizenService();
-const internalValue = ref<CitizenModelType>(null) as Ref<CitizenModelType>;
+const internalValue = ref<CitizenModelType>(
+	null
+) as Ref<CitizenModelType>;
 const options = ref<Citizen[]>([]);
 const isLoading = ref(false);
 const isActive = ref(false);
 const searchString = ref<string>('');
 
-const computedState = computed(() => (isLoading.value ? 'loading' : 'default'));
+const computedState = computed(() =>
+	isLoading.value ? 'loading' : 'default'
+);
 
 watch(internalValue, () => {
 	if (!internalValue.value) {
@@ -96,7 +104,8 @@ watch(internalValue, () => {
 		searchString.value = internalValue.value;
 	} else {
 		const fieldValue = internalValue.value[props.optionsField];
-		searchString.value = typeof fieldValue === 'string' ? fieldValue : '';
+		searchString.value =
+			typeof fieldValue === 'string' ? fieldValue : '';
 	}
 
 	isActive.value = false;
@@ -106,21 +115,28 @@ watch(internalValue, () => {
 function search() {
 	isLoading.value = true;
 
-	citizenService.search({ searchString: searchString.value }).then(data => {
-		options.value = data;
-		isActive.value = true;
-	}).catch(error => {
-		isActive.value = false;
-		console.error('Error fetching citizens:', error);
+	citizenService
+		.search({ searchString: searchString.value })
+		.then(data => {
+			options.value = data;
+			isActive.value = true;
+		})
+		.catch(error => {
+			isActive.value = false;
+			console.error('Error fetching citizens:', error);
 
-		const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-		throw new Error(`Error fetching citizens: ${errorMessage}`);
-	}).finally(() => {
-		isLoading.value = false;
-	});
+			const errorMessage =
+				error instanceof Error
+					? error.message
+					: 'Unknown error';
+			throw new Error(`Error fetching citizens: ${errorMessage}`);
+		})
+		.finally(() => {
+			isLoading.value = false;
+		});
 }
 
 onClickOutside(selectContainer, () => {
-	isActive.value = false
-})
+	isActive.value = false;
+});
 </script>

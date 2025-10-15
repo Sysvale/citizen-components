@@ -73,49 +73,65 @@ const selectContainerWidth = computed(() => {
 	return props.fluid ? '100%' : 'fit-content';
 });
 
-watch(() => props.options,(newValue, oldValue) => {
-	if (newValue !== oldValue) {
-		localOptions.value = newValue;
-	}
-}, { immediate: true });
+watch(
+	() => props.options,
+	(newValue, oldValue) => {
+		if (newValue !== oldValue) {
+			localOptions.value = newValue;
+		}
+	},
+	{ immediate: true }
+);
 
-watch(model, (newValue) => {
-	if (!newValue) {
-		localValue.value = undefined;
-		return;
-	}
+watch(
+	model,
+	newValue => {
+		if (!newValue) {
+			localValue.value = undefined;
+			return;
+		}
 
-	if (newValue instanceof Object) {
-		localValue.value = newValue;
-	} else {
-		localValue.value = {
-			id: crypto.randomUUID(),
-			[props.optionsField]: newValue,
-		};
-	}
-}, { immediate: true });
+		if (newValue instanceof Object) {
+			localValue.value = newValue;
+		} else {
+			localValue.value = {
+				id: crypto.randomUUID(),
+				[props.optionsField]: newValue,
+			};
+		}
+	},
+	{ immediate: true }
+);
 
-watch(localValue, (currentValue) => {
-	if (!currentValue) {
-		model.value = null;
-		return;
-	}
+watch(
+	localValue,
+	currentValue => {
+		if (!currentValue) {
+			model.value = null;
+			return;
+		}
 
-	const isValidOption = localOptions.value.some(
-		option => option.id === currentValue.id
-	);
+		const isValidOption = localOptions.value.some(
+			option => option.id === currentValue.id
+		);
 
-	if (!isValidOption) return;
+		if (!isValidOption) return;
 
-	if (props.returnValue) {
-		model.value = currentValue[props.optionsField] as Partial<Citizen>;
-	} else {
-		model.value = currentValue as Citizen;
-	}
-}, { deep: true });
+		if (props.returnValue) {
+			model.value = currentValue[
+				props.optionsField
+			] as Partial<Citizen>;
+		} else {
+			model.value = currentValue as Citizen;
+		}
+	},
+	{ deep: true }
+);
 
 function selectItem() {
-	localValue.value = cloneDeep(localOptions.value[currentPos.value]) as Partial<Citizen>;
+	localValue.value = cloneDeep(
+		localOptions.value[currentPos.value]
+	) as Partial<Citizen>;
 }
 
 function getLiInDOM(position: number) {

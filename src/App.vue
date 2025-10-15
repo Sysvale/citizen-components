@@ -33,4 +33,3 @@ import CitizenSelect from './components/CitizenSelect.vue';
 
 const citizen = ref<CitizenModelType>(null);
 </script>
-

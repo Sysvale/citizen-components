@@ -40,6 +40,7 @@ npm run dev
 ### Build
 
 O build gera:
+
 - Módulos ES e CommonJS em `dist/`
 - Tipos TypeScript (`.d.ts`)
 - CSS compilado
