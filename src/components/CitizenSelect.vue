@@ -62,7 +62,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, type Ref, useTemplateRef } from 'vue';
 import { onClickOutside } from '@vueuse/core';
-import { CitizenService } from '../services/citizen/citizen.services';
+import { CitizenService } from '../services/citizen/citizen.service';
 import SelectDropdown from './InternalComponents/SelectDropdown.vue';
 
 const model = defineModel<CitizenModelType>('modelValue');

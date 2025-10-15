@@ -15,7 +15,8 @@ export class CitizenService {
 			const endpoint = config.endpoints.search || '/citizens';
 			const response = await axios.get(`${config.apiBaseUrl}${endpoint}`, { params });
 
-			return response.data;
+			const citizens = response.data.data ?? response.data;
+  			return citizens;
 		} catch (error) {
 			console.error('Error fetching citizens:', error);
 

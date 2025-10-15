@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import CitizenSelect from './CitizenSelect.vue';
-import { CitizenService } from '../services/citizen/citizen.services';
+import { CitizenService } from '../services/citizen/citizen.service';
 
-vi.mock('../services/citizen/citizen.services');
+vi.mock('../services/citizen/citizen.service');
 
 const globalStubs = {
 	CdsFlexbox: {

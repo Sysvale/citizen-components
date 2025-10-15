@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
-import { CitizenService } from './citizen.services';
+import { CitizenService } from './citizen.service';
 import { getConfig } from '../../config';
 import axios from 'axios';
 import { makeCitizens } from './citizen.factory';
