@@ -1,28 +1,74 @@
-import { globalIgnores } from 'eslint/config'
-import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
-import pluginVue from 'eslint-plugin-vue'
-import pluginVitest from '@vitest/eslint-plugin'
-import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
+import js from '@eslint/js';
+import vue from 'eslint-plugin-vue';
+import vueParser from 'vue-eslint-parser';
+import tsParser from '@typescript-eslint/parser';
+import globals from 'globals';
 
-// To allow more languages other than `ts` in `.vue` files, uncomment the following lines:
-// import { configureVueProject } from '@vue/eslint-config-typescript'
-// configureVueProject({ scriptLangs: ['ts', 'tsx'] })
-// More info at https://github.com/vuejs/eslint-config-typescript/#advanced-setup
-
-export default defineConfigWithVueTs(
-  {
-    name: 'app/files-to-lint',
-    files: ['**/*.{ts,mts,tsx,vue}'],
-  },
-
-  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
-
-  pluginVue.configs['flat/essential'],
-  vueTsConfigs.recommended,
-  
-  {
-    ...pluginVitest.configs.recommended,
-    files: ['src/**/__tests__/*'],
-  },
-  skipFormatting,
-)
+export default [
+	js.configs.recommended,
+	...vue.configs['flat/recommended'],
+	...vue.configs['flat/strongly-recommended'],
+	{
+		files: ['**/*.vue'],
+		languageOptions: {
+			parser: vueParser,
+			parserOptions: {
+				parser: tsParser,
+				ecmaVersion: 'latest',
+				sourceType: 'module',
+			},
+			globals: {
+				...globals.node,
+				...globals.browser,
+				Citizen: 'readonly',
+				Nullable: 'readonly',
+				CitizenModelType: 'readonly',
+			},
+		},
+	},
+	{
+		files: ['**/*.{js,mjs,ts}'],
+		languageOptions: {
+			parser: tsParser,
+			ecmaVersion: 'latest',
+			sourceType: 'module',
+			globals: {
+				...globals.node,
+				Citizen: 'readonly',
+				Nullable: 'readonly',
+				CitizenModelType: 'readonly',
+			},
+		},
+	},
+	{
+		rules: {
+			'vue/html-indent': [
+				'error',
+				'tab',
+				{
+					attribute: 1,
+					closeBracket: 0,
+					alignAttributesVertically: true,
+					ignores: [],
+				},
+			],
+			'vue/require-explicit-emits': 'off',
+			'no-tabs': 'off',
+			indent: [
+				'error',
+				'tab',
+				{
+					SwitchCase: 1,
+				},
+			],
+			quotes: [
+				'error',
+				'single',
+				{
+					allowTemplateLiterals: true,
+				},
+			],
+			'no-extra-semi': 'off',
+		},
+	},
+];

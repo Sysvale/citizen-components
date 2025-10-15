@@ -1,0 +1,30 @@
+{
+	"extends": "./tsconfig.app.json",
+	"include": [
+		"src/index.ts",
+		"src/types.ts", 
+		"src/components/**/*.vue", 
+		"src/components/**/*.ts", 
+		"src/services/**/*.ts", 
+		"env.d.ts"
+	],
+	"exclude": [
+		"src/App.vue", 
+		"src/main.ts", 
+		"src/**/*.spec.ts", 
+		"src/**/__tests__/*", 
+		"**/*.test.ts",
+		"node_modules",
+		"dist",
+		"docs",
+		"**/*.md",
+	],
+	"compilerOptions": {
+		"declaration": true,
+		"emitDeclarationOnly": true,
+		"outDir": "dist",
+		"rootDir": "src",
+		"skipLibCheck": true,
+		"strict": true
+	}
+}
