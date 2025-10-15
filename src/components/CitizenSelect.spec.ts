@@ -209,7 +209,7 @@ describe('CitizenSelect', () => {
 			},
 		});
 
-		wrapper.vm.val = mockCitizen as any;
+		wrapper.vm.internalValue = mockCitizen as any;
 		await wrapper.vm.$nextTick();
 
 		expect(wrapper.vm.searchString).toBe('João Silva');
@@ -233,7 +233,7 @@ describe('CitizenSelect', () => {
 			},
 		});
 
-		wrapper.vm.val = mockCitizen as any;
+		wrapper.vm.internalValue = mockCitizen as any;
 		await wrapper.vm.$nextTick();
 
 		expect(wrapper.emitted('update:modelValue')).toBeTruthy();
@@ -261,7 +261,7 @@ describe('CitizenSelect', () => {
 			},
 		});
 
-		wrapper.vm.val = mockCitizen as any;
+		wrapper.vm.internalValue = mockCitizen as any;
 		await wrapper.vm.$nextTick();
 
 		expect(wrapper.vm.searchString).toBe('123.456.789-00');
