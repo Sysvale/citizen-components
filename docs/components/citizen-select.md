@@ -1,6 +1,6 @@
 # CitizenSelect
 
-Componente de busca e seleção de cidadãos com autocompletar.
+Componente de busca e seleção de cidadãos.
 
 ## Uso Básico
 

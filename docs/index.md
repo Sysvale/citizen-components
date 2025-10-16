@@ -13,14 +13,12 @@ hero:
           link: https://github.com/Sysvale/citizen-components
 
 features:
-    - title: 🔍 Busca Inteligente
-      details: Componente com autocompletar e busca em tempo real de cidadãos
     - title: ⚙️ Configurável
-      details: Configure endpoints de API ou use dados mockados para desenvolvimento
+      details: Configure endpoints de API para alimentar os componentes ou use dados mockados para desenvolvimento
     - title: 📘 TypeScript
       details: Totalmente tipado com suporte completo ao TypeScript
-    - title: 🎨 Design System
-      details: Integrado com o Cuida Design System da Sysvale
+    - title: 🎨 Cuida
+      details: Integrado com o Cuida Design System
 ---
 
 ## Instalação
