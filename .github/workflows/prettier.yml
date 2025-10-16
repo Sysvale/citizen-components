@@ -1,0 +1,29 @@
+name: 'Prettier 🪄'
+
+on: [push]
+
+jobs:
+    prettier:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref }}
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '20'
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Prettify code
+              uses: creyD/prettier_action@v4.3
+              with:
+                  commit_message: 'style: correções de estilo de código (Prettier)'
+                  prettier_options: --write **/*.{js,ts,md}
+                  only_changed: true

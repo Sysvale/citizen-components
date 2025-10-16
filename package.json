@@ -1,41 +1,76 @@
 {
-  "name": "citizen-components",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
-    "preview": "vite preview",
-    "test:unit": "vitest",
-    "build-only": "vite build",
-    "type-check": "vue-tsc --build",
-    "lint": "eslint . --fix",
-    "format": "prettier --write src/"
-  },
-  "dependencies": {
-    "vue": "^3.5.13"
-  },
-  "devDependencies": {
-    "@tsconfig/node22": "^22.0.1",
-    "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.14.0",
-    "@vitejs/plugin-vue": "^5.2.3",
-    "@vitest/eslint-plugin": "^1.1.39",
-    "@vue/eslint-config-prettier": "^10.2.0",
-    "@vue/eslint-config-typescript": "^14.5.0",
-    "@vue/test-utils": "^2.4.6",
-    "@vue/tsconfig": "^0.7.0",
-    "eslint": "^9.22.0",
-    "eslint-plugin-vue": "~10.0.0",
-    "jiti": "^2.4.2",
-    "jsdom": "^26.0.0",
-    "npm-run-all2": "^7.0.2",
-    "prettier": "3.5.3",
-    "typescript": "~5.8.0",
-    "vite": "^6.2.4",
-    "vite-plugin-vue-devtools": "^7.7.2",
-    "vitest": "^3.1.1",
-    "vue-tsc": "^2.2.8"
-  }
+	"name": "@sysvale/citizen-components",
+	"version": "0.1.0",
+	"type": "module",
+	"publishConfig": {
+		"access": "public"
+	},
+	"main": "./dist/citizen-components.cjs.js",
+	"module": "./dist/citizen-components.es.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/citizen-components.es.js",
+			"require": "./dist/citizen-components.cjs.js"
+		},
+		"./style.css": "./dist/citizen-components.css"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"dev": "vite",
+		"build": "npm run build-only && npm run build-types",
+		"preview": "vite preview",
+		"test": "vitest",
+		"build-only": "vite build",
+		"build-types": "tsc src/types.ts src/services/citizen/citizen.types.ts --declaration --emitDeclarationOnly --outDir dist/ && node scripts/generate-index-types.js",
+		"type-check": "vue-tsc --build",
+		"lint": "eslint . --ext .ts,.tsx,.js,.vue",
+		"prettier:check": "prettier . --check",
+		"format": "prettier --write .",
+		"docs:dev": "vitepress dev docs",
+		"docs:build": "vitepress build docs",
+		"docs:preview": "vitepress preview docs"
+	},
+	"dependencies": {
+		"@vueuse/core": "^13.9.0",
+		"lodash": "^4.17.21"
+	},
+	"peerDependencies": {
+		"@sysvale/cuida": "^3.147.0",
+		"vue": "^3.5.13"
+	},
+	"devDependencies": {
+		"@faker-js/faker": "^10.0.0",
+		"@sysvale/cuida": "^3.147.0",
+		"@tsconfig/node22": "^22.0.1",
+		"@types/jsdom": "^21.1.7",
+		"@types/lodash": "^4.17.13",
+		"@types/node": "^22.14.0",
+		"@vitejs/plugin-vue": "^5.2.3",
+		"@vitest/coverage-v8": "^3.1.1",
+		"@vitest/eslint-plugin": "^1.1.39",
+		"@vue/eslint-config-prettier": "^10.2.0",
+		"@vue/eslint-config-typescript": "^14.5.0",
+		"@vue/test-utils": "^2.4.6",
+		"@vue/tsconfig": "^0.8.1",
+		"axios": "^1.7.4",
+		"eslint": "^9.22.0",
+		"eslint-plugin-vue": "~10.0.0",
+		"jiti": "^2.4.2",
+		"jsdom": "^26.0.0",
+		"npm-run-all2": "^7.0.2",
+		"prettier": "3.5.3",
+		"sass-embedded": "^1.93.2",
+		"typescript": "~5.8.0",
+		"vite": "^6.2.4",
+		"vite-plugin-dts": "^4.5.4",
+		"vite-plugin-vue-devtools": "^7.7.2",
+		"vitepress": "^1.6.4",
+		"vitest": "^3.1.1",
+		"vue": "^3.5.13",
+		"vue-tsc": "^2.2.8"
+	}
 }

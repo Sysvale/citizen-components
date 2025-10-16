@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# Generated files
+*.min.js
+*.min.css
+
+# Config files that shouldn't be formatted
+.vscode/
+.idea/
+
+# Documentation
+CHANGELOG.md
+LICENSE
+
+# Other
+*.log
+.DS_Store
+
+docs/.vitepress/dist
+docs/.vitepress/cache

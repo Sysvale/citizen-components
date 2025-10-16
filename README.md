@@ -1,45 +1,94 @@
-# citizen-components
+# @sysvale/citizen-components
 
-This template should help get you started developing with Vue 3 in Vite.
+Biblioteca de componentes Vue 3 para busca e seleção de cidadãos, construída com TypeScript e Vite.
 
-## Recommended IDE Setup
+## Descrição
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Este pacote fornece componentes reutilizáveis para integração com APIs de cidadãos, incluindo:
 
-## Type Support for `.vue` Imports in TS
+- **CitizenSelect**: Componente de busca e seleção de cidadãos com dropdown
+- **CitizenService**: Serviço para buscar dados de cidadãos via API ou mock
+- Suporte a fallback para dados mockados quando a API não está configurada
+- TypeScript com tipos exportados
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## Instalação
 
-## Customize configuration
+```bash
+npm install @sysvale/citizen-components
+```
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+### Peer Dependencies
 
-## Project Setup
+```bash
+npm install vue@^3.5.13 @sysvale/cuida@^3.147.0
+```
 
-```sh
+## Configuração do Projeto
+
+### Instalação das dependências
+
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### Desenvolvimento
 
-```sh
+```bash
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+### Build
 
-```sh
-npm run build
+O build gera:
+
+- Módulos ES e CommonJS em `dist/`
+- Tipos TypeScript (`.d.ts`)
+- CSS compilado
+
+## Testes
+
+O projeto utiliza [Vitest](https://vitest.dev/) para testes unitários.
+
+### Executar testes
+
+```bash
+npm test
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+## Documentação
 
-```sh
-npm run test:unit
+A documentação é construída com [VitePress](https://vitepress.dev/).
+
+### Desenvolvimento da documentação
+
+```bash
+npm run docs:dev
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+Acesse em: http://localhost:5173
 
-```sh
+## Linting e Formatação
+
+### Verificar lint
+
+```bash
 npm run lint
+```
+
+### Verificar formatação
+
+```bash
+npm run prettier:check
+```
+
+### Formatar código
+
+```bash
+npm run format
+```
+
+## Type Checking
+
+```bash
+npm run type-check
 ```

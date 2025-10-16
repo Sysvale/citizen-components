@@ -1,6 +1,8 @@
-import './assets/main.css'
+import { createApp } from 'vue';
+import App from './App.vue';
+import Cuida from '@sysvale/cuida';
+import '@sysvale/cuida/dist/style.css';
 
-import { createApp } from 'vue'
-import App from './App.vue'
-
-createApp(App).mount('#app')
+const app = createApp(App);
+app.use(Cuida);
+app.mount('#app');
