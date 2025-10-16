@@ -46,7 +46,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, type Ref, type ComponentPublicInstance } from 'vue';
+import {
+	ref,
+	watch,
+	computed,
+	type Ref,
+	type ComponentPublicInstance,
+} from 'vue';
 import { cloneDeep } from 'lodash';
 
 const model = defineModel<CitizenModelType>('modelValue');
@@ -75,7 +81,7 @@ const selectContainerWidth = computed(() => {
 
 watch(
 	() => props.options,
-	(newValue) => {
+	newValue => {
 		liRefs.value = [];
 		localOptions.value = newValue;
 	},
@@ -127,7 +133,10 @@ watch(
 	{ deep: true }
 );
 
-function setLiRef(el: Element | ComponentPublicInstance | null, index: number) {
+function setLiRef(
+	el: Element | ComponentPublicInstance | null,
+	index: number
+) {
 	if (el && el instanceof HTMLLIElement) {
 		liRefs.value[index] = el;
 	}
