@@ -1,6 +1,6 @@
 import {
 	describe,
-	it,
+	test,
 	expect,
 	vi,
 	beforeEach,
@@ -27,7 +27,7 @@ describe('CitizenService', () => {
 	});
 
 	describe('search', () => {
-		it('should call API when config is properly set', async () => {
+		test('calls API when config is properly set', async () => {
 			const mockCitizens = [
 				{
 					id: '1',
@@ -62,7 +62,7 @@ describe('CitizenService', () => {
 			expect(result).toEqual(mockCitizens);
 		});
 
-		it('should use mock when apiBaseUrl is not configured', async () => {
+		test('uses mock when apiBaseUrl is not configured', async () => {
 			const mockCitizens = [
 				{
 					id: '1',
@@ -88,7 +88,7 @@ describe('CitizenService', () => {
 			expect(result).toEqual(mockCitizens);
 		});
 
-		it('should use mock when endpoints are not configured', async () => {
+		test('uses mock when endpoints are not configured', async () => {
 			const mockCitizens = [
 				{
 					id: '1',
@@ -113,7 +113,7 @@ describe('CitizenService', () => {
 			expect(result).toEqual(mockCitizens);
 		});
 
-		it('should throw error with details when API call fails', async () => {
+		test('throws error with details when API call fails', async () => {
 			mockGetConfig.mockReturnValue({
 				apiBaseUrl: 'https://api.example.com',
 				endpoints: {
@@ -128,7 +128,7 @@ describe('CitizenService', () => {
 			).rejects.toThrow('Error fetching citizens: Network error');
 		});
 
-		it('should handle non-Error exceptions', async () => {
+		test('handles non-Error exceptions', async () => {
 			mockGetConfig.mockReturnValue({
 				apiBaseUrl: 'https://api.example.com',
 				endpoints: {
@@ -152,7 +152,7 @@ describe('CitizenService', () => {
 			});
 		});
 
-		it('should return empty array when search string is empty', async () => {
+		test('returns empty array when search string is empty', async () => {
 			mockMakeCitizens.mockReturnValue([
 				{
 					id: '1',
@@ -167,7 +167,7 @@ describe('CitizenService', () => {
 			expect(result).toEqual([]);
 		});
 
-		it('should filter citizens by name (case insensitive)', async () => {
+		test('filters citizens by name (case insensitive)', async () => {
 			mockMakeCitizens.mockReturnValue([
 				{
 					id: '1',
@@ -198,7 +198,7 @@ describe('CitizenService', () => {
 			expect(result[1].name).toBe('Maria Silva');
 		});
 
-		it('should filter citizens by partial name match', async () => {
+		test('filters citizens by partial name match', async () => {
 			mockMakeCitizens.mockReturnValue([
 				{
 					id: '1',
@@ -226,7 +226,7 @@ describe('CitizenService', () => {
 			expect(result[0].name).toBe('João Silva');
 		});
 
-		it('should return empty array when no citizens match', async () => {
+		test('returns empty array when no citizens match', async () => {
 			mockMakeCitizens.mockReturnValue([
 				{
 					id: '1',

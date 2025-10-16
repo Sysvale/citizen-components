@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import CitizenSelect from './CitizenSelect.vue';
 import { CitizenService } from '../services/citizen/citizen.service';
@@ -41,7 +41,7 @@ describe('CitizenSelect', () => {
 		CitizenService.prototype.search = mockSearch;
 	});
 
-	it('should render the component with text input', () => {
+	test('renders the component with text input', () => {
 		const wrapper = mount(CitizenSelect, {
 			props: {
 				showButton: false,
@@ -54,7 +54,7 @@ describe('CitizenSelect', () => {
 		expect(wrapper.find('input').exists()).toBe(true);
 	});
 
-	it('should render button when showButton is true', () => {
+	test('renders button when showButton is true', () => {
 		const wrapper = mount(CitizenSelect, {
 			props: {
 				showButton: true,
@@ -69,7 +69,7 @@ describe('CitizenSelect', () => {
 		expect(button.text()).toContain('Buscar');
 	});
 
-	it('should not render button when showButton is false', () => {
+	test('does not render button when showButton is false', () => {
 		const wrapper = mount(CitizenSelect, {
 			props: {
 				showButton: false,
@@ -82,7 +82,7 @@ describe('CitizenSelect', () => {
 		expect(wrapper.find('button').exists()).toBe(false);
 	});
 
-	it('should call search when button is clicked', async () => {
+	test('calls search when button is clicked', async () => {
 		const mockCitizens = [
 			{
 				id: '1',
@@ -115,7 +115,7 @@ describe('CitizenSelect', () => {
 		});
 	});
 
-	it('should call search when Enter is pressed', async () => {
+	test('calls search when Enter is pressed', async () => {
 		const mockCitizens = [
 			{
 				id: '1',
@@ -148,7 +148,7 @@ describe('CitizenSelect', () => {
 		});
 	});
 
-	it('should show dropdown with results after search', async () => {
+	test('shows dropdown with results after search', async () => {
 		const mockCitizens = [
 			{
 				id: '1',
@@ -190,7 +190,7 @@ describe('CitizenSelect', () => {
 		expect(wrapper.vm.isActive).toBe(true);
 	});
 
-	it('should update searchString when selecting a citizen object', async () => {
+	test('updates searchString when selecting a citizen object', async () => {
 		const mockCitizen = {
 			id: '1',
 			name: 'João Silva',
@@ -215,7 +215,7 @@ describe('CitizenSelect', () => {
 		expect(wrapper.vm.searchString).toBe('João Silva');
 	});
 
-	it('should emit updated modelValue when citizen is selected', async () => {
+	test('emits updated modelValue when citizen is selected', async () => {
 		const mockCitizen = {
 			id: '1',
 			name: 'João Silva',
@@ -242,7 +242,7 @@ describe('CitizenSelect', () => {
 		);
 	});
 
-	it('should use custom optionsField when provided', async () => {
+	test('uses custom optionsField when provided', async () => {
 		const mockCitizen = {
 			id: '1',
 			name: 'João Silva',
