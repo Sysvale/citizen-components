@@ -3,7 +3,7 @@ import { defineConfig } from 'vitepress';
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
 	title: 'Citizen Components',
-	description: 'Componentes Vue para busca e seleção de cidadãos',
+	description: 'Componentes Vue para busca e listagem de cidadãos',
 	themeConfig: {
 		nav: [
 			{ text: 'Home', link: '/' },
