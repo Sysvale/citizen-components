@@ -17,7 +17,7 @@
 						:key="option.id"
 						:ref="el => setLiRef(el, index)"
 						class="option__text"
-						@mousedown="selectItem"
+						@mousedown.left="selectItem"
 						@mouseover="highlightOnMouseOver(index)"
 						@mouseout="unhighlightOnMouseOut()"
 					>
