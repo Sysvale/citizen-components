@@ -15,7 +15,7 @@
 					<li
 						v-for="(option, index) in localOptions"
 						:key="option.id"
-						ref="liRefs"
+						:ref="el => setLiRef(el, index)"
 						class="option__text"
 						@mousedown="selectItem"
 						@mouseover="highlightOnMouseOver(index)"
@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, useTemplateRef, type Ref } from 'vue';
+import { ref, watch, computed, type Ref, type ComponentPublicInstance } from 'vue';
 import { cloneDeep } from 'lodash';
 
 const model = defineModel<CitizenModelType>('modelValue');
@@ -67,7 +67,7 @@ const props = withDefaults(
 const currentPos = ref(0);
 const localOptions = ref<Citizen[]>([]) as Ref<Citizen[]>;
 const localValue = ref<Citizen | Partial<Citizen>>();
-const liRefs = useTemplateRef<HTMLLIElement[]>('liRefs');
+const liRefs = ref<HTMLLIElement[]>([]);
 
 const selectContainerWidth = computed(() => {
 	return props.fluid ? '100%' : 'fit-content';
@@ -75,12 +75,11 @@ const selectContainerWidth = computed(() => {
 
 watch(
 	() => props.options,
-	(newValue, oldValue) => {
-		if (newValue !== oldValue) {
-			localOptions.value = newValue;
-		}
+	(newValue) => {
+		liRefs.value = [];
+		localOptions.value = newValue;
 	},
-	{ immediate: true }
+	{ immediate: true, flush: 'pre' }
 );
 
 watch(
@@ -127,6 +126,12 @@ watch(
 	},
 	{ deep: true }
 );
+
+function setLiRef(el: Element | ComponentPublicInstance | null, index: number) {
+	if (el && el instanceof HTMLLIElement) {
+		liRefs.value[index] = el;
+	}
+}
 
 function selectItem() {
 	localValue.value = cloneDeep(
