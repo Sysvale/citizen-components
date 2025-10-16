@@ -19,7 +19,7 @@
 			/>
 
 			<SelectDropdown
-				v-show="isActive"
+				v-if="isActive"
 				v-model="internalValue"
 				:options
 				:fluid
@@ -35,15 +35,15 @@
 						</CdsText>
 					</CdsText>
 					<CdsText as="body-2">
-						<br />
+						<br>
 						CPF: {{ option['cpf'] }}
 					</CdsText>
 					<CdsText as="body-2">
-						<br />
+						<br>
 						CNS: {{ option['cns'] }}
 					</CdsText>
 					<CdsText as="body-2">
-						<br />
+						<br>
 						Data de nascimento: {{ option['birth_date'] }}
 					</CdsText>
 				</template>
