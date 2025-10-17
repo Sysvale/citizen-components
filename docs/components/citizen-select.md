@@ -24,7 +24,7 @@ const selectedCitizen = ref<Citizen | null>(null);
 
 ### `modelValue`
 
-- **Tipo:** `CitizenModelType` (`Citizen | Partial<Citizen> | string | null`)
+- **Tipo:** `CitizenSelectModelType` (`Citizen | Partial<Citizen> | string | null`)
 - **Obrigatório:** Não
 - **Padrão:** `null`
 
@@ -125,8 +125,8 @@ function onCitizenChange(value: Citizen | null) {
 ## Tipos
 
 ```typescript
-import type { Citizen, CitizenModelType } from 'citizen-components';
+import type { Citizen, CitizenSelectModelType } from 'citizen-components';
 
 // Citizen: interface completa do cidadão
-// CitizenModelType: Citizen | Partial<Citizen> | string | null
+// CitizenSelectModelType: Citizen | Partial<Citizen> | string | null
 ```

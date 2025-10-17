@@ -20,11 +20,24 @@ export default defineConfig({
 				],
 			},
 			{
+				text: 'Services',
+				items: [
+					{
+						text: 'CitizenService',
+						link: '/services/citizen-service',
+					},
+				],
+			},
+			{
 				text: 'Componentes',
 				items: [
 					{
 						text: 'CitizenSelect',
 						link: '/components/citizen-select',
+					},
+					{
+						text: 'CitizenTable',
+						link: '/components/citizen-table',
 					},
 				],
 			},
