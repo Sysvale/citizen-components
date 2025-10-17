@@ -289,6 +289,10 @@ function updateFieldList(newList) {
 			label: 'Nome',
 		},
 		...fields.value,
+		{
+			key: 'actions',
+			label: '',
+		},
 	];
 
 	fetchCitizens();
