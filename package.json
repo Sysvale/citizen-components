@@ -30,11 +30,13 @@
 		"lint": "eslint . --ext .ts,.tsx,.js,.vue",
 		"prettier:check": "prettier . --check",
 		"format": "prettier --write .",
+		"format:vue": "node scripts/format-vue-structure.js",
 		"docs:dev": "vitepress dev docs",
 		"docs:build": "vitepress build docs",
 		"docs:preview": "vitepress preview docs"
 	},
 	"dependencies": {
+		"@sysvale/foundry": "^1.5.0",
 		"@vueuse/core": "^13.9.0",
 		"lodash": "^4.17.21"
 	},
