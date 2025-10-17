@@ -12,17 +12,18 @@ const indexTypesContent = `import type { DefineComponent, Plugin } from 'vue';
 export interface CitizenComponentsConfig {
   apiBaseUrl?: string;
   endpoints?: {
+    index?: string;
     searchCitizens?: string;
   };
 }
 
 // Re-export types
 export type { Citizen, Nullable } from './services/citizen/citizen.types';
-export type { CitizenModelType } from './types';
+export type { CitizenSelectModelType } from './types';
 
 // Import types for the component definition
 import type { Citizen } from './services/citizen/citizen.types';
-import type { CitizenModelType } from './types';
+import type { CitizenSelectModelType } from './types';
 
 // Define component types
 export interface CitizenSelectProps {
@@ -30,11 +31,16 @@ export interface CitizenSelectProps {
   fluid?: boolean;
   variant?: string;
   optionsField?: keyof Citizen;
-  modelValue?: CitizenModelType;
+  modelValue?: CitizenSelectModelType;
 }
 
-// Export component
+export interface CitizenTableProps {
+  modelValue?: Citizen[];
+}
+
+// Export components
 export declare const CitizenSelect: DefineComponent<CitizenSelectProps>;
+export declare const CitizenTable: DefineComponent<CitizenTableProps>;
 
 // Export plugin
 export declare const CitizenComponentsPlugin: Plugin;
