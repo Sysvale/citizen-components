@@ -1,0 +1,8 @@
+{
+	"compilerOptions": {
+		"noEmit": true,
+		"skipLibCheck": true
+	},
+	"include": [".vitepress/**/*.ts"],
+	"exclude": ["**/*.md", "*.md", "**/*.vue"]
+}

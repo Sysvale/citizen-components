@@ -10,10 +10,7 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			'@': fileURLToPath(new URL('./src', import.meta.url)),
-			'@sysvale': path.resolve(
-				__dirname,
-				'node_modules/@sysvale'
-			),
+			'@sysvale': path.resolve(__dirname, 'node_modules/@sysvale'),
 		},
 	},
 	build: {

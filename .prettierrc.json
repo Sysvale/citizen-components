@@ -7,7 +7,7 @@
 	"trailingComma": "es5",
 	"bracketSpacing": true,
 	"arrowParens": "avoid",
-	"printWidth": 72,
+	"printWidth": 80,
 	"endOfLine": "lf",
 	"singleAttributePerLine": true
 }

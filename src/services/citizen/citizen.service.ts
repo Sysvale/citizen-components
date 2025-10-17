@@ -1,53 +1,119 @@
-import type { Citizen } from './citizen.types';
+import type { CitizenServiceParams, CitizenResponse } from './citizen.types';
 import { makeCitizens } from './citizen.factory';
-import { getConfig } from '../../config';
+import { getConfig, type CitizenComponentsConfig } from '../../config';
+import { removeCpfMask, removeCnsMask } from '@sysvale/foundry';
 import axios from 'axios';
 
 export class CitizenService {
-	async search(params: { searchString: string }): Promise<Citizen[]> {
-		const config = getConfig();
+	private config: CitizenComponentsConfig;
 
-		if (
-			!config.apiBaseUrl ||
-			!config.endpoints ||
-			!config.endpoints.search
-		) {
-			return this.searchMock(params.searchString);
+	constructor() {
+		this.config = getConfig();
+	}
+
+	async index(params: CitizenServiceParams): Promise<CitizenResponse> {
+		if (!this.isCustomEndpointSet('index')) {
+			await this.delay(1000);
+			return this.indexMock(params);
 		}
 
 		try {
-			const endpoint = config.endpoints.search || '/citizens';
-			const response = await axios.get(
-				`${config.apiBaseUrl}${endpoint}`,
-				{ params }
-			);
-
-			const citizens = response.data.data ?? response.data;
-			return citizens;
+			return await this.apiCall(params);
 		} catch (error) {
-			console.error('Error fetching citizens:', error);
-
-			const errorMessage =
-				error instanceof Error
-					? error.message
-					: 'Unknown error';
-			throw new Error(`Error fetching citizens: ${errorMessage}`);
+			throw this.handleErrors(error);
 		}
 	}
 
-	private async searchMock(searchString: string): Promise<Citizen[]> {
-		const citizens = await new Promise<Citizen[]>(resolve => {
-			setTimeout(() => {
-				resolve(makeCitizens(150));
-			}, 1000);
-		});
+	private delay(ms: number): Promise<void> {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
 
-		if (!searchString) return [];
+	private async apiCall(
+		params: CitizenServiceParams
+	): Promise<CitizenResponse> {
+		const endpoint = this.config.endpoints.index;
 
-		return citizens.filter(citizen =>
-			citizen.name
-				.toLowerCase()
-				.includes(searchString.toLowerCase())
+		const response = await axios.get(
+			`${this.config.apiBaseUrl}${endpoint}`,
+			{ params }
+		);
+
+		return response.data;
+	}
+
+	private isCustomEndpointSet(endpoint: 'index') {
+		return (
+			this.config.apiBaseUrl &&
+			this.config.endpoints &&
+			this.config.endpoints[endpoint]
+		);
+	}
+
+	private handleErrors(error: unknown): never {
+		console.error('Error fetching citizens:', error);
+
+		const errorMessage =
+			error instanceof Error ? error.message : 'Unknown error';
+
+		throw new Error(`Error fetching citizens: ${errorMessage}`);
+	}
+
+	private async indexMock(
+		params: CitizenServiceParams
+	): Promise<CitizenResponse> {
+		let citizens = makeCitizens(150);
+
+		if (params.searchString) {
+			citizens = this.citizensFilter(citizens, params.searchString);
+		}
+
+		let paginatedCitizens = citizens.slice(
+			(params.page - 1) * (params.perPage ?? 1),
+			params.page * (params.perPage ?? 1)
+		);
+
+		if (params.fields && params.fields.length) {
+			paginatedCitizens = paginatedCitizens.map(
+				citizen =>
+					Object.fromEntries(
+						Object.entries(citizen).filter(
+							([key]) =>
+								params.fields?.includes(key) ||
+								key === 'name' ||
+								key === 'cpf' ||
+								key === 'cns'
+						)
+					) as Citizen
+			);
+		}
+
+		const response = {
+			data: paginatedCitizens,
+			meta: {
+				current_page: params.page,
+				per_page: params.perPage ?? 1,
+				total: citizens.length,
+				last_page: Math.ceil(citizens.length / (params.perPage ?? 1)),
+			},
+		};
+
+		return response;
+	}
+
+	private citizensFilter(citizens: Citizen[], searchString: string) {
+		return citizens.filter(
+			citizen =>
+				citizen.name
+					.toLowerCase()
+					.includes(searchString.toLowerCase()) ||
+				(removeCpfMask(searchString).length &&
+					removeCpfMask(citizen.cpf).includes(
+						removeCpfMask(searchString)
+					)) ||
+				(removeCnsMask(searchString).length &&
+					removeCnsMask(citizen.cns).includes(
+						removeCnsMask(searchString)
+					))
 		);
 	}
 }

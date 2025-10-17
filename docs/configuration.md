@@ -17,7 +17,7 @@ const app = createApp(App);
 app.use(CitizenComponentsPlugin, {
 	apiBaseUrl: 'https://api.example.com',
 	endpoints: {
-		searchCitizens: '/citizens/search',
+		index: '/citizens',
 	},
 });
 
@@ -51,19 +51,24 @@ Objeto com os endpoints customizados:
 app.use(CitizenComponentsPlugin, {
 	apiBaseUrl: 'https://api.meuapp.com',
 	endpoints: {
-		searchCitizens: '/api/v1/citizens/search', // padrão: '/citizens/search'
+		index: '/api/v1/citizens', // padrão: '/citizens'
 	},
 });
 ```
 
 ## Formato da API
 
-O endpoint de busca deve aceitar um query parameter `q` e retornar um array de cidadãos:
+O endpoint de busca deve aceitar os seguintes query parameters:
+
+- **`page`** (obrigatório): Número da página para paginação
+- **`fields`** (opcional): Array de campos a serem retornados
+- **`searchString`** (opcional): String de busca para filtrar os cidadãos
+- **`perPage`** (opcional): Quantidade de itens por página
 
 **Request:**
 
 ```
-GET /citizens/search?q=João
+GET /citizens?page=1&searchString=João&perPage=10&fields=name,cpf,birth_date
 ```
 
 **Response:**

@@ -55,7 +55,7 @@ import {
 } from 'vue';
 import { cloneDeep } from 'lodash';
 
-const model = defineModel<CitizenModelType>('modelValue');
+const model = defineModel<CitizenSelectModelType>('modelValue');
 
 const props = withDefaults(
 	defineProps<{
@@ -123,9 +123,7 @@ watch(
 		if (!isValidOption) return;
 
 		if (props.returnValue) {
-			model.value = currentValue[
-				props.optionsField
-			] as Partial<Citizen>;
+			model.value = currentValue[props.optionsField] as Partial<Citizen>;
 		} else {
 			model.value = currentValue as Citizen;
 		}
@@ -133,10 +131,7 @@ watch(
 	{ deep: true }
 );
 
-function setLiRef(
-	el: Element | ComponentPublicInstance | null,
-	index: number
-) {
+function setLiRef(el: Element | ComponentPublicInstance | null, index: number) {
 	if (el && el instanceof HTMLLIElement) {
 		liRefs.value[index] = el;
 	}
@@ -168,6 +163,7 @@ function getOptionValue(option: Citizen): Citizen[keyof Citizen] {
 	return option[props.optionsField];
 }
 </script>
+
 <style lang="scss" scoped>
 @import '@sysvale/cuida/dist/@sysvale/tokens.scss';
 
