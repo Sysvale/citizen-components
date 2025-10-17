@@ -1,5 +1,25 @@
 export type Nullable<T> = T | null;
 
+export interface CitizenResponse {
+	data: Citizen[];
+	meta: {
+		current_page: number;
+		per_page: number;
+		total: number;
+		last_page: number;
+		path?: string;
+		from?: number;
+		to?: number;
+	};
+}
+
+export interface CitizenServiceParams {
+	page: number;
+	fields?: string[];
+	searchString?: string;
+	perPage?: number;
+}
+
 export interface Citizen {
 	id: string;
 	cpf: string;
