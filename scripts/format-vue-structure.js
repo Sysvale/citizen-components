@@ -69,9 +69,7 @@ function identifySectionType(line) {
 	}
 
 	// Props
-	if (
-		trimmed.match(/^(const|let)\s+props\s*=\s*(defineProps|withDefaults)/)
-	) {
+	if (trimmed.match(/^(const|let)\s+props\s*=\s*(defineProps|withDefaults)/)) {
 		return 'props';
 	}
 
@@ -162,9 +160,7 @@ function parseScriptSetup(scriptContent) {
 				// Remove linhas vazias do final da seção anterior
 				while (
 					currentSection.lines.length > 0 &&
-					!currentSection.lines[
-						currentSection.lines.length - 1
-					].trim()
+					!currentSection.lines[currentSection.lines.length - 1].trim()
 				) {
 					currentSection.lines.pop();
 				}
@@ -280,9 +276,7 @@ function extractSections(content) {
 	// Extrai o script
 	const scriptTagEnd = content.indexOf('>', scriptStartIdx);
 	sections.scriptTag = content.substring(scriptStartIdx, scriptTagEnd + 1);
-	sections.scriptContent = content
-		.substring(scriptTagEnd + 1, scriptEndIdx)
-		.trim();
+	sections.scriptContent = content.substring(scriptTagEnd + 1, scriptEndIdx).trim();
 	sections.script = content.substring(scriptStartIdx, scriptEndIdx + 9); // +9 para incluir </script>
 
 	// Extrai template (tudo antes do script)
