@@ -66,6 +66,7 @@ import TableCellRenderer from './InternalComponents/TableCellRenderer.vue';
 import { CitizenService } from '@/services/citizen/citizen.service';
 import { createCustomFields } from '@/constants/customFields';
 import { createFields } from '@/constants/fields';
+import { type TableField, type CustomTableField } from '../types';
 
 const model = defineModel<Citizen[]>('modelValue');
 
@@ -76,8 +77,8 @@ const internalValue = ref<Citizen[]>();
 const items = ref<Citizen[]>([]);
 const isLoading = ref(false);
 const searchString = ref('');
-const customFieldsList = ref(createCustomFields());
-const fields = ref(createFields());
+const fields = ref<TableField[]>(createFields());
+const customFieldsList = ref<CustomTableField[]>(createCustomFields());
 
 const paginationMetaData = ref({
 	currentPage: 1,
@@ -94,14 +95,23 @@ const payload = computed(() => ({
 }));
 
 const sanitizedFields = computed(() =>
-	fields.value
-		.filter(field => field.key !== 'actions')
-		.map(field => field.key)
+	fields.value.filter(field => field.key !== 'actions').map(field => field.key)
 );
 
 watch(internalValue, value => (model.value = value));
 
-onMounted(async () => fetchCitizens());
+onMounted(async () => {
+	markDefaultFieldsAsVisible();
+	fetchCitizens();
+});
+
+function markDefaultFieldsAsVisible() {
+	const fieldKeys = new Set(fields.value.map(field => field.key));
+
+	customFieldsList.value.forEach(customField => {
+		if (fieldKeys.has(customField.key)) customField.visible = true;
+	});
+}
 
 async function fetchCitizens() {
 	isLoading.value = true;
@@ -121,7 +131,7 @@ async function fetchCitizens() {
 	}
 }
 
-function updateFieldList(newList) {
+function updateFieldList(newList: CustomTableField[]) {
 	fields.value = newList.filter(item => item.visible);
 	fields.value = [
 		{

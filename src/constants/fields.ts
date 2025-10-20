@@ -1,4 +1,6 @@
-export const createFields = () => [
+import { type TableField } from '@/types';
+
+export const createFields = (): TableField[] => [
 	{
 		key: 'name',
 		label: 'Nome',

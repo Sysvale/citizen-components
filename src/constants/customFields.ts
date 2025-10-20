@@ -1,11 +1,15 @@
-export const createCustomFields = () => [
+import { type CustomTableField } from '@/types';
+
+export const createCustomFields = (): CustomTableField[] => [
 	{
 		key: 'birth_date',
 		label: 'Data de nascimento',
+		visible: false,
 	},
 	{
 		key: 'address',
 		label: 'Endereço',
+		visible: false,
 	},
 	{
 		key: 'gender',
