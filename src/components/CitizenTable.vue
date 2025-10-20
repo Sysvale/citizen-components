@@ -16,7 +16,7 @@
 			@search-button-click="handleSearch"
 		>
 			<template #table-item="{ data, field, colIndex, rowIndex }">
-				<TableCell
+				<TableCellRenderer
 					:data
 					:field
 					:row-index
@@ -43,7 +43,7 @@
 							:col-index
 						/>
 					</template>
-				</TableCell>
+				</TableCellRenderer>
 			</template>
 		</CdsDataTable>
 
@@ -62,10 +62,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
-import TableCell from './InternalComponents/TableCell.vue';
-import { CitizenService } from '../services/citizen/citizen.service';
-import { createCustomFields } from '../constants/customFields';
-import { createFields } from '../constants/fields';
+import TableCellRenderer from './InternalComponents/TableCellRenderer.vue';
+import { CitizenService } from '@/services/citizen/citizen.service';
+import { createCustomFields } from '@/constants/customFields';
+import { createFields } from '@/constants/fields';
 
 const model = defineModel<Citizen[]>('modelValue');
 

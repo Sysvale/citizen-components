@@ -91,13 +91,15 @@
 			</CdsFlexbox>
 		</template>
 
-		<template v-else> -- </template>
+		<template v-else>
+			--
+		</template>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { maskCpf, maskCns } from '@sysvale/foundry';
-import { dmyFormatter } from '../../utils/dmyFormatter';
+import { dmyFormatter } from '@/utils/dmyFormatter';
 
 defineProps<{
 	data: Citizen;
