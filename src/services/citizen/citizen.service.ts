@@ -28,15 +28,12 @@ export class CitizenService {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
-	private async apiCall(
-		params: CitizenServiceParams
-	): Promise<CitizenResponse> {
+	private async apiCall(params: CitizenServiceParams): Promise<CitizenResponse> {
 		const endpoint = this.config.endpoints.index;
 
-		const response = await axios.get(
-			`${this.config.apiBaseUrl}${endpoint}`,
-			{ params }
-		);
+		const response = await axios.get(`${this.config.apiBaseUrl}${endpoint}`, {
+			params,
+		});
 
 		return response.data;
 	}
@@ -52,15 +49,12 @@ export class CitizenService {
 	private handleErrors(error: unknown): never {
 		console.error('Error fetching citizens:', error);
 
-		const errorMessage =
-			error instanceof Error ? error.message : 'Unknown error';
+		const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
 		throw new Error(`Error fetching citizens: ${errorMessage}`);
 	}
 
-	private async indexMock(
-		params: CitizenServiceParams
-	): Promise<CitizenResponse> {
+	private async indexMock(params: CitizenServiceParams): Promise<CitizenResponse> {
 		let citizens = makeCitizens(150);
 
 		if (params.searchString) {
@@ -73,18 +67,14 @@ export class CitizenService {
 		);
 
 		if (params.fields && params.fields.length) {
-			paginatedCitizens = paginatedCitizens.map(
-				citizen =>
-					Object.fromEntries(
-						Object.entries(citizen).filter(
-							([key]) =>
-								params.fields?.includes(key) ||
-								key === 'name' ||
-								key === 'cpf' ||
-								key === 'cns'
-						)
-					) as Citizen
-			);
+			paginatedCitizens = paginatedCitizens.map(citizen => {
+				return Object.fromEntries(
+					Object.entries(citizen).filter(
+						([key]) =>
+							params.fields?.includes(key) || this.isKeyADefaultField(key)
+					)
+				) as Citizen;
+			});
 		}
 
 		const response = {
@@ -103,17 +93,24 @@ export class CitizenService {
 	private citizensFilter(citizens: Citizen[], searchString: string) {
 		return citizens.filter(
 			citizen =>
-				citizen.name
-					.toLowerCase()
-					.includes(searchString.toLowerCase()) ||
-				(removeCpfMask(searchString).length &&
-					removeCpfMask(citizen.cpf).includes(
-						removeCpfMask(searchString)
-					)) ||
-				(removeCnsMask(searchString).length &&
-					removeCnsMask(citizen.cns).includes(
-						removeCnsMask(searchString)
-					))
+				citizen.name.toLowerCase().includes(searchString.toLowerCase()) ||
+				this.matchesMaskedField(searchString, citizen.cpf, removeCpfMask) ||
+				this.matchesMaskedField(searchString, citizen.cns, removeCnsMask)
 		);
+	}
+
+	private matchesMaskedField(
+		searchString: string,
+		field: string,
+		maskRemover: (_: string) => string
+	) {
+		return (
+			maskRemover(searchString).length &&
+			maskRemover(field).includes(maskRemover(searchString))
+		);
+	}
+
+	private isKeyADefaultField(key: string) {
+		return key === 'name' || key === 'cpf' || key === 'cns';
 	}
 }
