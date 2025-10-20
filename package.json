@@ -41,12 +41,12 @@
 		"lodash": "^4.17.21"
 	},
 	"peerDependencies": {
-		"@sysvale/cuida": "^3.147.0",
+		"@sysvale/cuida": "^3.148.0",
 		"vue": "^3.5.13"
 	},
 	"devDependencies": {
 		"@faker-js/faker": "^10.0.0",
-		"@sysvale/cuida": "^3.147.0",
+		"@sysvale/cuida": "^3.148.0",
 		"@tsconfig/node22": "^22.0.1",
 		"@types/jsdom": "^21.1.7",
 		"@types/lodash": "^4.17.13",

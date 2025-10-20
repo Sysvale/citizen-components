@@ -16,77 +16,15 @@
 			@search-button-click="handleSearch"
 		>
 			<template #table-item="{ data, field, colIndex, rowIndex }">
-				<CdsFlexbox
-					v-if="field === 'name'"
-					direction="column"
-					gap="1"
+				<TableCell
+					:data
+					:field
+					:row-index
+					:col-index
+					@edit="emits('edit')"
+					@details="emits('details')"
 				>
-					<CdsText
-						no-margin
-						as="subheading-3"
-						font-weight="semibold"
-					>
-						{{ data.name }}
-					</CdsText>
-					<div class="mt-1">
-						<CdsText
-							font-weight="semibold"
-							as="caption"
-						>
-							CPF:
-						</CdsText>
-						<CdsText as="caption">
-							{{ maskCpf(data.cpf) }}
-						</CdsText>
-					</div>
-					<div>
-						<CdsText
-							font-weight="semibold"
-							as="caption"
-						>
-							CNS:
-						</CdsText>
-						<CdsText as="caption">
-							{{ maskCns(data.cns) }}
-						</CdsText>
-					</div>
-				</CdsFlexbox>
-
-				<CdsFlexbox
-					v-if="field === 'address'"
-					direction="column"
-					gap="1"
-				>
-					<CdsText as="caption">
-						{{ data.address.street }}, Nº {{ data.address.number }}
-					</CdsText>
-
-					<CdsText as="caption">
-						{{ data.address.neighborhood }}
-					</CdsText>
-
-					<CdsText as="caption">
-						{{ data.address.city }} / {{ data.address.uf }}
-					</CdsText>
-				</CdsFlexbox>
-
-				<template v-if="typeof data[field] === 'boolean'">
-					{{ formatBoolean(data[field]) }}
-				</template>
-
-				<template v-if="field === 'gender'">
-					{{ genderFormatter(data[field]) }}
-				</template>
-
-				<template v-if="field === 'race'">
-					{{ raceFormatter(data[field]) }}
-				</template>
-
-				<template v-if="field === 'actions'">
-					<CdsFlexbox
-						gap="2"
-						justify="end"
-					>
+					<template #prepend-action>
 						<slot
 							name="prepend-action"
 							:data
@@ -94,21 +32,9 @@
 							:row-index
 							:col-index
 						/>
+					</template>
 
-						<CdsIconButton
-							size="sm"
-							icon="document-text-outline"
-							tooltip-text="Ver detalhes"
-							@cds-click="emits('details')"
-						/>
-
-						<CdsIconButton
-							size="sm"
-							icon="edit-outline"
-							tooltip-text="Editar"
-							@cds-click="emits('edit')"
-						/>
-
+					<template #append-action>
 						<slot
 							name="append-action"
 							:data
@@ -116,21 +42,17 @@
 							:row-index
 							:col-index
 						/>
-					</CdsFlexbox>
-				</template>
-
-				<template v-else-if="data[field] !== false && !data[field]">
-					--
-				</template>
+					</template>
+				</TableCell>
 			</template>
 		</CdsDataTable>
 
 		<CdsPagination
 			v-if="paginationMetaData.lastPage > 1"
 			v-model="paginationMetaData.currentPage"
+			class="mt-8"
 			:per-page="paginationMetaData.perPage"
 			:total="paginationMetaData.total"
-			class="mt-8"
 			:variant="$attrs.variant ?? 'green'"
 			fluid
 			@update:model-value="fetchCitizens"
@@ -140,8 +62,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
-import { maskCpf, maskCns } from '@sysvale/foundry';
+import TableCell from './InternalComponents/TableCell.vue';
 import { CitizenService } from '../services/citizen/citizen.service';
+import { createCustomFields } from '../constants/customFields';
+import { createFields } from '../constants/fields';
 
 const model = defineModel<Citizen[]>('modelValue');
 
@@ -152,6 +76,8 @@ const internalValue = ref<Citizen[]>();
 const items = ref<Citizen[]>([]);
 const isLoading = ref(false);
 const searchString = ref('');
+const customFieldsList = ref(createCustomFields());
+const fields = ref(createFields());
 
 const paginationMetaData = ref({
 	currentPage: 1,
@@ -159,78 +85,6 @@ const paginationMetaData = ref({
 	total: 45,
 	lastPage: 3,
 });
-
-const fields = ref([
-	{
-		key: 'name',
-		label: 'Nome',
-	},
-	{
-		key: 'birth_date',
-		label: 'Data de nascimento',
-		formatter: (date: string) => dmyFormatter(date),
-	},
-	{
-		key: 'address',
-		label: 'Endereço',
-	},
-	{
-		key: 'actions',
-		label: '',
-	},
-]);
-
-const customFieldsList = ref([
-	{
-		key: 'birth_date',
-		label: 'Data de nascimento',
-		formatter: (date: string) => dmyFormatter(date),
-	},
-	{
-		key: 'address',
-		label: 'Endereço',
-	},
-	{
-		key: 'gender',
-		label: 'Sexo',
-		visible: false,
-	},
-	{
-		key: 'identification_document',
-		label: 'RG',
-		visible: false,
-	},
-	{
-		key: 'phone',
-		label: 'Telefone',
-		visible: false,
-	},
-	{
-		key: 'cellphone',
-		label: 'Celular',
-		visible: false,
-	},
-	{
-		key: 'race',
-		label: 'Raça',
-		visible: false,
-	},
-	{
-		key: 'mother_name',
-		label: 'Nome da mãe',
-		visible: false,
-	},
-	{
-		key: 'cpf_responsible',
-		label: 'CPF do responsável',
-		visible: false,
-	},
-	{
-		key: 'email',
-		label: 'Email',
-		visible: false,
-	},
-]);
 
 const payload = computed(() => ({
 	page: paginationMetaData.value.currentPage,
@@ -267,20 +121,6 @@ async function fetchCitizens() {
 	}
 }
 
-function dmyFormatter(date: string) {
-	const [year, month, day] = date.split('-').map(Number);
-
-	if (!year || !month || !day) {
-		return '--';
-	}
-
-	return new Date(year, month - 1, day).toLocaleDateString('pt-BR');
-}
-
-function formatBoolean(isTrue: boolean) {
-	return isTrue ? 'Sim' : 'Não';
-}
-
 function updateFieldList(newList) {
 	fields.value = newList.filter(item => item.visible);
 	fields.value = [
@@ -301,26 +141,5 @@ function updateFieldList(newList) {
 function handleSearch(term: string) {
 	searchString.value = term;
 	fetchCitizens();
-}
-
-function genderFormatter(gender: string) {
-	return gender === 'F' ? 'Feminino' : 'Masculino';
-}
-
-function raceFormatter(race: string) {
-	switch (race) {
-		case 'white':
-			return 'Branca';
-		case 'black':
-			return 'Preta';
-		case 'brown':
-			return 'Parda';
-		case 'indigenous':
-			return 'Indígena';
-		case 'yellow':
-			return 'Amarela';
-		default:
-			return '--';
-	}
 }
 </script>
