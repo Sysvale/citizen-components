@@ -57,12 +57,9 @@ describe('CitizenService', () => {
 		test('calls API with correct parameters', async () => {
 			await service.index({ page: 1, perPage: 10, searchString: 'João' });
 
-			expect(mockAxiosGet).toHaveBeenCalledWith(
-				'https://api.example.com/citizens',
-				{
-					params: { page: 1, perPage: 10, searchString: 'João' },
-				}
-			);
+			expect(mockAxiosGet).toHaveBeenCalledWith('https://api.example.com/citizens', {
+				params: { page: 1, perPage: 10, searchString: 'João' },
+			});
 		});
 
 		test('calls API with fields parameter', async () => {
@@ -72,12 +69,9 @@ describe('CitizenService', () => {
 				fields: ['name', 'cpf'],
 			});
 
-			expect(mockAxiosGet).toHaveBeenCalledWith(
-				'https://api.example.com/citizens',
-				{
-					params: { page: 1, perPage: 10, fields: ['name', 'cpf'] },
-				}
-			);
+			expect(mockAxiosGet).toHaveBeenCalledWith('https://api.example.com/citizens', {
+				params: { page: 1, perPage: 10, fields: ['name', 'cpf'] },
+			});
 		});
 
 		test('returns API response', async () => {
@@ -88,9 +82,9 @@ describe('CitizenService', () => {
 		test('throws error when API call fails', async () => {
 			mockAxiosGet.mockRejectedValue(new Error('Network error'));
 
-			await expect(
-				service.index({ page: 1, perPage: 10 })
-			).rejects.toThrow('Error fetching citizens: Network error');
+			await expect(service.index({ page: 1, perPage: 10 })).rejects.toThrow(
+				'Error fetching citizens: Network error'
+			);
 		});
 	});
 
@@ -133,9 +127,9 @@ describe('CitizenService', () => {
 			});
 
 			expect(result.data).toHaveLength(2);
-			expect(
-				result.data.every(c => c.name.toLowerCase().includes('silva'))
-			).toBe(true);
+			expect(result.data.every(c => c.name.toLowerCase().includes('silva'))).toBe(
+				true
+			);
 		});
 
 		test('filters by CPF', async () => {
