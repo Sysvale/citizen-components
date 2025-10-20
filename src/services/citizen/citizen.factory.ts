@@ -8,9 +8,7 @@ export const makeCitizen = (overrides?: Partial<Citizen>): Citizen => {
 		gender: faker.helpers.arrayElement(['M', 'F']),
 		cpf_responsible: null,
 		mother_name: faker.person.fullName(),
-		cpf: faker.number
-			.int({ min: 10000000000, max: 99999999999 })
-			.toString(),
+		cpf: faker.number.int({ min: 10000000000, max: 99999999999 }).toString(),
 		cns: faker.string.numeric(15),
 		birth_date: faker.date.birthdate().toISOString().split('T')[0] || '',
 		phone: faker.helpers.fromRegExp(/[0-9]{2} [0-9]{4}-[0-9]{4}/),
@@ -41,10 +39,7 @@ export const makeCitizen = (overrides?: Partial<Citizen>): Citizen => {
 	};
 };
 
-export const makeCitizens = (
-	citizenCount = 1,
-	overrides?: Partial<Citizen>
-): Citizen[] => {
+export const makeCitizens = (citizenCount = 1, overrides?: Partial<Citizen>): Citizen[] => {
 	faker.seed(123);
 	return Array.from({ length: citizenCount }, () => makeCitizen(overrides));
 };

@@ -86,9 +86,7 @@ const props = withDefaults(
 );
 
 const citizenService = new CitizenService();
-const internalValue = ref<CitizenSelectModelType>(
-	null
-) as Ref<CitizenSelectModelType>;
+const internalValue = ref<CitizenSelectModelType>(null) as Ref<CitizenSelectModelType>;
 const options = ref<Citizen[]>([]);
 const isLoading = ref(false);
 const isActive = ref(false);
@@ -153,8 +151,7 @@ async function search() {
 		isActive.value = false;
 		console.error('Error fetching citizens:', error);
 
-		const errorMessage =
-			error instanceof Error ? error.message : 'Unknown error';
+		const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
 		throw new Error(`Error fetching citizens: ${errorMessage}`);
 	} finally {

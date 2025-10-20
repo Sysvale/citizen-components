@@ -34,8 +34,7 @@ describe('CitizenTable', () => {
 		CitizenService.prototype.index = mockIndex;
 	});
 
-	const createWrapper = () =>
-		mount(CitizenTable, { global: { stubs: globalStubs } });
+	const createWrapper = () => mount(CitizenTable, { global: { stubs: globalStubs } });
 
 	test('fetches citizens on mount with correct parameters', async () => {
 		createWrapper();
@@ -62,9 +61,7 @@ describe('CitizenTable', () => {
 	});
 
 	test('handles fetch errors gracefully', async () => {
-		const consoleErrorSpy = vi
-			.spyOn(console, 'error')
-			.mockImplementation(() => {});
+		const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 		mockIndex.mockRejectedValue(new Error('Network error'));
 
 		createWrapper();

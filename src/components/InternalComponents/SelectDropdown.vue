@@ -36,9 +36,7 @@
 					v-else
 					class="option__container"
 				>
-					<li class="option__text--muted">
-						Nenhuma opção encontrada
-					</li>
+					<li class="option__text--muted">Nenhuma opção encontrada</li>
 				</ul>
 			</div>
 		</div>
@@ -46,13 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-	ref,
-	watch,
-	computed,
-	type Ref,
-	type ComponentPublicInstance,
-} from 'vue';
+import { ref, watch, computed, type Ref, type ComponentPublicInstance } from 'vue';
 import { cloneDeep } from 'lodash';
 
 const model = defineModel<CitizenSelectModelType>('modelValue');
@@ -138,9 +130,7 @@ function setLiRef(el: Element | ComponentPublicInstance | null, index: number) {
 }
 
 function selectItem() {
-	localValue.value = cloneDeep(
-		localOptions.value[currentPos.value]
-	) as Partial<Citizen>;
+	localValue.value = cloneDeep(localOptions.value[currentPos.value]) as Partial<Citizen>;
 }
 
 function getLiInDOM(position: number) {
