@@ -1,14 +1,14 @@
 export interface CitizenComponentsConfig {
-	apiBaseUrl?: string;
-	endpoints?: {
-		search?: string;
+	apiBaseUrl: string;
+	endpoints: {
+		index: string;
 	};
 }
 
 const defaultConfig: CitizenComponentsConfig = {
 	apiBaseUrl: '',
 	endpoints: {
-		search: '/citizens',
+		index: '/citizens',
 	},
 };
 

@@ -23,6 +23,10 @@ LICENSE
 
 # Other
 *.log
+*.json
+*.css
+*.sass
+*.scss
 .DS_Store
 
 docs/.vitepress/dist

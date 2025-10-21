@@ -10,7 +10,7 @@ declare global {
 	type Nullable<T> = T | null;
 
 	// eslint-disable-next-line no-unused-vars
-	type CitizenModelType = Citizen | Partial<Citizen> | string | null;
+	type CitizenSelectModelType = Citizen | Partial<Citizen> | string | null;
 
 	interface Citizen {
 		id: string;

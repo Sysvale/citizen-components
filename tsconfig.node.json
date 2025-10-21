@@ -6,8 +6,11 @@
 		"cypress.config.*",
 		"nightwatch.conf.*",
 		"playwright.config.*",
-		"eslint.config.*"
+		"eslint.config.*",
+		"docs/.vitepress/config.ts",
+		"docs/.vitepress/theme/**/*.ts"
 	],
+	"exclude": ["docs/**/*.md", "**/*.md"],
 	"compilerOptions": {
 		"noEmit": true,
 		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",

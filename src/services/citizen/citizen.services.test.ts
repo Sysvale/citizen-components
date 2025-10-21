@@ -1,11 +1,4 @@
-import {
-	describe,
-	test,
-	expect,
-	vi,
-	beforeEach,
-	type Mock,
-} from 'vitest';
+import { describe, test, expect, vi, beforeEach, type Mock } from 'vitest';
 import { CitizenService } from './citizen.service';
 import { getConfig } from '../../config';
 import axios from 'axios';
@@ -21,226 +14,144 @@ describe('CitizenService', () => {
 	const mockAxiosGet = axios.get as Mock;
 	const mockMakeCitizens = makeCitizens as Mock;
 
+	// Mock data simplificado
+	const mockApiResponse = {
+		data: [
+			{ id: '1', name: 'João Silva', cpf: '12345678900' },
+			{ id: '2', name: 'Maria Santos', cpf: '98765432100' },
+		],
+		meta: { current_page: 1, per_page: 10, total: 2, last_page: 1 },
+	};
+
+	const mockCitizens = [
+		{
+			id: '1',
+			name: 'João Silva',
+			cpf: '12345678900',
+			cns: '123456789012345',
+		},
+		{
+			id: '2',
+			name: 'Maria Silva',
+			cpf: '98765432100',
+			cns: '987654321098765',
+		},
+	];
+
 	beforeEach(() => {
-		service = new CitizenService();
 		vi.clearAllMocks();
+		mockGetConfig.mockReturnValue({ apiBaseUrl: null, endpoints: null });
+		service = new CitizenService();
 	});
 
-	describe('search', () => {
-		test('calls API when config is properly set', async () => {
-			const mockCitizens = [
-				{
-					id: '1',
-					name: 'João Silva',
-					cpf: '123.456.789-00',
-					cns: '123456789012345',
-				},
-			];
-
+	describe('index - API mode', () => {
+		beforeEach(() => {
 			mockGetConfig.mockReturnValue({
 				apiBaseUrl: 'https://api.example.com',
-				endpoints: {
-					search: '/api/citizens',
-				},
+				endpoints: { index: '/citizens' },
+			});
+			service = new CitizenService();
+			mockAxiosGet.mockResolvedValue({ data: mockApiResponse });
+		});
+
+		test('calls API with correct parameters', async () => {
+			await service.index({ page: 1, perPage: 10, searchString: 'João' });
+
+			expect(mockAxiosGet).toHaveBeenCalledWith('https://api.example.com/citizens', {
+				params: { page: 1, perPage: 10, searchString: 'João' },
+			});
+		});
+
+		test('calls API with fields parameter', async () => {
+			await service.index({
+				page: 1,
+				perPage: 10,
+				fields: ['name', 'cpf'],
 			});
 
-			mockAxiosGet.mockResolvedValue({
-				data: mockCitizens,
+			expect(mockAxiosGet).toHaveBeenCalledWith('https://api.example.com/citizens', {
+				params: { page: 1, perPage: 10, fields: ['name', 'cpf'] },
 			});
+		});
 
-			const result = await service.search({
-				searchString: 'João',
-			});
+		test('returns API response', async () => {
+			const result = await service.index({ page: 1, perPage: 10 });
+			expect(result).toEqual(mockApiResponse);
+		});
 
-			expect(mockAxiosGet).toHaveBeenCalledWith(
-				'https://api.example.com/api/citizens',
-				{
-					params: { searchString: 'João' },
-				}
+		test('throws error when API call fails', async () => {
+			mockAxiosGet.mockRejectedValue(new Error('Network error'));
+
+			await expect(service.index({ page: 1, perPage: 10 })).rejects.toThrow(
+				'Error fetching citizens: Network error'
 			);
+		});
+	});
 
-			expect(result).toEqual(mockCitizens);
+	describe('index - Mock mode', () => {
+		beforeEach(() => {
+			mockMakeCitizens.mockReturnValue(mockCitizens);
 		});
 
 		test('uses mock when apiBaseUrl is not configured', async () => {
-			const mockCitizens = [
-				{
-					id: '1',
-					name: 'Pedro Oliveira',
-					cpf: '111.222.333-44',
-					cns: '111222333445566',
-				},
-			];
-
-			mockGetConfig.mockReturnValue({
-				apiBaseUrl: null,
-				endpoints: null,
-			});
-
-			mockMakeCitizens.mockReturnValue(mockCitizens);
-
-			const result = await service.search({
-				searchString: 'Pedro',
-			});
+			const result = await service.index({ page: 1, perPage: 10 });
 
 			expect(mockAxiosGet).not.toHaveBeenCalled();
 			expect(mockMakeCitizens).toHaveBeenCalledWith(150);
-			expect(result).toEqual(mockCitizens);
+			expect(result.data).toEqual(mockCitizens);
 		});
 
-		test('uses mock when endpoints are not configured', async () => {
-			const mockCitizens = [
-				{
-					id: '1',
-					name: 'Ana Costa',
-					cpf: '555.666.777-88',
-					cns: '555666777889900',
-				},
-			];
+		test('returns paginated results', async () => {
+			const largeMockData = Array.from({ length: 50 }, (_, i) => ({
+				id: `${i + 1}`,
+				name: `Citizen ${i + 1}`,
+			}));
+			mockMakeCitizens.mockReturnValue(largeMockData);
 
-			mockGetConfig.mockReturnValue({
-				apiBaseUrl: 'https://api.example.com',
-				endpoints: null,
-			});
+			const result = await service.index({ page: 1, perPage: 10 });
 
-			mockMakeCitizens.mockReturnValue(mockCitizens);
-
-			const result = await service.search({
-				searchString: 'Ana',
-			});
-
-			expect(mockAxiosGet).not.toHaveBeenCalled();
-			expect(result).toEqual(mockCitizens);
-		});
-
-		test('throws error with details when API call fails', async () => {
-			mockGetConfig.mockReturnValue({
-				apiBaseUrl: 'https://api.example.com',
-				endpoints: {
-					search: '/api/citizens',
-				},
-			});
-
-			mockAxiosGet.mockRejectedValue(new Error('Network error'));
-
-			await expect(
-				service.search({ searchString: 'João' })
-			).rejects.toThrow('Error fetching citizens: Network error');
-		});
-
-		test('handles non-Error exceptions', async () => {
-			mockGetConfig.mockReturnValue({
-				apiBaseUrl: 'https://api.example.com',
-				endpoints: {
-					search: '/api/citizens',
-				},
-			});
-
-			mockAxiosGet.mockRejectedValue('String error');
-
-			await expect(
-				service.search({ searchString: 'João' })
-			).rejects.toThrow('Error fetching citizens: Unknown error');
-		});
-	});
-
-	describe('searchMock', () => {
-		beforeEach(() => {
-			mockGetConfig.mockReturnValue({
-				apiBaseUrl: null,
-				endpoints: null,
+			expect(result.data).toHaveLength(10);
+			expect(result.meta).toEqual({
+				current_page: 1,
+				per_page: 10,
+				total: 50,
+				last_page: 5,
 			});
 		});
 
-		test('returns empty array when search string is empty', async () => {
-			mockMakeCitizens.mockReturnValue([
-				{
-					id: '1',
-					name: 'João Silva',
-					cpf: '123.456.789-00',
-					cns: '123456789012345',
-				},
-			]);
-
-			const result = await service.search({ searchString: '' });
-
-			expect(result).toEqual([]);
-		});
-
-		test('filters citizens by name (case insensitive)', async () => {
-			mockMakeCitizens.mockReturnValue([
-				{
-					id: '1',
-					name: 'João Silva',
-					cpf: '123.456.789-00',
-					cns: '123456789012345',
-				},
-				{
-					id: '2',
-					name: 'Maria Silva',
-					cpf: '987.654.321-00',
-					cns: '987654321098765',
-				},
-				{
-					id: '3',
-					name: 'Pedro Santos',
-					cpf: '111.222.333-44',
-					cns: '111222333445566',
-				},
-			]);
-
-			const result = await service.search({
+		test('filters by name (case insensitive)', async () => {
+			const result = await service.index({
+				page: 1,
+				perPage: 10,
 				searchString: 'silva',
 			});
 
-			expect(result).toHaveLength(2);
-			expect(result[0].name).toBe('João Silva');
-			expect(result[1].name).toBe('Maria Silva');
+			expect(result.data).toHaveLength(2);
+			expect(result.data.every(c => c.name.toLowerCase().includes('silva'))).toBe(
+				true
+			);
 		});
 
-		test('filters citizens by partial name match', async () => {
-			mockMakeCitizens.mockReturnValue([
-				{
-					id: '1',
-					name: 'João Silva',
-					cpf: '123.456.789-00',
-					cns: '123456789012345',
-				},
-				{
-					id: '2',
-					name: 'Maria Silva',
-					cpf: '987.654.321-00',
-					cns: '987654321098765',
-				},
-				{
-					id: '3',
-					name: 'Pedro Santos',
-					cpf: '111.222.333-44',
-					cns: '111222333445566',
-				},
-			]);
-
-			const result = await service.search({ searchString: 'Jo' });
-
-			expect(result).toHaveLength(1);
-			expect(result[0].name).toBe('João Silva');
-		});
-
-		test('returns empty array when no citizens match', async () => {
-			mockMakeCitizens.mockReturnValue([
-				{
-					id: '1',
-					name: 'João Silva',
-					cpf: '123.456.789-00',
-					cns: '123456789012345',
-				},
-			]);
-
-			const result = await service.search({
-				searchString: 'xyz',
+		test('filters by CPF', async () => {
+			const result = await service.index({
+				page: 1,
+				perPage: 10,
+				searchString: '12345678900',
 			});
 
-			expect(result).toEqual([]);
+			expect(result.data).toHaveLength(1);
+			expect(result.data[0]?.cpf).toBe('12345678900');
+		});
+
+		test('returns empty array when no match', async () => {
+			const result = await service.index({
+				page: 1,
+				perPage: 10,
+				searchString: 'xyz-not-found',
+			});
+
+			expect(result.data).toEqual([]);
+			expect(result.meta.total).toBe(0);
 		});
 	});
 });

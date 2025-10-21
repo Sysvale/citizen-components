@@ -6,7 +6,7 @@ export const CitizenComponentsPlugin: Plugin = {
 	install(app: App, options: CitizenComponentsConfig = {}) {
 		setConfig(options);
 
-		// app.component('CitizenSelect', CitizenSelect); // Se quiser registrar globalmente
+		// app.component('CitizenSelect', CitizenSelect);
 	},
 };
 
