@@ -2,7 +2,7 @@ name: 'Publisher 📦'
 on:
     push:
         branches:
-            - main
+            - chore/semantic-release
 jobs:
     release:
         runs-on: ubuntu-latest
