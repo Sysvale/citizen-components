@@ -25,7 +25,7 @@
 			</div>
 		</CdsGrid> -->
 
-		<CitizenTable
+		<!-- <CitizenTable
 			v-model="citizens"
 			selection-variant="blue"
 			allow-selection
@@ -38,25 +38,14 @@
 					@cds-click="logCustomButtonClick(slotData)"
 				/>
 			</template>
-		</CitizenTable>
+		</CitizenTable> -->
+
+		<CreateCitizenForm />
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import CitizenSelect from './components/CitizenSelect.vue';
-import CitizenTable from './components/CitizenTable.vue';
-
-const citizen = ref<CitizenSelectModelType>(null);
-const citizens = ref<Citizen[]>([]);
-
-function logCustomButtonClick({ data, field, colIndex, rowIndex }) {
-	console.info('O usuário clicou no botão. metadados: \n');
-	console.info('data: ', data);
-	console.info('field: ', field);
-	console.info('colIndex: ', colIndex);
-	console.info('rowIndex: ', rowIndex);
-}
+import CreateCitizenForm from './components/CreateCitizenForm.vue';
 </script>
 
 <style>
