@@ -1,5 +1,5 @@
 {
-  "branches": ["main", "chore/semantic-release"],
+  "branches": ["main"],
   "plugins": [
     [
       "@semantic-release/commit-analyzer",
