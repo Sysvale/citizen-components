@@ -92,3 +92,25 @@ npm run format
 ```bash
 npm run type-check
 ```
+
+## Releases
+
+O citizen-components utiliza [semantic-release](https://github.com/semantic-release/semantic-release) para versionamento e publicação automatizados.
+
+### Como funciona
+
+Ao mejar um PR na branch `main`, o CI automaticamente:
+- Analisa os commits usando [Conventional Commits](https://www.conventionalcommits.org/)
+- Calcula a próxima versão (patch, minor ou major)
+- Atualiza `package.json` e `package-lock.json`
+- Cria uma release no GitHub com notas geradas automaticamente
+- Publica o pacote no NPM
+
+### Conventional Commits
+
+Use os seguintes prefixos nos commits:
+
+- `feat:` - Nova funcionalidade (incrementa versão **minor**)
+- `fix:` - Correção de bug (incrementa versão **patch**)
+- `feat!:` ou `BREAKING CHANGE:` - Mudança que quebra compatibilidade (incrementa versão **major**)
+- `docs:`, `chore:`, `style:`, `test:` - Não geram release
