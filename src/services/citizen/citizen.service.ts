@@ -1,6 +1,10 @@
-import type { CitizenServiceParams, CitizenResponse } from './citizen.types';
+import type {
+	CitizenServiceParams,
+	CitizenResponse,
+	CreateCitizenParams,
+} from './citizen.types';
 import { makeCitizens } from './citizen.factory';
-import { getConfig, type CitizenComponentsConfig } from '../../config';
+import { getConfig, type CitizenComponentsConfig, type Endpoints } from '../../config';
 import { removeCpfMask, removeCnsMask } from '@sysvale/foundry';
 import axios from 'axios';
 
@@ -17,8 +21,33 @@ export class CitizenService {
 			return this.indexMock(params);
 		}
 
+		const endpointUri = this.config.endpoints['index'];
+
 		try {
-			return await this.apiCall(params);
+			const response = await axios.get(`${this.config.apiBaseUrl}${endpointUri}`, {
+				params,
+			});
+
+			return response.data;
+		} catch (error) {
+			throw this.handleErrors(error);
+		}
+	}
+
+	async create(params: CreateCitizenParams): Promise<Citizen> {
+		if (!this.isCustomEndpointSet('create')) {
+			await this.delay(1000);
+			return this.createCitizenMock(params);
+		}
+
+		const endpointUri = this.config.endpoints['create'];
+
+		try {
+			const response = await axios.post(`${this.config.apiBaseUrl}${endpointUri}`, {
+				params,
+			});
+
+			return response.data;
 		} catch (error) {
 			throw this.handleErrors(error);
 		}
@@ -28,17 +57,17 @@ export class CitizenService {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
-	private async apiCall(params: CitizenServiceParams): Promise<CitizenResponse> {
-		const endpoint = this.config.endpoints.index;
+	// private async apiCall(params: object, endpointName: keyof Endpoints): Promise<any> {
+	// 	const endpointUri = this.config.endpoints[endpointName];
 
-		const response = await axios.get(`${this.config.apiBaseUrl}${endpoint}`, {
-			params,
-		});
+	// 	const response = await axios.get(`${this.config.apiBaseUrl}${endpointUri}`, {
+	// 		params,
+	// 	});
 
-		return response.data;
-	}
+	// 	return response.data;
+	// }
 
-	private isCustomEndpointSet(endpoint: 'index') {
+	private isCustomEndpointSet(endpoint: keyof Endpoints) {
 		return (
 			this.config.apiBaseUrl &&
 			this.config.endpoints &&
@@ -88,6 +117,49 @@ export class CitizenService {
 		};
 
 		return response;
+	}
+
+	private async createCitizenMock(params: CreateCitizenParams): Promise<Citizen> {
+		return {
+			citizen: {
+				...params,
+				race: 'string',
+				co_cidadao: 1,
+				is_dead: false,
+				mother_name: 'a',
+			},
+		} as unknown as Citizen;
+
+		// 		{
+		//   "citizen": {
+		//     "id": "38e32884-b163-3cdc-b1c8-8aa9d6fbaabe",
+		//     "name": "Yvette Mann",
+		//     "birth_date": "2012-12-02",
+		//     "cpf": "123456789",
+		//     "cns": "126580418345227",
+		//     "identification_document": "1322936",
+		//     "issuing_agency": "Reinger, Waelchi and Dach",
+		//     "gender": "F",
+		//     "race": "black",
+		//     "phone": "7148249248",
+		//     "cellphone": "4196183000",
+		//     "email": "yvette@auer.com",
+		//     "mother_name": "Abbigail Wehner",
+		//     "cpf_responsible": "98408966372",
+		//     "is_dead": false,
+		//     "pregnant": false,
+		//     "co_cidadao": 2503,
+		//     "address": {
+		//       "cep": "17516354",
+		//       "street": "Joyce Villages",
+		//       "number": "42",
+		//       "complement": "Sit ab qui qui nostrum beatae eum. Ullam sit ipsam velit animi. Unde ea quibusdam sit porro.",
+		//       "neighborhood": "voluptate",
+		//       "city": "East Cindymouth",
+		//       "uf": "IN"
+		//     }
+		//   }
+		// }
 	}
 
 	private citizensFilter(citizens: Citizen[], searchString: string) {

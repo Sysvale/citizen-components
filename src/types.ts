@@ -11,3 +11,8 @@ export interface TableField {
 export interface CustomTableField extends TableField {
 	visible: boolean;
 }
+
+export interface Gender {
+	name: string;
+	value: string;
+}
