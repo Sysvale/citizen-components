@@ -6,10 +6,7 @@
 			class="pa-10 mt-12"
 		>
 			<div>
-				<CitizenSelect
-					v-model="citizen"
-					show-button
-				/>
+				<CitizenSelect show-button />
 			</div>
 			<div>
 				<CitizenSelect
@@ -40,12 +37,20 @@
 			</template>
 		</CitizenTable> -->
 
-		<CreateCitizenForm />
+		<CreateCitizenForm ref="createCitizenFormRef" />
+		<CdsButton @click="handle"> Submit </CdsButton>
 	</div>
 </template>
 
 <script setup lang="ts">
+import { ref, type VNodeRef } from 'vue';
 import CreateCitizenForm from './components/CreateCitizenForm.vue';
+
+const createCitizenFormRef = ref<VNodeRef | null>(null);
+
+function handle() {
+	createCitizenFormRef.value.create();
+}
 </script>
 
 <style>
