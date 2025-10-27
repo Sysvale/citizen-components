@@ -2,6 +2,7 @@ import type {
 	CitizenServiceParams,
 	CitizenResponse,
 	CreateCitizenParams,
+	CreateCitizenResponse,
 } from './citizen.types';
 import { makeCitizens } from './citizen.factory';
 import { getConfig, type CitizenComponentsConfig, type Endpoints } from '../../config';
@@ -21,51 +22,64 @@ export class CitizenService {
 			return this.indexMock(params);
 		}
 
-		const endpointUri = this.config.endpoints['index'];
-
 		try {
-			const response = await axios.get(`${this.config.apiBaseUrl}${endpointUri}`, {
+			const response = await this.apiCall('index', {
 				params,
 			});
 
-			return response.data;
+			return response;
 		} catch (error) {
 			throw this.handleErrors(error);
 		}
 	}
 
-	async create(params: CreateCitizenParams): Promise<Citizen> {
+	async create(data: CreateCitizenParams): Promise<CreateCitizenResponse> {
 		if (!this.isCustomEndpointSet('create')) {
 			await this.delay(1000);
-			return this.createCitizenMock(params);
+			return this.citizenCreationMock(data);
 		}
 
-		const endpointUri = this.config.endpoints['create'];
+		try {
+			const response = await this.apiCall('create', {
+				data,
+				method: 'post',
+			});
+
+			return response;
+		} catch (error) {
+			throw this.handleErrors(error);
+		}
+	}
+
+	private async apiCall<T = any>(
+		endpointName: keyof Endpoints,
+		options?: {
+			method?: 'get' | 'post' | 'put' | 'patch' | 'delete';
+			params?: object;
+			data?: object;
+		}
+	): Promise<T> {
+		const endpointUri = this.config.endpoints[endpointName];
+		const url = `${this.config.apiBaseUrl}${endpointUri}`;
+
+		const axiosConfig: any = {
+			url,
+			method: options?.method ?? 'get',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			...(options?.params && { params: options.params }),
+			...(options?.data && { data: options.data }),
+		};
 
 		try {
-			const response = await axios.post(`${this.config.apiBaseUrl}${endpointUri}`, {
-				params,
-			});
+			const response = await axios.request<T>(axiosConfig);
 
 			return response.data;
 		} catch (error) {
 			throw this.handleErrors(error);
 		}
 	}
-
-	private delay(ms: number): Promise<void> {
-		return new Promise(resolve => setTimeout(resolve, ms));
-	}
-
-	// private async apiCall(params: object, endpointName: keyof Endpoints): Promise<any> {
-	// 	const endpointUri = this.config.endpoints[endpointName];
-
-	// 	const response = await axios.get(`${this.config.apiBaseUrl}${endpointUri}`, {
-	// 		params,
-	// 	});
-
-	// 	return response.data;
-	// }
 
 	private isCustomEndpointSet(endpoint: keyof Endpoints) {
 		return (
@@ -119,47 +133,21 @@ export class CitizenService {
 		return response;
 	}
 
-	private async createCitizenMock(params: CreateCitizenParams): Promise<Citizen> {
-		return {
-			citizen: {
-				...params,
-				race: 'string',
-				co_cidadao: 1,
-				is_dead: false,
-				mother_name: 'a',
-			},
-		} as unknown as Citizen;
+	private async citizenCreationMock(
+		params: CreateCitizenParams
+	): Promise<CreateCitizenResponse> {
+		let citizen = makeCitizens(1);
 
-		// 		{
-		//   "citizen": {
-		//     "id": "38e32884-b163-3cdc-b1c8-8aa9d6fbaabe",
-		//     "name": "Yvette Mann",
-		//     "birth_date": "2012-12-02",
-		//     "cpf": "123456789",
-		//     "cns": "126580418345227",
-		//     "identification_document": "1322936",
-		//     "issuing_agency": "Reinger, Waelchi and Dach",
-		//     "gender": "F",
-		//     "race": "black",
-		//     "phone": "7148249248",
-		//     "cellphone": "4196183000",
-		//     "email": "yvette@auer.com",
-		//     "mother_name": "Abbigail Wehner",
-		//     "cpf_responsible": "98408966372",
-		//     "is_dead": false,
-		//     "pregnant": false,
-		//     "co_cidadao": 2503,
-		//     "address": {
-		//       "cep": "17516354",
-		//       "street": "Joyce Villages",
-		//       "number": "42",
-		//       "complement": "Sit ab qui qui nostrum beatae eum. Ullam sit ipsam velit animi. Unde ea quibusdam sit porro.",
-		//       "neighborhood": "voluptate",
-		//       "city": "East Cindymouth",
-		//       "uf": "IN"
-		//     }
-		//   }
-		// }
+		const response = {
+			data: {
+				citizen: {
+					...citizen[0],
+					...params,
+				},
+			},
+		};
+
+		return response as CreateCitizenResponse;
 	}
 
 	private citizensFilter(citizens: Citizen[], searchString: string) {
@@ -169,6 +157,10 @@ export class CitizenService {
 				this.matchesMaskedField(searchString, citizen.cpf, removeCpfMask) ||
 				this.matchesMaskedField(searchString, citizen.cns, removeCnsMask)
 		);
+	}
+
+	private delay(ms: number): Promise<void> {
+		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
 	private matchesMaskedField(

@@ -57,3 +57,9 @@ export interface CreateCitizenParams {
 	cns: string;
 	gender: string;
 }
+
+export interface CreateCitizenResponse {
+	data: {
+		citizen: Citizen;
+	};
+}
