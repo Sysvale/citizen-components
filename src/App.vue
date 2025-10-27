@@ -36,23 +36,29 @@
 				/>
 			</template>
 		</CitizenTable> -->
-
-		<CreateCitizenForm ref="createCitizenFormRef" />
-		<CdsButton @click="handle"> Submit </CdsButton>
+		<CdsButton
+			text="Criar"
+			@click="handleSidesheet"
+		/>
+		<CreateCitizenSidesheet
+			v-model="isOpen"
+			action-button-variant="teal"
+			@success="v => console.log(v)"
+			@error="v => console.log(v)"
+		/>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, type VNodeRef } from 'vue';
-import CreateCitizenForm from './components/CreateCitizenForm.vue';
+import { ref } from 'vue';
+import CreateCitizenSidesheet from './components/CreateCitizenSidesheet.vue';
 
-const createCitizenFormRef = ref<VNodeRef | null>(null);
+const isOpen = ref(false);
 
-function handle() {
-	createCitizenFormRef.value.create();
+function handleSidesheet() {
+	isOpen.value = !isOpen.value;
 }
 </script>
-
 <style>
 body {
 	font-family: 'Satoshi', sans-serif;
