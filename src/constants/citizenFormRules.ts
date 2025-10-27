@@ -1,5 +1,5 @@
-import validate from '@/utils/cpfValidator';
 import { defineRule } from 'vee-validate';
+import { cpfValidator } from '@sysvale/foundry';
 
 defineRule('required', (value: string | object) => {
 	if (!value) {
@@ -22,7 +22,7 @@ defineRule('minLength', (value: string, [limit]: [number]) => {
 });
 
 defineRule('cpf', (value: string) => {
-	const res = validate(value);
+	const res = cpfValidator(value);
 
 	if (!res) {
 		return 'O CPF é inválido';
