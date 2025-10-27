@@ -18,6 +18,7 @@ app.use(CitizenComponentsPlugin, {
 	apiBaseUrl: 'https://api.example.com',
 	endpoints: {
 		index: '/citizens',
+		create: '/citizens',
 	},
 });
 
@@ -52,11 +53,14 @@ app.use(CitizenComponentsPlugin, {
 	apiBaseUrl: 'https://api.meuapp.com',
 	endpoints: {
 		index: '/api/v1/citizens', // padrão: '/citizens'
+		create: '/api/v1/citizens', // padrão: '/citizens'
 	},
 });
 ```
 
 ## Formato da API
+
+### Busca por cidadãos
 
 O endpoint de busca deve aceitar os seguintes query parameters:
 
@@ -104,6 +108,57 @@ GET /citizens?page=1&searchString=João&perPage=10&fields=name,cpf,birth_date
 		"issuing_agency": "SSP"
 	}
 ]
+```
+
+### Criação de cidadãos
+
+O endpoint de criação deve receber os seguintes dados no corpo da requisção:
+
+- **`cpf`** (obrigatório): Número do CPF do cidadão sem máscara
+- **`cns`** (obrigatório): Número do CNS do cidadão sem máscara
+- **`name`** (obrigatório): Nome do cidadão
+- **`gender`** (obrigatório): Gênero do cidadão
+- **`birth_date`** (obrigatório): Data de nascimento do cidadão
+
+**Request:**
+
+```
+POST /citizens
+```
+
+**Response:**
+
+```json
+{
+	"citizen": {
+		"id": "123e4567-e89b-12d3-a456-426614174000",
+		"name": "João da Silva",
+		"cpf": "12345678900",
+		"cns": "123456789012345",
+		"gender": "M",
+		"cpf_responsible": null,
+		"mother_name": "Maria da Silva",
+		"birth_date": "1990-01-15",
+		"phone": "11 1234-5678",
+		"cellphone": "11 98765-4321",
+		"email": "joao@example.com",
+		"address": {
+			"cep": "01234-567",
+			"street": "Rua Exemplo",
+			"number": "123",
+			"complement": "Apto 45",
+			"neighborhood": "Centro",
+			"city": "São Paulo",
+			"uf": "SP"
+		},
+		"race": "white",
+		"co_cidadao": 1234,
+		"is_dead": false,
+		"pregnant": false,
+		"identification_document": "MG1234567",
+		"issuing_agency": "SSP"
+	}
+}
 ```
 
 ## Modo de Desenvolvimento
