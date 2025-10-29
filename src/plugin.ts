@@ -5,9 +5,12 @@ import { setConfig } from './config';
 export const CitizenComponentsPlugin: Plugin = {
 	install(app: App, options: CitizenComponentsConfig = {}) {
 		setConfig(options);
+		import('./constants/citizenFormRules');
 
 		// app.component('CitizenSelect', CitizenSelect);
 	},
 };
+
+
 
 export default CitizenComponentsPlugin;

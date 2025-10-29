@@ -242,7 +242,6 @@ import type {
 	CitizenServiceParams,
 	CitizenResponse,
 	CreateCitizenParams,
-	CreateCitizenResponse,
 	Citizen,
 } from 'citizen-components';
 ```

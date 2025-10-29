@@ -38,9 +38,17 @@ export interface CitizenTableProps {
   modelValue?: Citizen[];
 }
 
+export interface CreateCitizenSidesheetProps {
+  okButtonText?: string;
+  cancelButtonText?: string;
+  actionButtonVariant?: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+}
+
 // Export components
 export declare const CitizenSelect: DefineComponent<CitizenSelectProps>;
 export declare const CitizenTable: DefineComponent<CitizenTableProps>;
+export declare const CreateCitizenSidesheet: DefineComponent<CreateCitizenSidesheetProps>;
 
 // Export plugin
 export declare const CitizenComponentsPlugin: Plugin;
