@@ -53,6 +53,7 @@
 
 		<CdsButton
 			v-if="showButton"
+			type="button"
 			:text="buttonText"
 			:variant
 			:tooltip-text="buttonTooltipText"
