@@ -104,11 +104,13 @@ describe('CitizenService', () => {
 		});
 
 		test('throws error when API call fails', async () => {
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 			mockAxiosRequest.mockRejectedValue(new Error('Network error'));
 
 			await expect(service.index({ page: 1, perPage: 10 })).rejects.toThrow(
 				'Error calling citizens API: Network error'
 			);
+			consoleErrorSpy.mockRestore();
 		});
 	});
 
@@ -208,11 +210,13 @@ describe('CitizenService', () => {
 		});
 
 		test('throws error when API call fails', async () => {
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 			mockAxiosRequest.mockRejectedValue(new Error('Network error'));
 
 			await expect(service.create(mockPostPayload)).rejects.toThrow(
 				'Error calling citizens API: Network error'
 			);
+			consoleErrorSpy.mockRestore();
 		});
 	});
 

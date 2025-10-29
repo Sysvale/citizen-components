@@ -166,28 +166,34 @@ const emit = defineEmits(['success', 'error']);
 const citizenService = new CitizenService();
 
 async function handleOk() {
-	formRef.value?.validate().then(async (result: any) => {
-		if (result.valid) {
-			try {
-				isLoading.value = true;
-				const citizen = await citizenService.create(
-					new Citizen(formRef.value?.values).asRequestPayload()
-				);
+	if (!formRef.value) {
+		return;
+	}
 
-				formRef.value?.resetForm();
-				internalShowSidesheet.value = false;
+	const result = await formRef.value.validate();
 
-				emit('success', citizen);
-			} catch (error) {
-				const errorMessage =
-					error instanceof Error ? error.message : 'Unknown error';
+	if (!result.valid) {
+		return;
+	}
 
-				emit('error', errorMessage);
-			} finally {
-				isLoading.value = false;
-			}
-		}
-	});
+	try {
+		isLoading.value = true;
+		const citizen = await citizenService.create(
+			new Citizen(formRef.value.values).asRequestPayload()
+		);
+
+		formRef.value.resetForm();
+		internalShowSidesheet.value = false;
+
+		emit('success', citizen);
+	} catch (error) {
+		console.error('Error creating citizen:', error);
+		const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+		emit('error', errorMessage);
+	} finally {
+		isLoading.value = false;
+	}
 }
 
 function handleCancel() {
