@@ -86,7 +86,7 @@ const props = withDefaults(
 	}>(),
 	{
 		fluid: false,
-		invalidw: false,
+		invalid: false,
 		variant: 'green',
 		errorMessage: 'Falha na validação',
 		optionsField: 'name',
