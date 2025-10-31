@@ -74,4 +74,9 @@ describe('CitizenSelect', () => {
 		const wrapper = createWrapper({ errorMessage: 'Erro' });
 		expect(wrapper.exists()).toBe(true);
 	});
+
+	test('accepts required prop', () => {
+		const wrapper = createWrapper({ required: true });
+		expect(wrapper.exists()).toBe(true);
+	});
 });

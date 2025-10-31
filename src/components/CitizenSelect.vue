@@ -13,6 +13,7 @@
 			<CdsTextInput
 				v-model.trim="searchString"
 				:state="computedState"
+				:required
 				:fluid
 				:label
 				:error-message="errorMessage"
@@ -79,6 +80,7 @@ const props = withDefaults(
 		showButton: boolean;
 		fluid?: boolean;
 		invalid?: boolean;
+		required?: boolean;
 		variant?: string;
 		errorMessage?: string;
 		label?: string;
@@ -87,6 +89,7 @@ const props = withDefaults(
 	{
 		fluid: false,
 		invalid: false,
+		required: false,
 		variant: 'green',
 		errorMessage: 'Falha na validação',
 		optionsField: 'name',

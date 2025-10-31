@@ -117,6 +117,18 @@ Prop utilizada para alterar o texto da label do input.
 <CitizenSelect show-button label="Procurar cidadão"/>
 ```
 
+### `required`
+
+- **Tipo:** `Boolean`
+- **Obrigatório:** Não
+- **Padrão:** `false`
+
+Prop utilizada para indicar se o preenchimento do input é obrigatório ou não.
+
+```vue
+<CitizenSelect show-button label="Procurar cidadão"/>
+```
+
 ## Exemplos
 
 ### Sem botão de busca
