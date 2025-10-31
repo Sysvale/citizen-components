@@ -81,6 +81,42 @@ Campo do objeto Citizen usado para exibição no input.
 <CitizenSelect show-button options-field="cpf" />
 ```
 
+### `invalid`
+
+- **Tipo:** `Boolean`
+- **Obrigatório:** Não
+- **Padrão:** `false`
+
+Prop que indica se o estado do input é inválido. Útil para validações.
+
+```vue
+<CitizenSelect show-button :invalid="true" />
+```
+
+### `errorMessage`
+
+- **Tipo:** `String`
+- **Obrigatório:** Não
+- **Padrão:** `'Falha na validação'`
+
+Prop utilizada para apresentar a mensagem de erro quando a prop `invalid` é `true`.
+
+```vue
+<CitizenSelect show-button :invalid="true" error-message="O campo deve ser preenchido" />
+```
+
+### `label`
+
+- **Tipo:** `String`
+- **Obrigatório:** Não
+- **Padrão:** `'Buscar cidadão'`
+
+Prop utilizada para alterar o texto da label do input.
+
+```vue
+<CitizenSelect show-button label="Procurar cidadão"/>
+```
+
 ## Exemplos
 
 ### Sem botão de busca

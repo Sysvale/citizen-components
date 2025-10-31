@@ -59,4 +59,19 @@ describe('CitizenSelect', () => {
 		const wrapper = createWrapper({ optionsField: 'cpf' });
 		expect(wrapper.exists()).toBe(true);
 	});
+
+	test('accepts label prop', () => {
+		const wrapper = createWrapper({ label: 'Label' });
+		expect(wrapper.exists()).toBe(true);
+	});
+
+	test('accepts invalid prop', () => {
+		const wrapper = createWrapper({ invalid: true });
+		expect(wrapper.exists()).toBe(true);
+	});
+
+	test('accepts errorMessage prop', () => {
+		const wrapper = createWrapper({ errorMessage: 'Erro' });
+		expect(wrapper.exists()).toBe(true);
+	});
 });

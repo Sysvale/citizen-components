@@ -2,7 +2,7 @@
 	<CdsFlexbox
 		gap="2"
 		wrap="no-wrap"
-		align="end"
+		:align="invalid ? 'center' : 'end'"
 		:fluid
 	>
 		<CdsFlexbox
@@ -14,6 +14,8 @@
 				v-model.trim="searchString"
 				:state="computedState"
 				:fluid
+				:label
+				:error-message="errorMessage"
 				@keydown.enter="search"
 				@blur="isActive = false"
 			/>
@@ -76,13 +78,19 @@ const props = withDefaults(
 	defineProps<{
 		showButton: boolean;
 		fluid?: boolean;
+		invalid?: boolean;
 		variant?: string;
+		errorMessage?: string;
+		label?: string;
 		optionsField?: keyof Citizen;
 	}>(),
 	{
 		fluid: false,
+		invalidw: false,
 		variant: 'green',
+		errorMessage: 'Falha na validação',
 		optionsField: 'name',
+		label: 'Buscar cidadão'
 	}
 );
 
@@ -113,7 +121,7 @@ const buttonTooltipText = computed(() => {
 
 	return '';
 });
-const computedState = computed(() => (isLoading.value ? 'loading' : 'default'));
+const computedState = computed(() => (isLoading.value ? 'loading' : props.invalid ? 'invalid' : 'default'));
 const payload = computed(() => ({
 	searchString: searchString.value,
 	page: 1,
