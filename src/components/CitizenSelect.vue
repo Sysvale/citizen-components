@@ -2,18 +2,18 @@
 	<CdsFlexbox
 		gap="2"
 		wrap="no-wrap"
-		:fluid="fluid"
+		:fluid
 	>
 		<CdsFlexbox
 			ref="selectContainer"
 			direction="column"
-			:fluid="fluid"
+			:fluid
 		>
 			<CdsTextInput
 				v-bind="$attrs"
 				v-model.trim="searchString"
 				state="default"
-				:fluid="fluid"
+				:fluid
 				:disabled="isLoading"
 				@keydown.enter="search"
 				@blur="isActive = false"
@@ -23,7 +23,7 @@
 				v-if="isActive"
 				v-model="internalValue"
 				:options
-				:fluid="fluid"
+				:fluid
 				:options-field
 			>
 				<template #option="{ option }">
