@@ -10,24 +10,6 @@ import type { FormContext } from 'vee-validate';
 vi.mock('../services/citizen/citizen.service');
 
 const CdsSideSheetStub = defineComponent({
-	props: {
-		modelValue: {
-			type: Boolean,
-			default: false,
-		},
-		title: {
-			type: String,
-			default: 'Cadastrar cidadão',
-		},
-		okButtonText: {
-			type: String,
-			default: 'ok',
-		},
-		cancelButtonText: {
-			type: String,
-			default: 'cancel',
-		},
-	},
 	emits: ['update:modelValue', 'ok', 'cancel'],
 	template: `
         <div class="cds-sidesheet-mock">
@@ -41,6 +23,7 @@ const CdsSideSheetStub = defineComponent({
 const globalStubs = {
 	CdsSideSheet: CdsSideSheetStub,
 	CdsGrid: true,
+	CdsToast: true,
 	CdsGridItem: true,
 	CdsTextInput: true,
 	CdsDateInput: true,
@@ -63,33 +46,8 @@ describe('CreateCitizenSidesheet', () => {
 			props,
 		});
 
-	test('mounts successfully with required props', () => {
+	test('mounts successfully', () => {
 		const wrapper = createWrapper();
-		expect(wrapper.exists()).toBe(true);
-	});
-
-	test('accepts and mounts successfully when okButtonText has a value', () => {
-		const wrapper = createWrapper({ okButtonText: 'ok-text' });
-		expect(wrapper.exists()).toBe(true);
-	});
-
-	test('accepts and mounts successfully when cancelButtonText has a value', () => {
-		const wrapper = createWrapper({ cancelButtonText: 'cancel-text' });
-		expect(wrapper.exists()).toBe(true);
-	});
-
-	test('accepts and mounts successfully when actionButtonVariant has a value', () => {
-		const wrapper = createWrapper({ actionButtonVariant: 'teal' });
-		expect(wrapper.exists()).toBe(true);
-	});
-
-	test('accepts and mounts successfully when size has a value', () => {
-		const wrapper = createWrapper({ size: 'sm' });
-		expect(wrapper.exists()).toBe(true);
-	});
-
-	test('accepts and mounts successfully when modelValue is truthy', () => {
-		const wrapper = createWrapper({ modelValue: true });
 		expect(wrapper.exists()).toBe(true);
 	});
 
@@ -98,13 +56,6 @@ describe('CreateCitizenSidesheet', () => {
 		wrapper.vm.$emit('success');
 		expect(wrapper.emitted('success')).toBeTruthy();
 	});
-
-	test('should emit error event', () => {
-		const wrapper = createWrapper();
-		wrapper.vm.$emit('error');
-		expect(wrapper.emitted('error')).toBeTruthy();
-	});
-
 	test('should render form', async () => {
 		const wrapper = createWrapper();
 		const formRef = wrapper.findComponent({ ref: 'formRef' });
@@ -148,7 +99,7 @@ describe('CreateCitizenSidesheet', () => {
 			vi.clearAllMocks();
 		});
 
-		test('should call service and emit success when validation is truthy', async () => {
+		test('should call service and emit success when validation is truthy and api call is sucessful', async () => {
 			const expectedPayload = new Citizen(mockFormData).asRequestPayload();
 			const validateSpy = vi.spyOn(formRefInstance, 'validate').mockResolvedValue({
 				valid: true,
@@ -178,7 +129,6 @@ describe('CreateCitizenSidesheet', () => {
 
 			await vi.waitFor(() => expect(mockCitizenCreate).not.toHaveBeenCalled());
 			expect(wrapper.emitted('success')).toBeFalsy();
-			expect(wrapper.emitted('error')).toBeFalsy();
 			expect(wrapper.emitted('update:modelValue')).toBeFalsy();
 		});
 
