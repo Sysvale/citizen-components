@@ -1,7 +1,7 @@
 <template>
 	<CdsSideSheet
-		v-model="model"
 		v-bind="$attrs"
+		v-model="model"
 		title="Cadastrar usuário SUS"
 		no-close-ok-button
 		:disable-ok-button="isLoading || $attrs['disable-ok-button']"
