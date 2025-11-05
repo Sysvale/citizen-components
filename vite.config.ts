@@ -23,12 +23,6 @@ export default defineConfig({
 		rollupOptions: {
 			external: ['vue', '@sysvale/cuida', 'lodash', 'vee-validate', '@sysvale/foundry'],
 			output: {
-				globals: {
-					vue: 'Vue',
-					'@sysvale/cuida': 'Cuida',
-					lodash: '_',
-					'vee-validate': 'VeeValidate'
-				},
 				assetFileNames: assetInfo => {
 					if (assetInfo.name === 'style.css') {
 						return 'citizen-components.css';
