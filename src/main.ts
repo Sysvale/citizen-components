@@ -5,4 +5,6 @@ import '@sysvale/cuida/dist/style.css';
 
 const app = createApp(App);
 app.use(Cuida);
+const cdsUtils = Cuida.utils;
+app.provide('useToast', cdsUtils.useToast);
 app.mount('#app');

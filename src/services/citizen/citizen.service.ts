@@ -47,11 +47,9 @@ export class CitizenService {
 	}
 
 	private handleErrors(error: unknown): never {
-		console.error('Error fetching citizens:', error);
-
 		const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
-		throw new Error(`Error fetching citizens: ${errorMessage}`);
+		throw new Error(`Erro: ${errorMessage}`);
 	}
 
 	private async indexMock(params: CitizenServiceParams): Promise<CitizenResponse> {

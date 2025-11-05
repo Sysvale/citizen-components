@@ -9,7 +9,7 @@
 				class="select__options"
 			>
 				<ul
-					v-if="localOptions.length > 0"
+					v-if="localOptions?.length > 0"
 					class="option__container"
 				>
 					<li
@@ -36,7 +36,9 @@
 					v-else
 					class="option__container"
 				>
-					<li class="option__text--muted">Nenhuma opção encontrada</li>
+					<li class="option__text--muted">
+						Nenhuma opção encontrada
+					</li>
 				</ul>
 			</div>
 		</div>
