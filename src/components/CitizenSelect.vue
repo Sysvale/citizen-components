@@ -2,7 +2,6 @@
 	<CdsFlexbox
 		gap="2"
 		wrap="no-wrap"
-		:align="$attrs.state === 'invalid' ? 'center' : 'end'"
 		:fluid="fluid"
 	>
 		<CdsFlexbox
@@ -11,9 +10,10 @@
 			:fluid="fluid"
 		>
 			<CdsTextInput
-				v-model.trim="searchString"
-				:fluid="fluid"
 				v-bind="$attrs"
+				v-model.trim="searchString"
+				state="default"
+				:fluid="fluid"
 				:disabled="isLoading"
 				@keydown.enter="search"
 				@blur="isActive = false"
@@ -54,6 +54,7 @@
 
 		<CdsButton
 			v-if="showButton"
+			class="mt-7"
 			type="button"
 			:text="buttonText"
 			:variant
@@ -65,11 +66,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, type Ref, useTemplateRef } from 'vue';
+import {
+	ref,
+	computed,
+	watch,
+	type Ref,
+	useTemplateRef,
+	inject
+} from 'vue';
 import { onClickOutside } from '@vueuse/core';
 import { CitizenService } from '../services/citizen/citizen.service';
 import SelectDropdown from './InternalComponents/SelectDropdown.vue';
 import { maskCpf, maskCns } from '@sysvale/foundry';
+
+const useToast = inject('useToast');
 
 defineOptions({
 	inheritAttrs: false
@@ -154,11 +164,17 @@ async function search() {
 		isActive.value = true;
 	} catch (error) {
 		isActive.value = false;
-		console.error('Error fetching citizens:', error);
-
 		const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
-		throw new Error(`Error fetching citizens: ${errorMessage}`);
+		useToast().fire({
+			title: 'Houve um problema ao buscar as informações as informações do cidadão.',
+			description: errorMessage,
+			dismissible: true,
+			dismissAfter: 6000,
+			autoDismissible: true,
+			variant: 'danger',
+			light: false,
+		})
 	} finally {
 		isLoading.value = false;
 	}
