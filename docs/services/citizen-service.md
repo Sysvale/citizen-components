@@ -63,6 +63,8 @@ const response = await citizenService.index({
 });
 ```
 
+<br>
+
 ### `create(data: CreateCitizenParams): Promise<CreateCitizenResponse>`
 
 Cria um novo cidadão.

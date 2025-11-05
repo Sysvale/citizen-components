@@ -118,7 +118,7 @@ O endpoint de criação deve receber os seguintes dados no corpo da requisção:
 - **`cns`** (obrigatório): Número do CNS do cidadão sem máscara
 - **`name`** (obrigatório): Nome do cidadão
 - **`gender`** (obrigatório): Gênero do cidadão
-- **`birth_date`** (obrigatório): Data de nascimento do cidadão
+- **`birth_date`** (obrigatório): Data de nascimento do cidadão no formato yyyy-mm-dd
 
 **Request:**
 
