@@ -19,6 +19,7 @@
 						<Field
 							v-slot="{ field, errors, meta }"
 							name="name"
+							label="nome"
 							rules="required|minLength:5"
 						>
 							<CdsTextInput
@@ -39,6 +40,7 @@
 						<Field
 							v-slot="{ field, errors, meta }"
 							name="cns"
+							label="CNS"
 							rules="required|cns"
 						>
 							<CdsTextInput
@@ -60,6 +62,7 @@
 						<Field
 							v-slot="{ field, errors, meta }"
 							name="cpf"
+							label="CPF"
 							rules="required|cpf"
 						>
 							<CdsTextInput
@@ -81,6 +84,7 @@
 						<Field
 							v-slot="{ field, errors, meta }"
 							name="birth_date"
+							label="data de nascimento"
 							rules="required"
 						>
 							<CdsDateInput
@@ -100,6 +104,7 @@
 						<Field
 							v-slot="{ field, errors, meta }"
 							name="gender"
+							label="sexo"
 							rules="required"
 						>
 							<CdsSelect
