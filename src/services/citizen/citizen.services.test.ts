@@ -83,7 +83,7 @@ describe('CitizenService', () => {
 			mockAxiosGet.mockRejectedValue(new Error('Network error'));
 
 			await expect(service.index({ page: 1, perPage: 10 })).rejects.toThrow(
-				'Error fetching citizens: Network error'
+				'Erro: Network error'
 			);
 		});
 	});
