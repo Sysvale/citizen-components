@@ -43,9 +43,12 @@
 		<CreateCitizenSidesheet
 			v-model="isOpen"
 			action-button-variant="teal"
+			ok-button-text="Criar"
+			cancel-button-text="Cancelar"
 			@success="v => console.log(v)"
-			@error="v => console.log(v)"
 		/>
+		
+		<CdsToastContainer />
 	</div>
 </template>
 

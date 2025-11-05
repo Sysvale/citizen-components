@@ -1,6 +1,6 @@
 import type { Gender } from '@/types';
 
-export const genders: Gender[] = [
+const GENDERS: Gender[] = [
 	{
 		name: 'Feminino',
 		value: 'F',
@@ -10,3 +10,7 @@ export const genders: Gender[] = [
 		value: 'M',
 	},
 ];
+
+export const genders = () => {
+	return GENDERS;
+}

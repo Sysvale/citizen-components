@@ -13,6 +13,6 @@ export interface CustomTableField extends TableField {
 }
 
 export interface Gender {
-	name: string;
-	value: string;
+	name: 'Masculino' | 'Feminino';
+	value: 'M' | 'F';
 }

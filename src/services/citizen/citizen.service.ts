@@ -72,13 +72,9 @@ export class CitizenService {
 			...(options?.data && { data: options.data }),
 		};
 
-		try {
-			const response = await axios.request<T>(axiosConfig);
+		const response = await axios.request<T>(axiosConfig);
 
-			return response.data;
-		} catch (error) {
-			throw this.handleErrors(error);
-		}
+		return response.data;
 	}
 
 	private isCustomEndpointSet(endpoint: keyof Endpoints) {

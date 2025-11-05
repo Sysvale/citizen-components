@@ -1,15 +1,11 @@
 <template>
 	<CdsSideSheet
-		v-model="internalShowSidesheet"
+		v-model="model"
+		v-bind="$attrs"
 		title="Cadastrar usuário SUS"
-		with-overlay
 		no-close-ok-button
-		:action-button-variant="actionButtonVariant"
-		:size
-		:ok-button-text="okButtonText"
-		:cancel-button-text="cancelButtonText"
-		:disable-ok-button="isLoading"
-		:disable-cancel-button="isLoading"
+		:disable-ok-button="isLoading || $attrs['disable-ok-button']"
+		:disable-cancel-button="isLoading || $attrs['disable-cancel-button']"
 		@ok="handleOk"
 		@cancel="handleCancel"
 	>
@@ -46,7 +42,7 @@
 							rules="required|cns"
 						>
 							<CdsTextInput
-								v-bind="{ ...field }"
+								v-bind="field"
 								v-model="field.value"
 								label="CNS"
 								placeholder="000 0000 0000 0000"
@@ -67,7 +63,7 @@
 							rules="required|cpf"
 						>
 							<CdsTextInput
-								v-bind="{ ...field }"
+								v-bind="field"
 								v-model="field.value"
 								label="CPF"
 								placeholder="000.000.000-00"
@@ -88,12 +84,12 @@
 							rules="required"
 						>
 							<CdsDateInput
-								v-bind="{ ...field }"
+								v-bind="field"
 								v-model="field.value"
 								label="Data de nascimento"
 								fluid
 								:disabled="isLoading"
-								:max-date="new Date().toISOString().split('T')[0]"
+								:max-date="computedMaxDate"
 								:state="inputStateResolver(meta)"
 								:error-message="errors[0]"
 							/>
@@ -107,10 +103,10 @@
 							rules="required"
 						>
 							<CdsSelect
-								v-bind="{ ...field }"
+								v-bind="field"
 								v-model="field.value"
 								options-field="name"
-								:options="genders"
+								:options="genders()"
 								fluid
 								:disabled="isLoading"
 								label="Sexo"
@@ -121,60 +117,62 @@
 							/>
 						</Field>
 					</CdsGridItem>
+
+					<CdsToast
+						variant="green"
+						size="md"
+						text="Lorem Ipsum"
+					/>
 				</CdsGrid>
 			</Form>
 		</template>
 	</CdsSideSheet>
 </template>
 <script setup lang="ts">
-import { ref, defineModel } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { Form, Field, type FormContext } from 'vee-validate';
 import inputStateResolver from '@/utils/inputStateResolver';
 import { genders } from '@/constants/genders';
 import { CitizenService } from '@/services/citizen/citizen.service';
 import { Citizen } from '@/models/Citizen';
+import '@/utils/rules/citizenFormRules';
 
-defineProps({
-	okButtonText: {
-		type: String,
-		default: 'Criar',
-	},
-	cancelButtonText: {
-		type: String,
-		default: 'Cancelar',
-	},
-	actionButtonVariant: {
-		type: String,
-		default: 'green',
-	},
-	size: {
-		type: String,
-		default: 'md',
-	},
-});
+const useToast = inject('useToast');
 
+const emits = defineEmits(['success']);
+
+const model = defineModel<boolean>();
 const formRef = ref<FormContext | null>(null);
 const isLoading = ref(false);
 
-const internalShowSidesheet = defineModel({
-	type: Boolean,
-	default: false,
+const computedMaxDate = computed(() => {
+	return new Date().toISOString().split('T')[0];
 });
-
-const emit = defineEmits(['success', 'error']);
 
 const citizenService = new CitizenService();
 
 async function handleOk() {
-	if (!formRef.value) {
-		return;
+	let formValidationResult;
+
+	if (!formRef.value) return;
+
+	try {
+		formValidationResult = await formRef.value.validate();
+	} catch (error) {
+		console.log('🚀 -> error:', error);
+		useToast().fire({
+			title: 'Erro ao validar o formulário',
+			description:
+				'Houve um erro ao validar o formulário. Se o problema persistir, contate o suporte.',
+			dismissible: true,
+			dismissAfter: 6000,
+			autoDismissible: true,
+			variant: 'danger',
+			light: false,
+		});
 	}
 
-	const result = await formRef.value.validate();
-
-	if (!result.valid) {
-		return;
-	}
+	if (!formValidationResult?.valid) return;
 
 	try {
 		isLoading.value = true;
@@ -183,14 +181,29 @@ async function handleOk() {
 		);
 
 		formRef.value.resetForm();
-		internalShowSidesheet.value = false;
+		model.value = false;
 
-		emit('success', citizen);
+		emits('success', citizen);
 	} catch (error) {
-		console.error('Error creating citizen:', error);
-		const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+		let errorMessage;
 
-		emit('error', errorMessage);
+		console.error('Error creating citizen:', error);
+		if (error instanceof Error) {
+			errorMessage =
+				error.message === ''
+					? 'Houve um erro ao realizar o cadastro do usuário, por favor tente novamente'
+					: error.message;
+		}
+
+		useToast().fire({
+			title: 'Erro ao cadastrar usuário',
+			description: errorMessage,
+			dismissible: true,
+			dismissAfter: 6000,
+			autoDismissible: true,
+			variant: 'danger',
+			light: false,
+		});
 	} finally {
 		isLoading.value = false;
 	}

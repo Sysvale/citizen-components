@@ -30,6 +30,7 @@ describe('CitizenService', () => {
 		cns: '000000000000000',
 		gender: 'M',
 	};
+
 	const mockApiPostResponse = {
 		citizen: { id: '1', name: 'João Silva', cpf: '12345678900' },
 	};

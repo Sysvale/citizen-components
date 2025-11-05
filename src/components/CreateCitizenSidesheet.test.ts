@@ -2,7 +2,7 @@ import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { DOMWrapper, mount, VueWrapper } from '@vue/test-utils';
 import CreateCitizenSidesheet from './CreateCitizenSidesheet.vue';
 import { CitizenService } from '../services/citizen/citizen.service';
-import '../constants/citizenFormRules';
+import '../utils/rules/citizenFormRules';
 import { defineComponent } from 'vue';
 import { Citizen } from '@/models/Citizen';
 import type { FormContext } from 'vee-validate';
@@ -48,11 +48,17 @@ const globalStubs = {
 	SelectDropdown: true,
 };
 
+const mockToastFire = vi.fn();
+const mockToast = vi.fn(() => ({ fire: mockToastFire }));
+
 describe('CreateCitizenSidesheet', () => {
 	const createWrapper = (props?: Record<string, any>) =>
 		mount(CreateCitizenSidesheet, {
 			global: {
 				stubs: globalStubs,
+				provide: {
+					useToast: mockToast
+				}
 			},
 			props,
 		});
@@ -176,7 +182,7 @@ describe('CreateCitizenSidesheet', () => {
 			expect(wrapper.emitted('update:modelValue')).toBeFalsy();
 		});
 
-		test('should emit error event when api call throws error', async () => {
+		test('should emit toast when api call throws error', async () => {
 			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 			vi.spyOn(formRefInstance, 'validate').mockImplementationOnce(() =>
 				Promise.resolve({ valid: true, errors: {}, results: {}, source: 'fields' })
@@ -192,8 +198,7 @@ describe('CreateCitizenSidesheet', () => {
 				expect.any(Error)
 			);
 			expect(wrapper.emitted('success')).toBeFalsy();
-			expect(wrapper.emitted('error')).toBeTruthy();
-			expect(wrapper.emitted('error')?.[0]).toEqual(['Network error']);
+			expect(mockToastFire).toHaveBeenCalled();
 			expect(wrapper.emitted('update:modelValue')).toBeFalsy();
 		});
 	});

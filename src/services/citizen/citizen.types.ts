@@ -49,7 +49,6 @@ export interface Citizen {
 	issuing_agency?: Nullable<string>;
 }
 
-//TODO: validar formato da payload
 export interface CreateCitizenParams {
 	name: string;
 	birth_date: string;
