@@ -81,53 +81,9 @@ Campo do objeto Citizen usado para exibição no input.
 <CitizenSelect show-button options-field="cpf" />
 ```
 
-### `invalid`
+### Demais atributos
 
-- **Tipo:** `Boolean`
-- **Obrigatório:** Não
-- **Padrão:** `false`
-
-Prop que indica se o estado do input é inválido. Útil para validações.
-
-```vue
-<CitizenSelect show-button :invalid="true" />
-```
-
-### `errorMessage`
-
-- **Tipo:** `String`
-- **Obrigatório:** Não
-- **Padrão:** `'Falha na validação'`
-
-Prop utilizada para apresentar a mensagem de erro quando a prop `invalid` é `true`.
-
-```vue
-<CitizenSelect show-button :invalid="true" error-message="O campo deve ser preenchido" />
-```
-
-### `label`
-
-- **Tipo:** `String`
-- **Obrigatório:** Não
-- **Padrão:** `'Buscar cidadão'`
-
-Prop utilizada para alterar o texto da label do input.
-
-```vue
-<CitizenSelect show-button label="Procurar cidadão"/>
-```
-
-### `required`
-
-- **Tipo:** `Boolean`
-- **Obrigatório:** Não
-- **Padrão:** `false`
-
-Prop utilizada para indicar se o preenchimento do input é obrigatório ou não.
-
-```vue
-<CitizenSelect show-button label="Procurar cidadão"/>
-```
+Além das props declaradas no componente podemos encaminhar quaisquer props do componente **TextInput** ([Documentação](https://cuida.sysvale.com/components/forms/text-input.html#textinput)) via `$attrs` para modificar o comportamento do input textual.
 
 ## Exemplos
 
@@ -142,6 +98,22 @@ Prop utilizada para indicar se o preenchimento do input é obrigatório ou não.
 ```vue
 <div style="width: 500px;">
   <CitizenSelect show-button fluid />
+</div>
+```
+
+### Preenchimento obrigatório
+
+```vue
+<div style="width: 500px;">
+  <CitizenSelect show-button fluid required />
+</div>
+```
+
+### Com label customizada
+
+```vue
+<div style="width: 500px;">
+  <CitizenSelect show-button fluid label="Nova label" />
 </div>
 ```
 

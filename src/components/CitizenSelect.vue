@@ -2,21 +2,19 @@
 	<CdsFlexbox
 		gap="2"
 		wrap="no-wrap"
-		:align="invalid ? 'center' : 'end'"
-		:fluid
+		:align="$attrs.state === 'invalid' ? 'center' : 'end'"
+		:fluid="fluid"
 	>
 		<CdsFlexbox
 			ref="selectContainer"
 			direction="column"
-			:fluid
+			:fluid="fluid"
 		>
 			<CdsTextInput
 				v-model.trim="searchString"
-				:state="computedState"
-				:required
-				:fluid
-				:label
-				:error-message="errorMessage"
+				:fluid="fluid"
+				v-bind="$attrs"
+				:disabled="isLoading"
 				@keydown.enter="search"
 				@blur="isActive = false"
 			/>
@@ -25,7 +23,7 @@
 				v-if="isActive"
 				v-model="internalValue"
 				:options
-				:fluid
+				:fluid="fluid"
 				:options-field
 			>
 				<template #option="{ option }">
@@ -38,15 +36,15 @@
 						</CdsText>
 					</CdsText>
 					<CdsText as="body-2">
-						<br />
+						<br>
 						CPF: {{ maskCpf(option['cpf']) }}
 					</CdsText>
 					<CdsText as="body-2">
-						<br />
+						<br>
 						CNS: {{ maskCns(option['cns']) }}
 					</CdsText>
 					<CdsText as="body-2">
-						<br />
+						<br>
 						Data de nascimento:
 						{{ dmyFormatter(option['birth_date']) }}
 					</CdsText>
@@ -73,27 +71,23 @@ import { CitizenService } from '../services/citizen/citizen.service';
 import SelectDropdown from './InternalComponents/SelectDropdown.vue';
 import { maskCpf, maskCns } from '@sysvale/foundry';
 
+defineOptions({
+	inheritAttrs: false
+})
+
 const model = defineModel<CitizenSelectModelType>('modelValue');
 
 const props = withDefaults(
 	defineProps<{
 		showButton: boolean;
 		fluid?: boolean;
-		invalid?: boolean;
-		required?: boolean;
 		variant?: string;
-		errorMessage?: string;
-		label?: string;
 		optionsField?: keyof Citizen;
 	}>(),
 	{
 		fluid: false,
-		invalid: false,
-		required: false,
 		variant: 'green',
-		errorMessage: 'Falha na validação',
 		optionsField: 'name',
-		label: 'Buscar cidadão'
 	}
 );
 
@@ -124,7 +118,6 @@ const buttonTooltipText = computed(() => {
 
 	return '';
 });
-const computedState = computed(() => (isLoading.value ? 'loading' : props.invalid ? 'invalid' : 'default'));
 const payload = computed(() => ({
 	searchString: searchString.value,
 	page: 1,
