@@ -5,6 +5,7 @@ import { setConfig } from './config';
 export const CitizenComponentsPlugin: Plugin = {
 	install(app: App, options: CitizenComponentsConfig = {}) {
 		setConfig(options);
+		import('./utils/rules/citizenFormRules');
 
 		// app.component('CitizenSelect', CitizenSelect);
 	},

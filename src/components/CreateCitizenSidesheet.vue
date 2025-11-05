@@ -140,7 +140,6 @@ import inputStateResolver from '@/utils/inputStateResolver';
 import { genders } from '@/constants/genders';
 import { CitizenService } from '@/services/citizen/citizen.service';
 import { Citizen } from '@/models/Citizen';
-import '@/utils/rules/citizenFormRules';
 
 const useToast = inject('useToast');
 
