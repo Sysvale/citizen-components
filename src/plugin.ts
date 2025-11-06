@@ -9,7 +9,7 @@ export const CitizenComponentsPlugin: Plugin = {
 		import('./utils/rules/citizenFormRules');
 
 		const cdsUtils = Cuida.utils;
-  		app.provide('useToast', cdsUtils.useToast);
+		app.provide('useToast', cdsUtils.useToast);
 	},
 };
 
