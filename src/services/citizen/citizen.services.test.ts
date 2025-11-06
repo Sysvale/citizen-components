@@ -109,7 +109,7 @@ describe('CitizenService', () => {
 			mockAxiosRequest.mockRejectedValue(new Error('Network error'));
 
 			await expect(service.index({ page: 1, perPage: 10 })).rejects.toThrow(
-				'Error calling citizens API: Network error'
+				'Erro: Network error'
 			);
 			consoleErrorSpy.mockRestore();
 		});

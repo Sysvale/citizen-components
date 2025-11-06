@@ -2,7 +2,6 @@
 	<CdsFlexbox
 		gap="2"
 		wrap="no-wrap"
-		align="end"
 		:fluid
 	>
 		<CdsFlexbox
@@ -11,9 +10,11 @@
 			:fluid
 		>
 			<CdsTextInput
+				v-bind="$attrs"
 				v-model.trim="searchString"
-				:state="computedState"
+				state="default"
 				:fluid
+				:disabled="isLoading"
 				@keydown.enter="search"
 				@blur="isActive = false"
 			/>
@@ -35,15 +36,15 @@
 						</CdsText>
 					</CdsText>
 					<CdsText as="body-2">
-						<br />
+						<br>
 						CPF: {{ maskCpf(option['cpf']) }}
 					</CdsText>
 					<CdsText as="body-2">
-						<br />
+						<br>
 						CNS: {{ maskCns(option['cns']) }}
 					</CdsText>
 					<CdsText as="body-2">
-						<br />
+						<br>
 						Data de nascimento:
 						{{ dmyFormatter(option['birth_date']) }}
 					</CdsText>
@@ -53,6 +54,7 @@
 
 		<CdsButton
 			v-if="showButton"
+			class="mt-7"
 			type="button"
 			:text="buttonText"
 			:variant
@@ -64,11 +66,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, type Ref, useTemplateRef } from 'vue';
+import {
+	ref,
+	computed,
+	watch,
+	type Ref,
+	useTemplateRef,
+	inject
+} from 'vue';
 import { onClickOutside } from '@vueuse/core';
 import { CitizenService } from '../services/citizen/citizen.service';
 import SelectDropdown from './InternalComponents/SelectDropdown.vue';
 import { maskCpf, maskCns } from '@sysvale/foundry';
+
+const useToast = inject('useToast');
+
+defineOptions({
+	inheritAttrs: false
+})
 
 const model = defineModel<CitizenSelectModelType>('modelValue');
 
@@ -113,7 +128,6 @@ const buttonTooltipText = computed(() => {
 
 	return '';
 });
-const computedState = computed(() => (isLoading.value ? 'loading' : 'default'));
 const payload = computed(() => ({
 	searchString: searchString.value,
 	page: 1,
@@ -150,11 +164,17 @@ async function search() {
 		isActive.value = true;
 	} catch (error) {
 		isActive.value = false;
-		console.error('Error fetching citizens:', error);
-
 		const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
-		throw new Error(`Error fetching citizens: ${errorMessage}`);
+		useToast().fire({
+			title: 'Houve um problema ao buscar as informações as informações do cidadão.',
+			description: errorMessage,
+			dismissible: true,
+			dismissAfter: 6000,
+			autoDismissible: true,
+			variant: 'danger',
+			light: false,
+		})
 	} finally {
 		isLoading.value = false;
 	}

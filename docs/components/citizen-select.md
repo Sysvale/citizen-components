@@ -81,6 +81,10 @@ Campo do objeto Citizen usado para exibição no input.
 <CitizenSelect show-button options-field="cpf" />
 ```
 
+### Demais atributos
+
+Além das props declaradas no componente podemos encaminhar quaisquer props do componente **TextInput** ([Documentação](https://cuida.sysvale.com/components/forms/text-input.html#textinput)) via `$attrs` para modificar o comportamento do input textual.
+
 ## Exemplos
 
 ### Sem botão de busca
@@ -94,6 +98,22 @@ Campo do objeto Citizen usado para exibição no input.
 ```vue
 <div style="width: 500px;">
   <CitizenSelect show-button fluid />
+</div>
+```
+
+### Preenchimento obrigatório
+
+```vue
+<div style="width: 500px;">
+  <CitizenSelect show-button fluid required />
+</div>
+```
+
+### Com label customizada
+
+```vue
+<div style="width: 500px;">
+  <CitizenSelect show-button fluid label="Nova label" />
 </div>
 ```
 
