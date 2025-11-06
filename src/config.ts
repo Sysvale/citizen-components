@@ -1,14 +1,18 @@
+export interface Endpoints {
+	index: string;
+	create: string;
+}
+
 export interface CitizenComponentsConfig {
 	apiBaseUrl: string;
-	endpoints: {
-		index: string;
-	};
+	endpoints: Endpoints;
 }
 
 const defaultConfig: CitizenComponentsConfig = {
 	apiBaseUrl: '',
 	endpoints: {
 		index: '/citizens',
+		create: '/citizens',
 	},
 };
 

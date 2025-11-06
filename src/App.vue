@@ -6,10 +6,7 @@
 			class="pa-10 mt-12"
 		>
 			<div>
-				<CitizenSelect
-					v-model="citizen"
-					show-button
-				/>
+				<CitizenSelect show-button />
 			</div>
 			<div>
 				<CitizenSelect
@@ -25,7 +22,7 @@
 			</div>
 		</CdsGrid> -->
 
-		<CitizenTable
+		<!-- <CitizenTable
 			v-model="citizens"
 			selection-variant="blue"
 			allow-selection
@@ -38,27 +35,33 @@
 					@cds-click="logCustomButtonClick(slotData)"
 				/>
 			</template>
-		</CitizenTable>
+		</CitizenTable> -->
+		<CdsButton
+			text="Criar"
+			@click="handleSidesheet"
+		/>
+		<CreateCitizenSidesheet
+			v-model="isOpen"
+			action-button-variant="teal"
+			ok-button-text="Criar"
+			cancel-button-text="Cancelar"
+			@success="v => console.log(v)"
+		/>
+		
+		<CdsToastContainer />
 	</div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import CitizenSelect from './components/CitizenSelect.vue';
-import CitizenTable from './components/CitizenTable.vue';
+import CreateCitizenSidesheet from './components/CreateCitizenSidesheet.vue';
 
-const citizen = ref<CitizenSelectModelType>(null);
-const citizens = ref<Citizen[]>([]);
+const isOpen = ref(false);
 
-function logCustomButtonClick({ data, field, colIndex, rowIndex }) {
-	console.info('O usuário clicou no botão. metadados: \n');
-	console.info('data: ', data);
-	console.info('field: ', field);
-	console.info('colIndex: ', colIndex);
-	console.info('rowIndex: ', rowIndex);
+function handleSidesheet() {
+	isOpen.value = !isOpen.value;
 }
 </script>
-
 <style>
 body {
 	font-family: 'Satoshi', sans-serif;

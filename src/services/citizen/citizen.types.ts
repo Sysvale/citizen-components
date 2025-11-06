@@ -48,3 +48,17 @@ export interface Citizen {
 	identification_document?: Nullable<string>;
 	issuing_agency?: Nullable<string>;
 }
+
+export interface CreateCitizenParams {
+	name: string;
+	birth_date: string;
+	cpf: string;
+	cns: string;
+	gender: string;
+}
+
+export interface CreateCitizenResponse {
+	data: {
+		citizen: Citizen;
+	};
+}

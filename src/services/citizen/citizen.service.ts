@@ -1,6 +1,11 @@
-import type { CitizenServiceParams, CitizenResponse } from './citizen.types';
+import type {
+	CitizenServiceParams,
+	CitizenResponse,
+	CreateCitizenParams,
+	CreateCitizenResponse,
+} from './citizen.types';
 import { makeCitizens } from './citizen.factory';
-import { getConfig, type CitizenComponentsConfig } from '../../config';
+import { getConfig, type CitizenComponentsConfig, type Endpoints } from '../../config';
 import { removeCpfMask, removeCnsMask } from '@sysvale/foundry';
 import axios from 'axios';
 
@@ -18,27 +23,61 @@ export class CitizenService {
 		}
 
 		try {
-			return await this.apiCall(params);
+			const response = await this.apiCall('index', {
+				params,
+			});
+
+			return response;
 		} catch (error) {
 			throw this.handleErrors(error);
 		}
 	}
 
-	private delay(ms: number): Promise<void> {
-		return new Promise(resolve => setTimeout(resolve, ms));
+	async create(data: CreateCitizenParams): Promise<CreateCitizenResponse> {
+		if (!this.isCustomEndpointSet('create')) {
+			await this.delay(1000);
+			return this.citizenCreationMock(data);
+		}
+
+		try {
+			const response = await this.apiCall('create', {
+				data,
+				method: 'post',
+			});
+
+			return response;
+		} catch (error) {
+			throw this.handleErrors(error);
+		}
 	}
 
-	private async apiCall(params: CitizenServiceParams): Promise<CitizenResponse> {
-		const endpoint = this.config.endpoints.index;
+	private async apiCall<T = any>(
+		endpointName: keyof Endpoints,
+		options?: {
+			method?: 'get' | 'post' | 'put' | 'patch' | 'delete';
+			params?: object;
+			data?: object;
+		}
+	): Promise<T> {
+		const endpointUri = this.config.endpoints[endpointName];
+		const url = `${this.config.apiBaseUrl}${endpointUri}`;
 
-		const response = await axios.get(`${this.config.apiBaseUrl}${endpoint}`, {
-			params,
-		});
+		const axiosConfig: any = {
+			url,
+			method: options?.method ?? 'get',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			...(options?.params && { params: options.params }),
+			...(options?.data && { data: options.data }),
+		};
+
+		const response = await axios.request<T>(axiosConfig);
 
 		return response.data;
 	}
 
-	private isCustomEndpointSet(endpoint: 'index') {
+	private isCustomEndpointSet(endpoint: keyof Endpoints) {
 		return (
 			this.config.apiBaseUrl &&
 			this.config.endpoints &&
@@ -88,6 +127,23 @@ export class CitizenService {
 		return response;
 	}
 
+	private async citizenCreationMock(
+		params: CreateCitizenParams
+	): Promise<CreateCitizenResponse> {
+		let citizen = makeCitizens(1);
+
+		const response = {
+			data: {
+				citizen: {
+					...citizen[0],
+					...params,
+				},
+			},
+		};
+
+		return response as CreateCitizenResponse;
+	}
+
 	private citizensFilter(citizens: Citizen[], searchString: string) {
 		return citizens.filter(
 			citizen =>
@@ -95,6 +151,10 @@ export class CitizenService {
 				this.matchesMaskedField(searchString, citizen.cpf, removeCpfMask) ||
 				this.matchesMaskedField(searchString, citizen.cns, removeCnsMask)
 		);
+	}
+
+	private delay(ms: number): Promise<void> {
+		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
 	private matchesMaskedField(

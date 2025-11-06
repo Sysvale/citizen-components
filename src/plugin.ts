@@ -6,9 +6,10 @@ import { setConfig } from './config';
 export const CitizenComponentsPlugin: Plugin = {
 	install(app: App, options: CitizenComponentsConfig = {}) {
 		setConfig(options);
+		import('./utils/rules/citizenFormRules');
 
 		const cdsUtils = Cuida.utils;
-  		app.provide('useToast', cdsUtils.useToast);
+		app.provide('useToast', cdsUtils.useToast);
 	},
 };
 
