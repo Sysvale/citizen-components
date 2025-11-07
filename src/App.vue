@@ -3,6 +3,7 @@
 		<CitizenSelect
 			v-model="citizen"
 			show-button
+			disabled
 		/>
 
 		<CdsButton
@@ -17,6 +18,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import CitizenSelect from './components/CitizenSelect.vue';
 const citizen = ref<CitizenSelectModelType>(null);
 
 function changeModel() {
