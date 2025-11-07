@@ -21,7 +21,7 @@
 
 			<SelectDropdown
 				v-if="isActive"
-				v-model="internalValue"
+				v-model="model"
 				:options
 				:fluid
 				:options-field
@@ -54,7 +54,7 @@
 
 		<CdsButton
 			v-if="showButton"
-			class="mt-7"
+			class="mt-6"
 			type="button"
 			:text="buttonText"
 			:variant
@@ -70,7 +70,6 @@ import {
 	ref,
 	computed,
 	watch,
-	type Ref,
 	useTemplateRef,
 	inject
 } from 'vue';
@@ -102,7 +101,6 @@ const props = withDefaults(
 );
 
 const citizenService = new CitizenService();
-const internalValue = ref<CitizenSelectModelType>(null) as Ref<CitizenSelectModelType>;
 const options = ref<Citizen[]>([]);
 const isLoading = ref(false);
 const isActive = ref(false);
@@ -134,18 +132,17 @@ const payload = computed(() => ({
 	perPage: 1000,
 }));
 
-watch(internalValue, () => {
-	if (!internalValue.value) {
+watch(model, () => {
+	if (!model.value) {
 		searchString.value = '';
-	} else if (typeof internalValue.value === 'string') {
-		searchString.value = internalValue.value;
+	} else if (typeof model.value === 'string') {
+		searchString.value = model.value;
 	} else {
-		const fieldValue = internalValue.value[props.optionsField];
+		const fieldValue = model.value[props.optionsField];
 		searchString.value = typeof fieldValue === 'string' ? fieldValue : '';
 	}
 
 	isActive.value = false;
-	model.value = JSON.parse(JSON.stringify(internalValue.value));
 });
 
 onClickOutside(selectContainer, () => {
