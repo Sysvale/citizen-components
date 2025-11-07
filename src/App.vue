@@ -17,11 +17,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import CitizenSelect from './components/CitizenSelect.vue';
-import CitizenTable from './components/CitizenTable.vue';
-
 const citizen = ref<CitizenSelectModelType>(null);
-const citizens = ref<Citizen[]>([]);
 
 function changeModel() {
 	console.log('no change model')
@@ -55,7 +51,6 @@ function changeModel() {
 	}
 }
 </script>
-
 <style>
 body {
 	font-family: 'Satoshi', sans-serif;

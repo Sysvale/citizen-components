@@ -63,6 +63,46 @@ const response = await citizenService.index({
 });
 ```
 
+<br>
+
+### `create(data: CreateCitizenParams): Promise<CreateCitizenResponse>`
+
+Cria um novo cidadão.
+
+**Parâmetros:**
+
+```typescript
+interface CreateCitizenParams {
+	name: string;
+	birth_date: string;
+	cpf: string;
+	cns: string;
+	gender: string;
+}
+```
+
+**Retorno:**
+
+```typescript
+export interface CreateCitizenResponse {
+	data: {
+		citizen: Citizen;
+	};
+}
+```
+
+**Exemplo:**
+
+```typescript
+const response = await citizenService.create({
+	name: 'José Victor';
+	birth_date: '2002-12-27';
+	cpf: '00000000000';
+	cns: '000000000000000';
+	gender: 'M';
+});
+```
+
 ## Comportamentos Automáticos
 
 ### Modo Mock vs API Real
@@ -192,6 +232,7 @@ O `CitizenService` é usado internamente pelos componentes:
 
 - **CitizenSelect**: Usa o serviço para buscar e filtrar cidadãos
 - **CitizenTable**: Usa o serviço para paginação, busca e carregamento de dados
+- **CreateCitizenSidesheet**: Usa o serviço para criação de cidadãos
 
 Você não precisa instanciar o serviço manualmente quando usa os componentes, mas pode usá-lo diretamente quando precisar de acesso programático aos dados.
 
@@ -202,6 +243,7 @@ import type {
 	CitizenService,
 	CitizenServiceParams,
 	CitizenResponse,
+	CreateCitizenParams,
 	Citizen,
 } from 'citizen-components';
 ```

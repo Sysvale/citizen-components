@@ -10,17 +10,29 @@ vi.mock('./citizen.factory');
 
 describe('CitizenService', () => {
 	let service: CitizenService;
-	const mockGetConfig = getConfig as Mock;
-	const mockAxiosGet = axios.get as Mock;
+	const mockApiConfig = getConfig as Mock;
+	const mockAxiosRequest = axios.request as Mock;
 	const mockMakeCitizens = makeCitizens as Mock;
 
 	// Mock data simplificado
-	const mockApiResponse = {
+	const mockApiGetResponse = {
 		data: [
 			{ id: '1', name: 'João Silva', cpf: '12345678900' },
 			{ id: '2', name: 'Maria Santos', cpf: '98765432100' },
 		],
 		meta: { current_page: 1, per_page: 10, total: 2, last_page: 1 },
+	};
+
+	const mockPostPayload = {
+		name: 'José Victor',
+		birth_date: '2002-12-27',
+		cpf: '00000000000',
+		cns: '000000000000000',
+		gender: 'M',
+	};
+
+	const mockApiPostResponse = {
+		citizen: { id: '1', name: 'João Silva', cpf: '12345678900' },
 	};
 
 	const mockCitizens = [
@@ -40,51 +52,66 @@ describe('CitizenService', () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
-		mockGetConfig.mockReturnValue({ apiBaseUrl: null, endpoints: null });
+		mockApiConfig.mockReturnValue({ apiBaseUrl: null, endpoints: null });
 		service = new CitizenService();
 	});
 
 	describe('index - API mode', () => {
 		beforeEach(() => {
-			mockGetConfig.mockReturnValue({
+			mockApiConfig.mockReturnValue({
 				apiBaseUrl: 'https://api.example.com',
 				endpoints: { index: '/citizens' },
 			});
 			service = new CitizenService();
-			mockAxiosGet.mockResolvedValue({ data: mockApiResponse });
+			mockAxiosRequest.mockResolvedValue({ data: mockApiGetResponse });
 		});
 
 		test('calls API with correct parameters', async () => {
-			await service.index({ page: 1, perPage: 10, searchString: 'João' });
+			const params = { page: 1, perPage: 10, searchString: 'João' };
+			await service.index(params);
 
-			expect(mockAxiosGet).toHaveBeenCalledWith('https://api.example.com/citizens', {
-				params: { page: 1, perPage: 10, searchString: 'João' },
+			expect(mockAxiosRequest).toHaveBeenCalledWith({
+				url: 'https://api.example.com/citizens',
+				method: 'get',
+				params: params,
+				headers: {
+					'Content-Type': 'application/json',
+				},
 			});
 		});
 
 		test('calls API with fields parameter', async () => {
-			await service.index({
+			const params = {
 				page: 1,
 				perPage: 10,
-				fields: ['name', 'cpf'],
-			});
+				searchString: 'João',
+				fields: ['name', 'cns', 'cpf'],
+			};
+			await service.index(params);
 
-			expect(mockAxiosGet).toHaveBeenCalledWith('https://api.example.com/citizens', {
-				params: { page: 1, perPage: 10, fields: ['name', 'cpf'] },
+			expect(mockAxiosRequest).toHaveBeenCalledWith({
+				url: 'https://api.example.com/citizens',
+				method: 'get',
+				params: params,
+				headers: {
+					'Content-Type': 'application/json',
+				},
 			});
 		});
 
 		test('returns API response', async () => {
 			const result = await service.index({ page: 1, perPage: 10 });
-			expect(result).toEqual(mockApiResponse);
+			expect(result).toEqual(mockApiGetResponse);
 		});
 
 		test('throws error when API call fails', async () => {
-			mockAxiosGet.mockRejectedValue(new Error('Network error'));
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+			mockAxiosRequest.mockRejectedValue(new Error('Network error'));
 
 			await expect(service.index({ page: 1, perPage: 10 })).rejects.toThrow(
 				'Erro: Network error'
 			);
+			consoleErrorSpy.mockRestore();
 		});
 	});
 
@@ -96,7 +123,7 @@ describe('CitizenService', () => {
 		test('uses mock when apiBaseUrl is not configured', async () => {
 			const result = await service.index({ page: 1, perPage: 10 });
 
-			expect(mockAxiosGet).not.toHaveBeenCalled();
+			expect(mockAxiosRequest).not.toHaveBeenCalled();
 			expect(mockMakeCitizens).toHaveBeenCalledWith(150);
 			expect(result.data).toEqual(mockCitizens);
 		});
@@ -152,6 +179,59 @@ describe('CitizenService', () => {
 
 			expect(result.data).toEqual([]);
 			expect(result.meta.total).toBe(0);
+		});
+	});
+
+	describe('create - API mode', () => {
+		beforeEach(() => {
+			mockApiConfig.mockReturnValue({
+				apiBaseUrl: 'https://api.example.com',
+				endpoints: { create: '/citizens' },
+			});
+			service = new CitizenService();
+			mockAxiosRequest.mockResolvedValue({ data: mockApiPostResponse });
+		});
+
+		test('calls API with correct payload', async () => {
+			await service.create(mockPostPayload);
+
+			expect(mockAxiosRequest).toHaveBeenCalledWith({
+				url: 'https://api.example.com/citizens',
+				method: 'post',
+				data: mockPostPayload,
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+		});
+
+		test('returns API response', async () => {
+			const result = await service.create(mockPostPayload);
+			expect(result).toEqual(mockApiPostResponse);
+		});
+
+		test('throws error when API call fails', async () => {
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+			mockAxiosRequest.mockRejectedValue(new Error('Network error'));
+
+			await expect(service.create(mockPostPayload)).rejects.toThrow(
+				'Erro: Network error'
+			);
+			consoleErrorSpy.mockRestore();
+		});
+	});
+
+	describe('create - Mock mode', () => {
+		beforeEach(() => {
+			mockMakeCitizens.mockReturnValue(mockCitizens[0]);
+		});
+
+		test('uses mock when apiBaseUrl is not configured', async () => {
+			const result = await service.create(mockPostPayload);
+
+			expect(mockAxiosRequest).not.toHaveBeenCalled();
+			expect(mockMakeCitizens).toHaveBeenCalledWith(1);
+			expect(result.data).toEqual({ citizen: mockPostPayload });
 		});
 	});
 });

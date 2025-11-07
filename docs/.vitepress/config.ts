@@ -39,6 +39,10 @@ export default defineConfig({
 						text: 'CitizenTable',
 						link: '/components/citizen-table',
 					},
+					{
+						text: 'CreateCitizenSidesheet',
+						link: '/components/create-citizen-sidesheet',
+					},
 				],
 			},
 		],
