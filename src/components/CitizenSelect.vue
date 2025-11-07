@@ -14,7 +14,7 @@
 				v-model.trim="searchString"
 				state="default"
 				:fluid
-				:disabled="isLoading"
+				:disabled="isLoading || disabled"
 				@keydown.enter="search"
 				@blur="isActive = false"
 			/>
@@ -92,11 +92,13 @@ const props = withDefaults(
 		fluid?: boolean;
 		variant?: string;
 		optionsField?: keyof Citizen;
+		disabled?: boolean;
 	}>(),
 	{
 		fluid: false,
 		variant: 'green',
 		optionsField: 'name',
+		disabled: false,
 	}
 );
 
@@ -109,7 +111,7 @@ const lastSearchStringSearched = ref<string>('');
 const selectContainer = useTemplateRef<HTMLDivElement>('selectContainer');
 
 const shouldDisableButton = computed(() => {
-	return isLoading.value || searchString.value.length < 2;
+	return props.disabled || isLoading.value || searchString.value.length < 2;
 });
 
 const buttonText = computed(() =>
@@ -133,6 +135,8 @@ const payload = computed(() => ({
 }));
 
 watch(model, () => {
+	if (props.disabled) return;
+
 	if (!model.value) {
 		searchString.value = '';
 	} else if (typeof model.value === 'string') {
