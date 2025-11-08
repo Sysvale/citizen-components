@@ -135,8 +135,6 @@ const payload = computed(() => ({
 }));
 
 watch(model, () => {
-	if (props.disabled) return;
-
 	if (!model.value) {
 		searchString.value = '';
 	} else if (typeof model.value === 'string') {
