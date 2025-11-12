@@ -92,9 +92,9 @@ Tamanho do SideSheet (os mesmos utilizados como tokens no Cuida).
 
 ## Events
 
-O componente emite eventos ao completar (sucesso) ou falhar (erro) a tentativa de cadastro.
+O componente emite eventos ao completar com sucesso o cadastro do usuário.
 
-### `success`
+### `created-citizen`
 
 Emitido quando o cidadão é criado com sucesso.
 
@@ -102,18 +102,8 @@ Emitido quando o cidadão é criado com sucesso.
 
 ```vue
 <CreateCitizenSidesheet
-	@success="newCitizen => console.log('Cidadão criado!', newCitizen)"
+	@created-citizen="newCitizen => console.log('Cidadão criado!', newCitizen)"
 />
-```
-
-### `error`
-
-Emitido quando ocorre um erro na requisição à API.
-
-- **Payload:** `errorMessage: string` (mensagem de erro).
-
-```vue
-<CreateCitizenSidesheet @error="error => console.error('Falha no cadastro:', error)" />
 ```
 
 ## Funcionalidades

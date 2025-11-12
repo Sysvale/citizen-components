@@ -92,6 +92,7 @@
 								v-model="field.value"
 								label="Data de nascimento"
 								fluid
+								:variant="$attrs['action-button-variant']"
 								:disabled="isLoading"
 								:max-date="computedMaxDate"
 								:state="inputStateResolver(meta)"
@@ -143,7 +144,7 @@ import { Citizen } from '@/models/Citizen';
 
 const useToast = inject('useToast');
 
-const emits = defineEmits(['success']);
+const emits = defineEmits(['created-citizen']);
 
 const model = defineModel<boolean>();
 const formRef = ref<FormContext | null>(null);
@@ -187,7 +188,17 @@ async function handleOk() {
 		formRef.value.resetForm();
 		model.value = false;
 
-		emits('success', citizen);
+		useToast().fire({
+			title: 'Sucesso',
+			description:
+				'Cidadão criado com sucesso.',
+			dismissible: true,
+			dismissAfter: 6000,
+			autoDismissible: true,
+			variant: 'success',
+			light: false,
+		});
+		emits('created-citizen', citizen);
 	} catch (error) {
 		let errorMessage;
 
@@ -195,7 +206,7 @@ async function handleOk() {
 		if (error instanceof Error) {
 			errorMessage =
 				error.message === ''
-					? 'Houve um erro ao realizar o cadastro do usuário, por favor tente novamente'
+					? 'Houve um erro ao realizar o cadastro do usuário, por favor tente novamente.'
 					: error.message;
 		}
 
