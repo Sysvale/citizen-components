@@ -43,6 +43,30 @@ Array de cidadãos selecionados (v-model).
 <CitizenTable v-model="selectedCitizens" />
 ```
 
+### `hideEditIcon`
+
+- **Tipo:** `boolean`
+- **Obrigatório:** Não
+- **Padrão:** `false`
+
+Prop utilizada para controlar a visibilidade do action-button de edição.
+
+```vue
+<CitizenTable hide-edit-icon />
+```
+
+### `hideDetailsIcon`
+
+- **Tipo:** `boolean`
+- **Obrigatório:** Não
+- **Padrão:** `false`
+
+Prop utilizada para controlar a visibilidade do action-button de detalhamento.
+
+```vue
+<CitizenTable hide-details-icon />
+```
+
 ### Outras Props
 
 O componente aceita todas as props do `CdsDataTable` através de `v-bind="$attrs"`, incluindo:

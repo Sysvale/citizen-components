@@ -21,6 +21,8 @@
 					:field
 					:row-index
 					:col-index
+					:hide-details-icon
+					:hide-edit-icon
 					@edit="emits('edit')"
 					@details="emits('details')"
 				>
@@ -69,6 +71,17 @@ import { createFields } from '@/constants/fields';
 import { type TableField, type CustomTableField } from '../types';
 
 const model = defineModel<Citizen[]>('modelValue');
+
+const props = withDefaults(
+	defineProps<{
+		hideEditIcon?: boolean;
+		hideDetailsIcon?: boolean;
+	}>(),
+	{
+		hideEditIcon: false,
+		hideDetailsIcon: false,
+	}
+);
 
 const emits = defineEmits(['edit', 'details']);
 
