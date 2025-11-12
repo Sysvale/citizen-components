@@ -74,6 +74,7 @@
 				<slot name="prepend-action" />
 
 				<CdsIconButton
+					v-if="!hideDetailsIcon"
 					size="sm"
 					icon="document-text-outline"
 					tooltip-text="Ver detalhes"
@@ -81,6 +82,7 @@
 				/>
 
 				<CdsIconButton
+					v-if="!hideEditIcon"
 					size="sm"
 					icon="edit-outline"
 					tooltip-text="Editar"
@@ -106,6 +108,8 @@ defineProps<{
 	field: keyof Citizen | 'actions';
 	rowIndex: number;
 	colIndex: number;
+	hideEditIcon?: boolean;
+	hideDetailsIcon?: boolean;
 }>();
 
 const emits = defineEmits(['edit', 'details']);
