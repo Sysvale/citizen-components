@@ -12,7 +12,7 @@ O componente é controlado por um `v-model` booleano para exibir ou ocultar o pa
 
 	<CreateCitizenSidesheet
 		v-model="showSidesheet"
-		@created-citizen="handleCreatedCitizen"
+		@success="handleCreatedCitizen"
 	/>
 </template>
 
@@ -44,7 +44,7 @@ O componente aceita todas as props do `CdsSideSheet` através de `v-bind="$attrs
 
 O componente emite eventos ao completar com sucesso o cadastro do usuário.
 
-### `created-citizen`
+### `success`
 
 Emitido quando o cidadão é criado com sucesso.
 
@@ -52,7 +52,7 @@ Emitido quando o cidadão é criado com sucesso.
 
 ```vue
 <CreateCitizenSidesheet
-	@created-citizen="newCitizen => console.log('Cidadão criado!', newCitizen)"
+	@success="newCitizen => console.log('Cidadão criado!', newCitizen)"
 />
 ```
 
