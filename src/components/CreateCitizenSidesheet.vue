@@ -201,7 +201,8 @@ async function handleOk() {
 		model.value = false;
 
 		useToast().fire({
-			title: 'Sucesso', description: props.toastSuccessDescription,
+			title: 'Sucesso',
+			description: props.toastSuccessDescription,
 			dismissible: true,
 			dismissAfter: 6000,
 			autoDismissible: true,
@@ -221,7 +222,8 @@ async function handleOk() {
 		}
 
 		useToast().fire({
-			title: 'Erro', description: errorMessage,
+			title: 'Erro',
+			description: errorMessage,
 			dismissible: true,
 			dismissAfter: 6000,
 			autoDismissible: true,
