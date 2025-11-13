@@ -176,7 +176,7 @@ async function handleOk() {
 	try {
 		formValidationResult = await formRef.value.validate();
 	} catch (error) {
-		console.log('🚀 -> error:', error);
+		console.error(error);
 		useToast().fire({
 			title: 'Erro ao validar o formulário',
 			description:
