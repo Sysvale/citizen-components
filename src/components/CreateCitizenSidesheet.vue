@@ -6,6 +6,7 @@
 		no-close-ok-button
 		:disable-ok-button="isLoading || $attrs['disable-ok-button']"
 		:disable-cancel-button="isLoading || $attrs['disable-cancel-button']"
+		:block-ok-button="true"
 		@ok="handleOk"
 		@cancel="handleCancel"
 	>
@@ -144,7 +145,7 @@ import { Citizen } from '@/models/Citizen';
 
 const useToast = inject('useToast');
 
-const emits = defineEmits(['created-citizen']);
+const emits = defineEmits(['success']);
 
 const model = defineModel<boolean>();
 const formRef = ref<FormContext | null>(null);
@@ -189,16 +190,14 @@ async function handleOk() {
 		model.value = false;
 
 		useToast().fire({
-			title: 'Sucesso',
-			description:
-				'Cidadão criado com sucesso.',
+			title: 'Sucesso', description:'Cidadão criado com sucesso.',
 			dismissible: true,
 			dismissAfter: 6000,
 			autoDismissible: true,
 			variant: 'success',
 			light: false,
 		});
-		emits('created-citizen', citizen);
+		emits('success', citizen);
 	} catch (error) {
 		let errorMessage;
 

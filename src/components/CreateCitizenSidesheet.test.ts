@@ -51,10 +51,10 @@ describe('CreateCitizenSidesheet', () => {
 		expect(wrapper.exists()).toBe(true);
 	});
 
-	test('should emit created-citizen event', () => {
+	test('should emit success event', () => {
 		const wrapper = createWrapper();
-		wrapper.vm.$emit('created-citizen');
-		expect(wrapper.emitted('created-citizen')).toBeTruthy();
+		wrapper.vm.$emit('success');
+		expect(wrapper.emitted('success')).toBeTruthy();
 	});
 	test('should render form', async () => {
 		const wrapper = createWrapper();
@@ -99,7 +99,7 @@ describe('CreateCitizenSidesheet', () => {
 			vi.clearAllMocks();
 		});
 
-		test('should call service, emit created-citizen and toast when validation is truthy and operation is sucessful', async () => {
+		test('should call service, emit success and toast when validation is truthy and operation is sucessful', async () => {
 			const expectedPayload = new Citizen(mockFormData).asRequestPayload();
 			const validateSpy = vi.spyOn(formRefInstance, 'validate').mockResolvedValue({
 				valid: true,
@@ -116,8 +116,8 @@ describe('CreateCitizenSidesheet', () => {
 			await vi.waitFor(() => expect(mockCitizenCreate).toHaveBeenCalled());
 			expect(mockCitizenCreate).toHaveBeenCalledWith(expectedPayload);
 			expect(mockToastFire).toHaveBeenCalled();
-			expect(wrapper.emitted('created-citizen')).toBeTruthy();
-			expect(wrapper.emitted('created-citizen')?.[0]).toEqual([mockCitizenResponse]);
+			expect(wrapper.emitted('success')).toBeTruthy();
+			expect(wrapper.emitted('success')?.[0]).toEqual([mockCitizenResponse]);
 			expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([false]);
 		});
 
@@ -129,7 +129,7 @@ describe('CreateCitizenSidesheet', () => {
 			await okButton.trigger('click');
 
 			await vi.waitFor(() => expect(mockCitizenCreate).not.toHaveBeenCalled());
-			expect(wrapper.emitted('created-citizen')).toBeFalsy();
+			expect(wrapper.emitted('success')).toBeFalsy();
 			expect(wrapper.emitted('update:modelValue')).toBeFalsy();
 		});
 
@@ -148,7 +148,7 @@ describe('CreateCitizenSidesheet', () => {
 				'Error creating citizen:',
 				expect.any(Error)
 			);
-			expect(wrapper.emitted('created-citizen')).toBeFalsy();
+			expect(wrapper.emitted('success')).toBeFalsy();
 			expect(mockToastFire).toHaveBeenCalled();
 			expect(wrapper.emitted('update:modelValue')).toBeFalsy();
 		});
