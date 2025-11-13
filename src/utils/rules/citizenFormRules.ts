@@ -1,5 +1,5 @@
 import { defineRule } from 'vee-validate';
-import { cpfValidator } from '@sysvale/foundry';
+import { cpfValidator, cnsValidator } from '@sysvale/foundry';
 
 defineRule('required', (value: string | object) => {
 	if (!value) {
@@ -32,13 +32,9 @@ defineRule('cpf', (value: string) => {
 });
 
 defineRule('cns', (value: string) => {
-	const unmasked = value.replace(/[^\d]/g, '');
+	const res = cnsValidator(value);
 
-	if (!unmasked || !unmasked.length) {
-		return true;
-	}
-
-	if (unmasked.length < 15) {
+	if (!res) {
 		return 'O CNS é inválido';
 	}
 

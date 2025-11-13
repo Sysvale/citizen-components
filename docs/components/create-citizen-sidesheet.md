@@ -12,8 +12,7 @@ O componente é controlado por um `v-model` booleano para exibir ou ocultar o pa
 
 	<CreateCitizenSidesheet
 		v-model="showSidesheet"
-		@success="handleSuccess"
-		@error="handleError"
+		@success="handleCreatedCitizen"
 	/>
 </template>
 
@@ -23,76 +22,59 @@ import { CreateCitizenSidesheet, type Citizen } from 'citizen-components';
 
 const showSidesheet = ref(false);
 
-function handleSuccess(newCitizen: Citizen) {
+function handleCreatedCitizen(newCitizen: Citizen) {
 	console.log('Cidadão criado com sucesso:', newCitizen.name);
-}
-
-function handleError(errorMessage: string) {
-	console.error('Erro ao criar cidadão:', errorMessage);
 }
 </script>
 ```
 
 ## Props
 
-O componente aceita props para controlar o estado, customizar o texto e a aparência do `CdsSideSheet`.
+### toastSuccessDescription
 
-### `modelValue`
+- **Tipo:** `String`
+- **Obrigatório:** Não
+- **Padrão:** `Cidadão cadastrado com sucesso.`
 
-- **Tipo:** `boolean`
-- **Obrigatório:** Sim
-- **Padrão:** `false`
-
-Controla a visibilidade do SideSheet.
+Descrição do toast em caso de sucesso na realização da operação.
 
 ```vue
-<CreateCitizenSidesheet v-model="showSidesheet" />
+<CitizenTable 
+	v-model="selectedCitizens"
+	toast-success-description="Cidadão atualizado com sucesso"
+/>
 ```
 
-### `okButtonText`
+### toastErrorDescription
 
-- **Tipo:** `string`
+- **Tipo:** `String`
 - **Obrigatório:** Não
-- **Padrão:** `'Criar'`
+- **Padrão:** `Houve um erro ao cadastrar o cidadão.`
 
-Texto do botão de ação principal (OK), que inicia o cadastro.
-
-### `cancelButtonText`
-
-- **Tipo:** `string`
-- **Obrigatório:** Não
-- **Padrão:** `'Cancelar'`
-
-Texto do botão de cancelar.
-
-### `actionButtonVariant`
-
-- **Tipo:** `string`
-- **Obrigatório:** Não
-- **Padrão:** `'green'`
-
-Variante de cor do botão de ação principal (ex: `'blue'`, `'green'`).
-
-### `size`
-
-- **Tipo:** `string`
-- **Obrigatório:** Não
-- **Padrão:** `'md'`
-
-Tamanho do SideSheet (os mesmos utilizados como tokens no Cuida).
+Descrição do toast em caso de erro na realização da operação.
 
 ```vue
-<CreateCitizenSidesheet
-	v-model="showSidesheet"
-	ok-button-text="Salvar Cidadão"
-	action-button-variant="blue"
-	size="lg"
+<CitizenTable 
+	v-model="selectedCitizens"
+	toast-error-description="Erro ao atualizar cidadão"
 />
+```
+
+### Outras Props
+
+O componente aceita todas as props do `CdsSideSheet` através de `v-bind="$attrs"`, incluindo:
+
+- `action-button-variant`: Variante de cor (padrão: `'green'`)
+- `size`: Tamanho do sidesheet (padrão: `'md'`)
+- Todas as props padrão do CdsSideSheet
+
+```vue
+<CreateCitizenSidesheet action-button-variant="blue" size="sm" />
 ```
 
 ## Events
 
-O componente emite eventos ao completar (sucesso) ou falhar (erro) a tentativa de cadastro.
+O componente emite eventos ao completar com sucesso o cadastro do usuário.
 
 ### `success`
 
@@ -104,16 +86,6 @@ Emitido quando o cidadão é criado com sucesso.
 <CreateCitizenSidesheet
 	@success="newCitizen => console.log('Cidadão criado!', newCitizen)"
 />
-```
-
-### `error`
-
-Emitido quando ocorre um erro na requisição à API.
-
-- **Payload:** `errorMessage: string` (mensagem de erro).
-
-```vue
-<CreateCitizenSidesheet @error="error => console.error('Falha no cadastro:', error)" />
 ```
 
 ## Funcionalidades
@@ -130,7 +102,7 @@ O componente exibe um formulário de cadastro estruturado que inclui os campos e
 - **Data de nascimento**: Não pode ser uma data futura.
 - **Sexo**: Seleção obrigatória (Masculino / Feminino).
 
-### Mascaramento de Entrada
+### Máscara de Entrada
 
 O componente utiliza mascaramento para garantir o formato correto de documentos:
 
