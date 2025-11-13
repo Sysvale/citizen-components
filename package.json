@@ -43,7 +43,7 @@
 	},
 	"peerDependencies": {
 		"@sysvale/cuida": "^3.148.0",
-		"@sysvale/foundry": "^1.6.0",
+		"@sysvale/foundry": "^1.7.0",
 		"vee-validate": "^4.15.1",
 		"vue": "^3.5.13"
 	},
