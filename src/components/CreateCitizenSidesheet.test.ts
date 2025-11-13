@@ -158,7 +158,7 @@ describe('CreateCitizenSidesheet', () => {
 			await vi.waitFor(() => expect(consoleErrorSpy).toHaveBeenCalled());
 
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
-				'Error creating citizen:',
+				'Error:',
 				expect.any(Error)
 			);
 			expect(wrapper.emitted('success')).toBeFalsy();

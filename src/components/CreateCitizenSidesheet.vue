@@ -145,6 +145,17 @@ import { Citizen } from '@/models/Citizen';
 
 const useToast = inject('useToast');
 
+const props = withDefaults(
+	defineProps<{
+		toastSuccessDescription?: string;
+		toastErrorDescription?: string;
+	}>(),
+	{
+		toastSuccessDescription: 'Cidadão cadastrado com sucesso.',
+		toastErrorDescription: 'Houve um erro ao cadastrar o cidadão.',
+	}
+);
+
 const emits = defineEmits(['success']);
 
 const model = defineModel<boolean>();
@@ -190,7 +201,7 @@ async function handleOk() {
 		model.value = false;
 
 		useToast().fire({
-			title: 'Sucesso', description:'Cidadão criado com sucesso.',
+			title: 'Sucesso', description: props.toastSuccessDescription,
 			dismissible: true,
 			dismissAfter: 6000,
 			autoDismissible: true,
@@ -201,17 +212,16 @@ async function handleOk() {
 	} catch (error) {
 		let errorMessage;
 
-		console.error('Error creating citizen:', error);
+		console.error('Error:', error);
 		if (error instanceof Error) {
 			errorMessage =
 				error.message === ''
-					? 'Houve um erro ao realizar o cadastro do usuário, por favor tente novamente.'
+					? props.toastErrorDescription
 					: error.message;
 		}
 
 		useToast().fire({
-			title: 'Erro ao cadastrar usuário',
-			description: errorMessage,
+			title: 'Erro', description: errorMessage,
 			dismissible: true,
 			dismissAfter: 6000,
 			autoDismissible: true,

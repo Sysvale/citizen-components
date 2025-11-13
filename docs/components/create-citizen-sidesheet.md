@@ -30,6 +30,38 @@ function handleCreatedCitizen(newCitizen: Citizen) {
 
 ## Props
 
+### toastSuccessDescription
+
+- **Tipo:** `String`
+- **Obrigatório:** Não
+- **Padrão:** `Cidadão cadastrado com sucesso.`
+
+Descrição do toast em caso de sucesso na realização da operação.
+
+```vue
+<CitizenTable 
+	v-model="selectedCitizens"
+	toast-success-description="Cidadão atualizado com sucesso"
+/>
+```
+
+### toastErrorDescription
+
+- **Tipo:** `String`
+- **Obrigatório:** Não
+- **Padrão:** `Houve um erro ao cadastrar o cidadão.`
+
+Descrição do toast em caso de erro na realização da operação.
+
+```vue
+<CitizenTable 
+	v-model="selectedCitizens"
+	toast-error-description="Erro ao atualizar cidadão"
+/>
+```
+
+### Outras Props
+
 O componente aceita todas as props do `CdsSideSheet` através de `v-bind="$attrs"`, incluindo:
 
 - `action-button-variant`: Variante de cor (padrão: `'green'`)
