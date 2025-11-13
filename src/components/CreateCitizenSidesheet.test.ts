@@ -99,7 +99,7 @@ describe('CreateCitizenSidesheet', () => {
 			vi.clearAllMocks();
 		});
 
-		test('should call service, emit success and toast when validation is truthy and operation is sucessful', async () => {
+		test('should call service and emit success when validation is truthy and operation is sucessful', async () => {
 			const expectedPayload = new Citizen(mockFormData).asRequestPayload();
 			const validateSpy = vi.spyOn(formRefInstance, 'validate').mockResolvedValue({
 				valid: true,
@@ -115,10 +115,23 @@ describe('CreateCitizenSidesheet', () => {
 
 			await vi.waitFor(() => expect(mockCitizenCreate).toHaveBeenCalled());
 			expect(mockCitizenCreate).toHaveBeenCalledWith(expectedPayload);
-			expect(mockToastFire).toHaveBeenCalled();
 			expect(wrapper.emitted('success')).toBeTruthy();
 			expect(wrapper.emitted('success')?.[0]).toEqual([mockCitizenResponse]);
 			expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([false]);
+		});
+
+		test('should emit toast when validation is truthy and operation is sucessful', async () => {
+			vi.spyOn(formRefInstance, 'validate').mockResolvedValue({
+				valid: true,
+				errors: {},
+				results: {},
+				source: 'fields',
+			});
+
+			formRefInstance.setValues(mockFormData);
+			await okButton.trigger('click');
+
+			expect(mockToastFire).toHaveBeenCalled();
 		});
 
 		test('should not call service and emit any events when validation is falsy', async () => {
