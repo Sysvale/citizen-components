@@ -43,7 +43,7 @@ describe('CitizenTable', () => {
 		expect(mockIndex).toHaveBeenCalledWith({
 			page: 1,
 			per_page: 15,
-			fields: ['name', 'birth_date', 'address', 'cpf', 'cns'],
+			fields: ['name', 'birth_date', 'cpf', 'cns'],
 		});
 	});
 

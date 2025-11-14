@@ -38,7 +38,7 @@
 			</div>
 		</CdsFlexbox>
 
-		<CdsFlexbox
+		<!-- <CdsFlexbox
 			v-else-if="field === 'address'"
 			direction="column"
 			gap="1"
@@ -74,7 +74,7 @@
 			>
 				--
 			</CdsText>
-		</CdsFlexbox>
+		</CdsFlexbox> -->
 
 		<template v-else-if="field === 'gender'">
 			{{ genderFormatter(data[field]) }}
