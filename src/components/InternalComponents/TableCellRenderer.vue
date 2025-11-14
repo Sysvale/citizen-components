@@ -19,8 +19,10 @@
 				>
 					CPF:
 				</CdsText>
-				<CdsText as="caption">
-					{{ maskCpf(data.cpf) }}
+				<CdsText
+					as="caption"
+				>
+					{{ cpfResolver(data.cpf) }}
 				</CdsText>
 			</div>
 			<div>
@@ -31,7 +33,7 @@
 					CNS:
 				</CdsText>
 				<CdsText as="caption">
-					{{ maskCns(data.cns) }}
+					{{ cnsResolver(data.cns) }}
 				</CdsText>
 			</div>
 		</CdsFlexbox>
@@ -41,16 +43,36 @@
 			direction="column"
 			gap="1"
 		>
-			<CdsText as="caption">
-				{{ data.address.street }}, Nº {{ data.address.number }}
-			</CdsText>
+			<template
+				v-if="Object.keys(data.address).length"
+			>
+				<CdsText
+					v-if="data.address.street"
+					as="caption"
+				>
+					{{ data.address.street }}, Nº {{ data.address.number ?? '--' }}
+				</CdsText>
 
-			<CdsText as="caption">
-				{{ data.address.neighborhood }}
-			</CdsText>
+				<CdsText
+					v-if="data.address.neighborhood"
+					as="caption"
+				>
+					{{ data.address.neighborhood }}
+				</CdsText>
 
-			<CdsText as="caption">
-				{{ data.address.city }} / {{ data.address.uf }}
+				<CdsText
+					v-if="data.address.city && data.address.uf"
+					as="caption"
+				>
+					{{ data.address.city }} / {{ data.address.uf }}
+				</CdsText>
+			</template>
+
+			<CdsText
+				v-else
+				as="caption"
+			>
+				--
 			</CdsText>
 		</CdsFlexbox>
 
@@ -133,5 +155,13 @@ function raceFormatter(race: string) {
 		default:
 			return '--';
 	}
+}
+
+function cpfResolver(cpf: string | null) {
+	return cpf ? maskCpf(cpf) : '--';
+}
+
+function cnsResolver(cns: string | null) {
+	return cns ? maskCns(cns) : '--';
 }
 </script>

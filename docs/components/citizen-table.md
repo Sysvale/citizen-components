@@ -1,6 +1,6 @@
 # CitizenTable
 
-Componente de tabela para exibição de cidadãos com busca, paginação e campos personalizáveis.
+Componente de tabela para exibição de cidadãos com paginação e campos personalizáveis.
 
 ## Uso Básico
 
@@ -168,10 +168,6 @@ function handleDelete(citizen, index) {
 
 ## Funcionalidades
 
-### Busca
-
-O componente possui um campo de busca integrado que filtra os cidadãos por `nome`, `cpf` e `cns`.
-
 ### Paginação
 
 A paginação é automática e exibida quando há mais de uma página de resultados.
@@ -322,7 +318,6 @@ import type { Citizen } from 'citizen-components';
 O componente realiza requisições automáticas para a API configurada, incluindo:
 
 - **Paginação**: Atualiza os dados ao mudar de página
-- **Busca**: Filtra os resultados ao digitar no campo de busca
 - **Campos personalizados**: Solicita apenas os campos selecionados pelo usuário
 
 Consulte a [documentação de configuração](../configuration.md) para detalhes sobre o formato esperado da API.

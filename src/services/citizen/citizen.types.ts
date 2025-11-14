@@ -16,8 +16,8 @@ export interface CitizenResponse {
 export interface CitizenServiceParams {
 	page: number;
 	fields?: string[];
-	searchString?: string;
-	perPage?: number;
+	search_string?: string;
+	per_page?: number;
 }
 
 export interface Citizen {

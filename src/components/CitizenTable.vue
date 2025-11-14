@@ -8,12 +8,9 @@
 			:custom-fields-list
 			:loading="isLoading"
 			:total-items="paginationMetaData.total"
-			with-search-button
-			with-search
 			custom-fields-searchable
 			custom-fields-track-by="key"
 			@update-fields-list="updateFieldList"
-			@search-button-click="handleSearch"
 		>
 			<template #table-item="{ data, field, colIndex, rowIndex }">
 				<TableCellRenderer
@@ -89,7 +86,6 @@ const citizenService = new CitizenService();
 const internalValue = ref<Citizen[]>();
 const items = ref<Citizen[]>([]);
 const isLoading = ref(false);
-const searchString = ref('');
 const fields = ref<TableField[]>(createFields());
 const customFieldsList = ref<CustomTableField[]>(createCustomFields());
 
@@ -102,14 +98,17 @@ const paginationMetaData = ref({
 
 const payload = computed(() => ({
 	page: paginationMetaData.value.currentPage,
-	perPage: paginationMetaData.value.perPage,
+	per_page: paginationMetaData.value.perPage,
 	fields: sanitizedFields.value,
-	searchString: searchString.value,
 }));
 
-const sanitizedFields = computed(() =>
-	fields.value.filter(field => field.key !== 'actions').map(field => field.key)
-);
+const sanitizedFields = computed(() =>{
+	return [
+		...fields.value.filter(field => field.key !== 'actions').map(field => field.key),
+		'cpf',
+		'cns',
+	]
+});
 
 watch(internalValue, value => (model.value = value));
 
@@ -158,11 +157,6 @@ function updateFieldList(newList: CustomTableField[]) {
 		},
 	];
 
-	fetchCitizens();
-}
-
-function handleSearch(term: string) {
-	searchString.value = term;
 	fetchCitizens();
 }
 </script>
