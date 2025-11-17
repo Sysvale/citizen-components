@@ -10,6 +10,10 @@ export const createFields = (): TableField[] => [
 		label: 'Data de nascimento',
 	},
 	{
+		key: 'address',
+		label: 'Endereço',
+	},
+	{
 		key: 'actions',
 		label: '',
 	},
