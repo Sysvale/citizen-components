@@ -6,6 +6,7 @@
 			:fields
 			:items
 			:custom-fields-list
+			:hide-customize-button="true"
 			:loading="isLoading"
 			:total-items="paginationMetaData.total"
 			custom-fields-searchable
