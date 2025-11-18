@@ -44,7 +44,7 @@
 			gap="1"
 		>
 			<template
-				v-if="Object.keys(data.address).length"
+				v-if="Object.keys(data.address || {}).length"
 			>
 				<CdsText
 					v-if="data.address.street"
