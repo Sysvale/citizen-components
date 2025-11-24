@@ -37,11 +37,11 @@
 					</CdsText>
 					<CdsText as="body-2">
 						<br>
-						CPF: {{ maskCpf(option['cpf']) }}
+						CPF: {{ option['cpf'] ? maskCpf(option['cpf']) : '--' }}
 					</CdsText>
 					<CdsText as="body-2">
 						<br>
-						CNS: {{ maskCns(option['cns']) }}
+						CNS: {{ option['cns'] ? maskCns(option['cns']) : '--' }}
 					</CdsText>
 					<CdsText as="body-2">
 						<br>
