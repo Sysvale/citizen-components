@@ -94,13 +94,13 @@ export class CitizenService {
 	private async indexMock(params: CitizenServiceParams): Promise<CitizenResponse> {
 		let citizens = makeCitizens(150);
 
-		if (params.searchString) {
-			citizens = this.citizensFilter(citizens, params.searchString);
+		if (params.search_string) {
+			citizens = this.citizensFilter(citizens, params.search_string);
 		}
 
 		let paginatedCitizens = citizens.slice(
-			(params.page - 1) * (params.perPage ?? 1),
-			params.page * (params.perPage ?? 1)
+			(params.page - 1) * (params.per_page ?? 1),
+			params.page * (params.per_page ?? 1)
 		);
 
 		if (params.fields && params.fields.length) {
@@ -118,9 +118,9 @@ export class CitizenService {
 			data: paginatedCitizens,
 			meta: {
 				current_page: params.page,
-				per_page: params.perPage ?? 1,
+				per_page: params.per_page ?? 1,
 				total: citizens.length,
-				last_page: Math.ceil(citizens.length / (params.perPage ?? 1)),
+				last_page: Math.ceil(citizens.length / (params.per_page ?? 1)),
 			},
 		};
 

@@ -129,9 +129,9 @@ const buttonTooltipText = computed(() => {
 	return '';
 });
 const payload = computed(() => ({
-	searchString: searchString.value,
+	search_string: searchString.value,
 	page: 1,
-	perPage: 1000,
+	per_page: 1000,
 }));
 
 watch(model, () => {
