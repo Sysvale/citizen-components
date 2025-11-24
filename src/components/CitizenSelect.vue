@@ -10,15 +10,16 @@
 			:fluid
 		>
 			<CdsTextInput
-				v-bind="$attrs"
 				v-model.trim="searchString"
-				state="default"
 				:fluid
+				:label
+				:placeholder
+				:state
+				:error-message
 				:disabled="isLoading || disabled"
 				@keydown.enter="search"
 				@blur="isActive = false"
 			/>
-
 			<SelectDropdown
 				v-if="isActive"
 				v-model="model"
@@ -93,12 +94,20 @@ const props = withDefaults(
 		variant?: string;
 		optionsField?: keyof Citizen;
 		disabled?: boolean;
+		label?: string;
+		placeholder?: string;
+		state?: string;
+		errorMessage?: string;
 	}>(),
 	{
 		fluid: false,
 		variant: 'green',
 		optionsField: 'name',
 		disabled: false,
+		label: 'Usuário SUS',
+		placeholder: 'Selecione um usuário',
+		state: 'default',
+		errorMessage: '',
 	}
 );
 
@@ -135,6 +144,7 @@ const payload = computed(() => ({
 }));
 
 watch(model, () => {
+	console.log('model', model.value);
 	if (!model.value) {
 		searchString.value = '';
 	} else if (typeof model.value === 'string') {
