@@ -67,7 +67,7 @@ describe('CitizenService', () => {
 		});
 
 		test('calls API with correct parameters', async () => {
-			const params = { page: 1, perPage: 10, searchString: 'João' };
+			const params = { page: 1, per_page: 10, search_string: 'João' };
 			await service.index(params);
 
 			expect(mockAxiosRequest).toHaveBeenCalledWith({
@@ -83,8 +83,8 @@ describe('CitizenService', () => {
 		test('calls API with fields parameter', async () => {
 			const params = {
 				page: 1,
-				perPage: 10,
-				searchString: 'João',
+				per_page: 10,
+				search_string: 'João',
 				fields: ['name', 'cns', 'cpf'],
 			};
 			await service.index(params);
@@ -100,7 +100,7 @@ describe('CitizenService', () => {
 		});
 
 		test('returns API response', async () => {
-			const result = await service.index({ page: 1, perPage: 10 });
+			const result = await service.index({ page: 1, per_page: 10 });
 			expect(result).toEqual(mockApiGetResponse);
 		});
 
@@ -108,7 +108,7 @@ describe('CitizenService', () => {
 			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 			mockAxiosRequest.mockRejectedValue(new Error('Network error'));
 
-			await expect(service.index({ page: 1, perPage: 10 })).rejects.toThrow(
+			await expect(service.index({ page: 1, per_page: 10 })).rejects.toThrow(
 				'Erro: Network error'
 			);
 			consoleErrorSpy.mockRestore();
@@ -121,7 +121,7 @@ describe('CitizenService', () => {
 		});
 
 		test('uses mock when apiBaseUrl is not configured', async () => {
-			const result = await service.index({ page: 1, perPage: 10 });
+			const result = await service.index({ page: 1, per_page: 10 });
 
 			expect(mockAxiosRequest).not.toHaveBeenCalled();
 			expect(mockMakeCitizens).toHaveBeenCalledWith(150);
@@ -135,7 +135,7 @@ describe('CitizenService', () => {
 			}));
 			mockMakeCitizens.mockReturnValue(largeMockData);
 
-			const result = await service.index({ page: 1, perPage: 10 });
+			const result = await service.index({ page: 1, per_page: 10 });
 
 			expect(result.data).toHaveLength(10);
 			expect(result.meta).toEqual({
@@ -149,8 +149,8 @@ describe('CitizenService', () => {
 		test('filters by name (case insensitive)', async () => {
 			const result = await service.index({
 				page: 1,
-				perPage: 10,
-				searchString: 'silva',
+				per_page: 10,
+				search_string: 'silva',
 			});
 
 			expect(result.data).toHaveLength(2);
@@ -162,8 +162,8 @@ describe('CitizenService', () => {
 		test('filters by CPF', async () => {
 			const result = await service.index({
 				page: 1,
-				perPage: 10,
-				searchString: '12345678900',
+				per_page: 10,
+				search_string: '12345678900',
 			});
 
 			expect(result.data).toHaveLength(1);
@@ -173,8 +173,8 @@ describe('CitizenService', () => {
 		test('returns empty array when no match', async () => {
 			const result = await service.index({
 				page: 1,
-				perPage: 10,
-				searchString: 'xyz-not-found',
+				per_page: 10,
+				search_string: 'xyz-not-found',
 			});
 
 			expect(result.data).toEqual([]);

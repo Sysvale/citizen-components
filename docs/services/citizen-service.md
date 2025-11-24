@@ -12,8 +12,8 @@ const citizenService = new CitizenService();
 // Buscar cidadãos com paginação
 const response = await citizenService.index({
 	page: 1,
-	perPage: 10,
-	searchString: 'João',
+	per_page: 10,
+	search_string: 'João',
 	fields: ['name', 'cpf', 'birth_date'],
 });
 
@@ -33,8 +33,8 @@ Busca uma lista de cidadãos com suporte a paginação, busca e seleção de cam
 interface CitizenServiceParams {
 	page: number; // Número da página (obrigatório)
 	fields?: string[]; // Campos a serem retornados
-	searchString?: string; // String de busca
-	perPage?: number; // Itens por página
+	search_string?: string; // String de busca
+	per_page?: number; // Itens por página
 }
 ```
 
@@ -57,8 +57,8 @@ interface CitizenResponse {
 ```typescript
 const response = await citizenService.index({
 	page: 1,
-	perPage: 15,
-	searchString: 'Maria',
+	per_page: 15,
+	search_string: 'Maria',
 	fields: ['name', 'cpf', 'email', 'phone'],
 });
 ```
@@ -135,7 +135,7 @@ app.use(CitizenComponentsPlugin, {
 
 ### Busca
 
-A busca (via `searchString`) funciona nos seguintes campos:
+A busca (via `search_string`) funciona nos seguintes campos:
 
 1. **Nome**: Busca case-insensitive no nome completo
 2. **CPF**: Remove máscaras automaticamente para busca precisa
@@ -147,18 +147,18 @@ A busca (via `searchString`) funciona nos seguintes campos:
 // Busca por nome
 await citizenService.index({
 	page: 1,
-	searchString: 'joão', // Encontra "João Silva", "Maria João", etc.
+	search_string: 'joão', // Encontra "João Silva", "Maria João", etc.
 });
 
 // Busca por CPF (com ou sem máscara)
 await citizenService.index({
 	page: 1,
-	searchString: '123.456.789-00', // Funciona
+	search_string: '123.456.789-00', // Funciona
 });
 
 await citizenService.index({
 	page: 1,
-	searchString: '12345678900', // Também funciona
+	search_string: '12345678900', // Também funciona
 });
 ```
 
@@ -191,7 +191,7 @@ A paginação é calculada automaticamente no modo mock e segue o padrão Larave
 ```typescript
 const response = await citizenService.index({
 	page: 2,
-	perPage: 20,
+	per_page: 20,
 });
 
 console.log(response.meta);
@@ -211,7 +211,7 @@ O serviço possui tratamento de erros integrado:
 try {
 	const response = await citizenService.index({
 		page: 1,
-		perPage: 10,
+		per_page: 10,
 	});
 	console.log(response.data);
 } catch (error) {

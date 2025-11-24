@@ -66,13 +66,13 @@ O endpoint de busca deve aceitar os seguintes query parameters:
 
 - **`page`** (obrigatório): Número da página para paginação
 - **`fields`** (opcional): Array de campos a serem retornados
-- **`searchString`** (opcional): String de busca para filtrar os cidadãos
-- **`perPage`** (opcional): Quantidade de itens por página
+- **`search_string`** (opcional): String de busca para filtrar os cidadãos
+- **`per_page`** (opcional): Quantidade de itens por página
 
 **Request:**
 
 ```
-GET /citizens?page=1&searchString=João&perPage=10&fields=name,cpf,birth_date
+GET /citizens?page=1&search_string=João&per_page=10&fields=name,cpf,birth_date
 ```
 
 **Response:**

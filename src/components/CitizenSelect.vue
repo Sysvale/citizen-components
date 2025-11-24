@@ -37,11 +37,11 @@
 					</CdsText>
 					<CdsText as="body-2">
 						<br>
-						CPF: {{ maskCpf(option['cpf']) }}
+						CPF: {{ option['cpf'] ? maskCpf(option['cpf']) : '--' }}
 					</CdsText>
 					<CdsText as="body-2">
 						<br>
-						CNS: {{ maskCns(option['cns']) }}
+						CNS: {{ option['cns'] ? maskCns(option['cns']) : '--' }}
 					</CdsText>
 					<CdsText as="body-2">
 						<br>
@@ -129,9 +129,9 @@ const buttonTooltipText = computed(() => {
 	return '';
 });
 const payload = computed(() => ({
-	searchString: searchString.value,
+	search_string: searchString.value,
 	page: 1,
-	perPage: 1000,
+	per_page: 1000,
 }));
 
 watch(model, () => {
