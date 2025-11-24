@@ -144,7 +144,6 @@ const payload = computed(() => ({
 }));
 
 watch(model, () => {
-	console.log('model', model.value);
 	if (!model.value) {
 		searchString.value = '';
 	} else if (typeof model.value === 'string') {
