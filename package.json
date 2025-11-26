@@ -39,7 +39,8 @@
 	},
 	"dependencies": {
 		"@vueuse/core": "^13.9.0",
-		"lodash": "^4.17.21"
+		"lodash": "^4.17.21",
+		"luxon": "^3.7.2"
 	},
 	"peerDependencies": {
 		"@sysvale/cuida": "^3.148.0",
