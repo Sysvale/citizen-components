@@ -14,3 +14,7 @@ const GENDERS: Gender[] = [
 export const genders = () => {
 	return GENDERS;
 }
+
+export const genderFromType = (type: string) => {
+	return GENDERS.find(gender => gender.value === type);
+}
