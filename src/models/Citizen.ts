@@ -80,6 +80,10 @@ export class Citizen {
 		];
 	}
 
+	get isPregnant() {
+		return this.internalGender.value === 'F' && this.pregnant;
+	}
+
 	get fancyAddress() {
 		if (!this.address) {
 			return 'Não informado';
