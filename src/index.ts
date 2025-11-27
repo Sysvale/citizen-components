@@ -1,7 +1,7 @@
 export { default as CitizenSelect } from './components/CitizenSelect.vue';
 export { default as CitizenTable } from './components/CitizenTable.vue';
 export { default as CreateCitizenSidesheet } from './components/CreateCitizenSidesheet.vue';
-export { default as CitizenResumeViewer } from './components/CitizenResumeViewer.vue';
+export { default as CitizenSummaryViewer } from './components/CitizenSummaryViewer.vue';
 
 export { default as CitizenComponentsPlugin } from './plugin';
 export { default } from './plugin';

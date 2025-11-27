@@ -21,18 +21,20 @@
 				:col-span="item.fill ? 3 : 1"
 			>
 				<CdsText
-					as="body-2"
+					as="caption"
 					color="n-600"
 					font-weight="semibold"
 				>
-					{{ item.label }}:
+					{{ item.label }}
 				</CdsText>
-				<CdsText
-					as="body-2"
-					color="n-600"
-				>
-					{{ item.value }}
-				</CdsText>
+				<CdsSpacer margin-top="1">
+					<CdsText
+						as="body-2"
+						color="n-600"
+					>
+						{{ item.value }}
+					</CdsText>
+				</CdsSpacer>
 			</CdsGridItem>
 		</CdsGrid>
 	</CdsFlexbox>
@@ -41,7 +43,11 @@
 <script setup lang="ts">
 defineProps<{
 	title: string,
-	items: Array<{ label: string, value: Nullable<string>, fill?: boolean }>,
+	items: Array<{
+		label: string,
+		value: Nullable<string>,
+		fill?: boolean,
+	}>,
 }>()
 </script>
 
