@@ -1,3 +1,5 @@
+import type { Address } from '@/types';
+
 export type Nullable<T> = T | null;
 
 export interface CitizenResponse {
@@ -55,6 +57,11 @@ export interface CreateCitizenParams {
 	cpf: string;
 	cns: string;
 	gender: string;
+	identification_document?: string;
+	pregnant?: boolean;
+	address: Address;
+	phone: string;
+	email: string;
 }
 
 export interface CreateCitizenResponse {

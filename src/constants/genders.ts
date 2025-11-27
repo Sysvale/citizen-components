@@ -1,20 +1,27 @@
 import type { Gender } from '@/types';
 
-const GENDERS: Gender[] = [
-	{
-		name: 'Feminino',
-		value: 'F',
-	},
-	{
-		name: 'Masculino',
-		value: 'M',
-	},
-];
+const male: Gender = {
+	name: 'Masculino',
+	value: 'M',
+};
+
+const female: Gender = {
+	name: 'Feminino',
+	value: 'F',
+};
+
+const GENDERS: Gender[] = [female, male];
 
 export const genders = () => {
 	return GENDERS;
 }
 
 export const genderFromType = (type: string) => {
-	return GENDERS.find(gender => gender.value === type);
+	const resolvedGender = GENDERS.find(gender => gender.value === type);
+
+	if (!resolvedGender) {
+		return male;
+	}
+
+	return resolvedGender;
 }
