@@ -122,7 +122,10 @@
 							/>
 						</Field>
 					</CdsGridItem>
-					<CdsGridItem :col-span="2">
+					<CdsGridItem
+						v-if="withRace"
+						:col-span="2"
+					>
 						<Field
 							v-slot="{ field, errors, meta }"
 							name="race"
@@ -145,7 +148,7 @@
 						</Field>
 					</CdsGridItem>
 					<CdsGridItem
-						:col-span="2"
+						:col-span="withRace ? 2 : 3"
 					>
 						<Field
 							v-slot="{ field, errors, meta }"
