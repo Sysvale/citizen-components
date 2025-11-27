@@ -16,3 +16,17 @@ export interface Gender {
 	name: 'Masculino' | 'Feminino';
 	value: 'M' | 'F';
 }
+
+export interface Race {
+	name: 'Branca' | 'Preta' | 'Parda' | 'Amarela' | 'Indígena';
+	value: 'white' | 'black' | 'mixed' | 'asian' | 'indigenous';
+}
+
+export interface Address {
+	street: string;
+	number: string;
+	complement?: string;
+	neighborhood: string;
+	city?: string;
+	uf?: string;
+}
