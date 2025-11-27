@@ -1,25 +1,23 @@
-import { defineRule } from 'vee-validate';
+import { defineRule, configure } from 'vee-validate';
+import { email, min, required } from '@vee-validate/rules';
+import { localize, setLocale } from '@vee-validate/i18n';
 import { cpfValidator, cnsValidator } from '@sysvale/foundry';
 
-defineRule('required', (value: string | object) => {
-	if (!value) {
-		return 'Esse campo é obrigatório';
-	}
+setLocale('pt-BR');
 
-	return true;
+configure({
+	generateMessage: localize('pt-BR', {
+		messages: {
+			required: 'Este campo é obrigatório',
+			email: 'O e-mail é inválido',
+			min: 'O campo deve ter no mínimo 0:{min} caracteres',
+		}
+	})
 });
 
-defineRule('minLength', (value: string, [limit]: [number]) => {
-	if (!value || !value.length) {
-		return true;
-	}
-
-	if (value.length < limit) {
-		return `O campo deve ter no mínimo ${limit} caracteres`;
-	}
-
-	return true;
-});
+defineRule('required', required);
+defineRule('min', min);
+defineRule('email', email);
 
 defineRule('cpf', (value: string) => {
 	const res = cpfValidator(value);
