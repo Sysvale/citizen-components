@@ -12,6 +12,8 @@
 			custom-fields-searchable
 			custom-fields-track-by="key"
 			@update-fields-list="updateFieldList"
+			@search="handleSearch"
+			@search-button-click="handleSearch"
 		>
 			<template #table-item="{ data, field, colIndex, rowIndex }">
 				<TableCellRenderer
@@ -61,16 +63,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
+import {
+	ref,
+	computed,
+	onMounted,
+	watch,
+	inject
+} from 'vue';
 import TableCellRenderer from './InternalComponents/TableCellRenderer.vue';
 import { CitizenService } from '@/services/citizen/citizen.service';
 import { createCustomFields } from '@/constants/customFields';
 import { createFields } from '@/constants/fields';
 import { type TableField, type CustomTableField } from '../types';
 
+const useToast = inject('useToast');
+
 const model = defineModel<Citizen[]>('modelValue');
 
-const props = withDefaults(
+withDefaults(
 	defineProps<{
 		hideEditIcon?: boolean;
 		hideDetailsIcon?: boolean;
@@ -159,5 +169,39 @@ function updateFieldList(newList: CustomTableField[]) {
 	];
 
 	fetchCitizens();
+}
+
+async function handleSearch(search: string) {
+	isLoading.value = true;
+
+	try {
+		const response = await citizenService.index({
+			...payload.value,
+			search_string: search,
+			page: 1,
+		});
+
+		items.value = response.data;
+		paginationMetaData.value = {
+			currentPage: response.meta.current_page,
+			perPage: response.meta.per_page,
+			total: response.meta.total,
+			lastPage: response.meta.last_page,
+		};
+	} catch (error) {
+		const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+		useToast().fire({
+			title: 'Houve um problema ao buscar as informações as informações do cidadão.',
+			description: errorMessage,
+			dismissible: true,
+			dismissAfter: 6000,
+			autoDismissible: true,
+			variant: 'danger',
+			light: false,
+		})
+	} finally {
+		isLoading.value = false;
+	}
 }
 </script>
