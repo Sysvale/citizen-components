@@ -178,6 +178,7 @@ async function handleSearch(search: string) {
 		const response = await citizenService.index({
 			...payload.value,
 			search_string: search,
+			page: 1,
 		});
 
 		items.value = response.data;
