@@ -6,6 +6,8 @@ import '../utils/rules/citizenFormRules';
 import { defineComponent } from 'vue';
 import { Citizen } from '@/models/Citizen';
 import type { FormContext } from 'vee-validate';
+// @ts-ignore
+import Cuida from '@sysvale/cuida';
 
 vi.mock('../services/citizen/citizen.service');
 
@@ -22,12 +24,12 @@ const CdsSideSheetStub = defineComponent({
 
 const globalStubs = {
 	CdsSideSheet: CdsSideSheetStub,
-	CdsGrid: true,
-	CdsToast: true,
-	CdsGridItem: true,
+	CdsGrid: false,
+	CdsGridItem: false,
 	CdsTextInput: true,
 	CdsDateInput: true,
 	CdsSelect: true,
+	CdsCheckbox: true,
 	SelectDropdown: true,
 };
 
@@ -41,13 +43,14 @@ describe('CreateCitizenSidesheet', () => {
 				stubs: globalStubs,
 				provide: {
 					useToast: mockToast
-				}
+				},
+				plugins: [Cuida],
 			},
 			props,
 		});
 
 	test('mounts successfully', () => {
-		const wrapper = createWrapper();
+		const wrapper = createWrapper({ modelValue: true });
 		expect(wrapper.exists()).toBe(true);
 	});
 
@@ -164,6 +167,16 @@ describe('CreateCitizenSidesheet', () => {
 			expect(wrapper.emitted('success')).toBeFalsy();
 			expect(mockToastFire).toHaveBeenCalled();
 			expect(wrapper.emitted('update:modelValue')).toBeFalsy();
+		});
+
+		test('pregnant checkbox is enabled when gender is female', async () => {
+			const pregnantCheckbox = wrapper.find('[name="pregnant"]');
+
+			expect(pregnantCheckbox.attributes().disabled).toBe('true');
+			
+			await formRefInstance.setFieldValue('gender', { value: 'F'});
+
+			expect(pregnantCheckbox.attributes().disabled).toBe('false');
 		});
 	});
 });
