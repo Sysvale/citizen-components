@@ -1,0 +1,26 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CitizenSummaryViewer > is rendered correctly 1`] = `
+"<div data-v-07590091="" class="citizen-resume-viewer citizen-resume-viewer--limit-width">
+  <div data-v-399209eb="" data-v-07590091="" class="box--gray">
+    <div data-v-399209eb="" class="clickable__container--not-clickable box__container">
+      <div data-v-209b589c="" data-v-399209eb="" class="spacer">
+        <div data-v-76655835="" data-v-07590091="" class="flexbox">
+          <div data-v-76655835="" data-v-07590091="" class="flexbox">
+            <div data-v-76655835="" data-v-07590091="" class="flexbox">
+              <cds-text-stub data-v-07590091="" as="subheading-2" color="n-700" fontweight="semibold" textalign="start" nomargin="true"></cds-text-stub>
+              <!--v-if-->
+            </div>
+            <div data-v-76655835="" data-v-07590091="" class="flexbox">
+              <cds-icon-button-stub data-v-07590091="" size="sm" icon="edit-outline" disabled="false" tooltiptext="Editar" feedbackonclick="false" feedbackicon="check-outline" variant="white" data-testid="edit-button"></cds-icon-button-stub>
+              <cds-icon-button-stub data-v-07590091="" size="sm" icon="x-outline" disabled="false" tooltiptext="Fechar" feedbackonclick="false" feedbackicon="check-outline" variant="white" data-testid="close-button"></cds-icon-button-stub>
+            </div>
+          </div>
+          <summary-section-stub data-v-07590091="" title="Dados pessoais" items="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"></summary-section-stub>
+          <summary-section-stub data-v-07590091="" title="Informações de contato" items="[object Object],[object Object],[object Object],[object Object]"></summary-section-stub>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>"
+`;
