@@ -8,6 +8,20 @@ export interface TableField {
 	label: string;
 }
 
+export interface CitizenFormField {
+	name: keyof Citizen | keyof Address;
+	label: string;
+	rules: string;
+	colSpan: number;
+	component: string | object;
+	required?: boolean;
+	mask?: string;
+	placeholder?: string;
+	options?: any[];
+	maxDate?: string;
+	optionsField?: string;
+}
+
 export interface CustomTableField extends TableField {
 	visible: boolean;
 }
@@ -17,10 +31,26 @@ export interface Gender {
 	value: 'M' | 'F';
 }
 
-export interface Race {
-	name: 'Branca' | 'Preta' | 'Parda' | 'Amarela' | 'Indígena';
-	value: 'white' | 'black' | 'mixed' | 'asian' | 'indigenous';
+export type Race = {
+	name: 'Branca';
+	value: 'white';
 }
+| {
+	name: 'Preta';
+	value: 'black';
+}
+| {
+	name: 'Parda';
+	value: 'mixed';
+}
+| {
+	name: 'Amarela';
+	value: 'asian';
+}
+| {
+	name: 'Indígena';
+	value: 'indigenous';
+};
 
 export interface Address {
 	street: string;

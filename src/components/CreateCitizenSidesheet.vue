@@ -11,320 +11,49 @@
 		@ok="handleOk"
 		@cancel="handleCancel"
 	>
-		<template #default>
-			<Form ref="formRef">
-				<CdsGrid
-					:cols="6"
-					col-gap="2"
-					row-gap="4"
+		<Form ref="formRef">
+			<CdsGrid
+				:cols="6"
+				col-gap="2"
+				row-gap="4"
+			>
+				<CdsGridItem
+					v-for="formField in formFields"
+					:key="formField.name"
+					:col-span="formField.colSpan"
+					:class="formField.name === 'pregnant' ? 'pregnant__container' : ''"
 				>
-					<CdsGridItem :col-span="6">
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="name"
-							label="nome"
-							rules="required|min:5"
-						>
-							<CdsTextInput
-								v-bind="field"
-								v-model="field.value"
-								label="Nome"
-								placeholder="Nome do usuário"
-								required
-								fluid
-								:disabled="isLoading"
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-					<CdsGridItem :col-span="3">
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="cns"
-							label="CNS"
-							rules="required|cns"
-						>
-							<CdsTextInput
-								v-bind="field"
-								v-model="field.value"
-								label="CNS"
-								placeholder="000 0000 0000 0000"
-								mask="### #### #### ####"
-								required
-								fluid
-								:disabled="isLoading"
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-					<CdsGridItem :col-span="3">
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="cpf"
-							label="CPF"
-							rules="required|cpf"
-						>
-							<CdsTextInput
-								v-bind="field"
-								v-model="field.value"
-								label="CPF"
-								placeholder="000.000.000-00"
-								required
-								fluid
-								:disabled="isLoading"
-								mask="###.###.###-##"
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-					<CdsGridItem :col-span="3">
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="birthDate"
-							label="data de nascimento"
-							rules="required"
-						>
-							<CdsDateInput
-								v-bind="field"
-								v-model="field.value"
-								label="Data de nascimento"
-								required
-								fluid
-								:variant="$attrs['action-button-variant']"
-								:disabled="isLoading"
-								:max-date="computedMaxDate"
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-					<CdsGridItem :col-span="3">
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="rg"
-							label="RG"
-							rules="required"
-						>
-							<CdsTextInput
-								v-bind="field"
-								v-model="field.value"
-								label="RG"
-								placeholder="Número do RG"
-								required
-								fluid
-								:disabled="isLoading"
-								mask="###########"
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-					<CdsGridItem
-						v-if="withRace"
-						:col-span="2"
+					<Field
+						v-slot="{ field, errors, meta }"
+						v-bind="formField"
+						as=""
 					>
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="race"
-							label="raça/cor"
-							rules="required"
-						>
-							<CdsSelect
-								v-bind="field"
-								v-model="field.value"
-								options-field="name"
-								:options="races"
-								fluid
-								:disabled="isLoading"
-								label="Raça/cor"
-								placeholder="Selecione a raça/cor"
-								required
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-					<CdsGridItem
-						:col-span="withRace ? 2 : 3"
-					>
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="gender"
-							label="sexo"
-							rules="required"
-						>
-							<CdsSelect
-								v-bind="field"
-								v-model="field.value"
-								options-field="name"
-								:options="genders()"
-								fluid
-								:disabled="isLoading"
-								label="Sexo"
-								placeholder="Selecione o sexo"
-								required
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-								@update:model-value="handleGenderChange"
-							/>
-						</Field>
-					</CdsGridItem>
-					<CdsGridItem :col-span="2">
-						<Field
-							v-slot="{ field }"
-							name="pregnant"
-							label="gestante"
-							as="div"
-							class="pregnant__container"
-						>
-							<CdsCheckbox
-								v-bind="field"
-								v-model="field.value"
-								label="Está gestante"
-								variant="green"
-								:disabled="isLoading || disablePregnantField"
-							/>
-						</Field>
-					</CdsGridItem>
-					<CdsGridItem :col-span="3">
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="phone"
-							label="telefone"
-							rules="required"
-						>
-							<CdsTextInput
-								v-bind="field"
-								v-model="field.value"
-								label="Telefone"
-								placeholder="(00) 00000-0000"
-								required
-								fluid
-								:disabled="isLoading"
-								mask="(##) # ####-####"
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-					<CdsGridItem :col-span="3">
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="email"
-							label="e-mail"
-							rules="required|email"
-						>
-							<CdsTextInput
-								v-bind="field"
-								v-model="field.value"
-								label="E-mail"
-								placeholder="seu.email@exemplo.com"
-								required
-								fluid
-								:disabled="isLoading"
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-					<CdsGridItem :col-span="4">
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="street"
-							label="rua"
-							rules="required"
-						>
-							<CdsTextInput
-								v-bind="field"
-								v-model="field.value"
-								label="Rua"
-								placeholder="Ex.: Rua Coronel Exemplio Lima"
-								required
-								fluid
-								:disabled="isLoading"
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-					<CdsGridItem :col-span="2">
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="number"
-							label="número"
-							rules="required"
-						>
-							<CdsTextInput
-								v-bind="field"
-								v-model="field.value"
-								label="Número"
-								placeholder="00"
-								required
-								fluid
-								:disabled="isLoading"
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-					<CdsGridItem :col-span="3">
-						<Field
-							v-slot="{ field }"
-							name="complement"
-							label="complemento"
-						>
-							<CdsTextInput
-								v-bind="field"
-								v-model="field.value"
-								label="Complemento"
-								placeholder="Ex.: Casa, prédio..."
-								fluid
-								:disabled="isLoading"
-							/>
-						</Field>
-					</CdsGridItem>
-					<CdsGridItem :col-span="3">
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="neighborhood"
-							label="bairro"
-							rules="required"
-						>
-							<CdsTextInput
-								v-bind="field"
-								v-model="field.value"
-								label="Bairro"
-								placeholder="Ex.: Centro"
-								required
-								fluid
-								:disabled="isLoading"
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-					<CdsToast
-						variant="green"
-						size="md"
-						text="Lorem Ipsum"
-					/>
-				</CdsGrid>
-			</Form>
-		</template>
+						<component
+							:is="formField.component"
+							v-bind="{
+								...field,
+								...formField,
+							}"
+							v-model="field.value"
+							fluid
+							:disabled="resolveDisabledState(formField.name)"
+							:state="inputStateResolver(meta)"
+							:error-message="errors[0]"
+							@update:model-value="(event: any) => handleFieldInput(formField.name, event)"
+						/>
+					</Field>
+				</CdsGridItem>
+			</CdsGrid>
+		</Form>
 	</CdsSideSheet>
 </template>
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue';
 import { Form, Field, type FormContext } from 'vee-validate';
 import inputStateResolver from '@/utils/inputStateResolver';
-import { genders } from '@/constants/genders';
-import { races } from '@/constants/races';
 import { CitizenService } from '@/services/citizen/citizen.service';
 import { Citizen } from '@/models/Citizen';
-import type { Gender } from '@/types';
+import citizenFormFields from '@/constants/citizenFormFields';
 
 const useToast = inject('useToast');
 
@@ -332,12 +61,14 @@ const props = withDefaults(
 	defineProps<{
 		toastSuccessDescription?: string;
 		toastErrorDescription?: string;
-		withRace?: boolean;
+		disabledFields?: string[] | 'all';
+		hiddenFields?: string[];
 	}>(),
 	{
 		toastSuccessDescription: 'Cidadão cadastrado com sucesso.',
 		toastErrorDescription: 'Houve um erro ao cadastrar o cidadão.',
-		withRace: false,
+		disabledFields: () => ([]),
+		hiddenFields: () => ([]),
 	}
 );
 
@@ -348,15 +79,7 @@ const formRef = ref<FormContext | null>(null);
 const isLoading = ref(false);
 const citizenService = new CitizenService();
 
-const computedMaxDate = computed(() => {
-	return new Date().toISOString().split('T')[0];
-});
-
-const disablePregnantField = computed(() => {
-	if (!formRef.value) return false;
-
-	return formRef.value?.values.gender?.value !== 'F';
-});
+const formFields = computed(() => citizenFormFields(props.hiddenFields));
 
 async function handleOk() {
 	let formValidationResult;
@@ -367,6 +90,7 @@ async function handleOk() {
 		formValidationResult = await formRef.value.validate();
 	} catch (error) {
 		console.error(error);
+		// @ts-ignore
 		useToast().fire({
 			title: 'Erro ao validar o formulário',
 			description:
@@ -390,6 +114,7 @@ async function handleOk() {
 		formRef.value.resetForm();
 		model.value = false;
 
+		// @ts-ignore
 		useToast().fire({
 			title: 'Sucesso',
 			description: props.toastSuccessDescription,
@@ -411,6 +136,7 @@ async function handleOk() {
 					: error.message;
 		}
 
+		// @ts-ignore
 		useToast().fire({
 			title: 'Erro',
 			description: errorMessage,
@@ -429,12 +155,37 @@ function handleCancel() {
 	formRef.value?.resetForm();
 }
 
-function handleGenderChange(gender: Gender) {
-	if (gender.value === 'F') {
+function resolvePregnantFieldDisabledState() {
+	if (!formRef.value) return false;
+
+	return formRef.value?.values.gender?.value !== 'F';
+}
+
+function resolveDisabledState(fieldName: string) {
+	if (isLoading.value || props.disabledFields.includes(fieldName) || props.disabledFields === 'all') {
+		return true;
+	}
+
+	if (fieldName === 'pregnant') {
+		return resolvePregnantFieldDisabledState();
+	}
+
+	return false;
+}
+
+function handleGenderChange(gender: 'M' | 'F') {
+	if (gender === 'F') {
 		return;
 	}
 
 	formRef.value?.setFieldValue('pregnant', null);
+	console.log('handleGenderChange', formRef.value);
+}
+
+function handleFieldInput(fieldName: string, fieldValue: any) {
+	if (fieldName !== 'gender') return;
+
+	handleGenderChange(fieldValue.value);
 }
 </script>
 
