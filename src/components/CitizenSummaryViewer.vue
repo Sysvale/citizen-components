@@ -25,21 +25,29 @@
 						</CdsText>
 						<CdsBadge
 							v-if="internalCitizen?.isPregnant"
+							data-testid="pregnant-badge"
 							size="sm"
 							variant="pink"
 						>
 							Gestante
 						</CdsBadge>
 					</CdsFlexbox>
-					<CdsFlexbox gap="3">
+					<CdsFlexbox
+						v-if="!hideActions"
+						gap="3"
+					>
 						<CdsIconButton
+							v-if="!hideEditButton"
 							size="sm"
+							data-testid="edit-button"
 							tooltip-text="Editar"
 							icon="edit-outline"
 							@cds-click="emits('edit')"
 						/>
 						<CdsIconButton
+							v-if="!hideCloseButton"
 							size="sm"
+							data-testid="close-button"
 							tooltip-text="Fechar"
 							icon="x-outline"
 							@cds-click="emits('close')"
@@ -63,11 +71,23 @@
 
 <script setup lang="ts">
 import { watch, ref, onMounted } from 'vue';
+// @ts-ignore
 import { smartTitleCase } from '@sysvale/foundry';
 import { Citizen as CitizenModel } from '@/models/Citizen';
 import SummarySection from './InternalComponents/SummarySection.vue';
 
-const props = defineProps<{ citizen: Citizen, fluid?: boolean }>();
+const props = withDefaults(defineProps<{
+	citizen: Partial<Citizen>,
+	fluid?: boolean,
+	hideEditButton?: boolean,
+	hideCloseButton?: boolean,
+	hideActions?: boolean,
+}>(),
+{
+	hideEditButton: false,
+	hideCloseButton: false,
+	hideActions: false
+});
 
 const emits = defineEmits(['edit', 'close']);
 
