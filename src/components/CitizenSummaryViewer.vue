@@ -1,7 +1,6 @@
 <template>
 	<div
-		class="citizen-resume-viewer"
-		:class="{ 'citizen-resume-viewer--limit-width': !fluid }"
+		:class="{ 'summary--limit-width': !fluid }"
 	>
 		<CdsBox fluid>
 			<CdsFlexbox
@@ -103,7 +102,7 @@ watch(props.citizen, (newValue) => {
 </script>
 
 <style lang="scss" scoped>
-.citizen-resume-viewer {
+.summary {
 	&--limit-width {
 		width: 800px;
 	}
