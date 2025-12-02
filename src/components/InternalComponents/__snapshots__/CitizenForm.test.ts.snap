@@ -1,0 +1,50 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CitizenForm > is rendered correctly 1`] = `
+"<form data-v-1916aed6="" novalidate="">
+  <div data-v-ff0b2888="" data-v-1916aed6="" class="grid">
+    <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
+      <cds-text-input-stub data-v-1916aed6="" label="Nome" disabled="false" state="default" inputtype="text" required="true" placeholder="Nome do usuário" errormessage="Valor inválido" fluid="true" tooltipicon="info-outline" linkurl="https://cuida.framer.wiki/" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="name" rules="required|min:5" colspan="6" component="CdsTextInput" data-testid="test-name"></cds-text-input-stub>
+    </div>
+    <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
+      <cds-text-input-stub data-v-1916aed6="" label="CNS" disabled="false" state="default" inputtype="text" required="true" placeholder="000 0000 0000 0000" errormessage="Valor inválido" fluid="true" mask="### #### #### ####" tooltipicon="info-outline" linkurl="https://cuida.framer.wiki/" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="cns" rules="required|cns" colspan="3" component="CdsTextInput" data-testid="test-cns"></cds-text-input-stub>
+    </div>
+    <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
+      <cds-text-input-stub data-v-1916aed6="" label="CPF" disabled="false" state="default" inputtype="text" required="true" placeholder="000.000.000-00" errormessage="Valor inválido" fluid="true" mask="###.###.###-##" tooltipicon="info-outline" linkurl="https://cuida.framer.wiki/" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="cpf" rules="required|cpf" colspan="3" component="CdsTextInput" data-testid="test-cpf"></cds-text-input-stub>
+    </div>
+    <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
+      <cds-date-input-stub data-v-1916aed6="" label="Data de nascimento" variant="green" state="default" mode="picking" range="false" required="true" disabled="false" fluid="true" mobile="false" floatinglabel="false" showtodaydot="false" highlighttoday="false" placeholder="Selecione uma data" errormessage="Valor inválido" mindate="" maxdate="2025-12-02" tooltipicon="info-outline" supportingtext="" name="birth_date" rules="required" colspan="3" component="CdsDateInput" data-testid="test-birth_date"></cds-date-input-stub>
+    </div>
+    <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
+      <cds-text-input-stub data-v-1916aed6="" label="RG" disabled="false" state="default" inputtype="text" required="false" placeholder="Digite aqui a informação" errormessage="Valor inválido" fluid="true" mask="###########" tooltipicon="info-outline" linkurl="https://cuida.framer.wiki/" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="identification_document" rules="" colspan="3" component="CdsTextInput" data-testid="test-identification_document"></cds-text-input-stub>
+    </div>
+    <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
+      <cds-select-stub data-v-1916aed6="" label="Raça/Cor" placeholder="Selecione..." options="[object Object],[object Object],[object Object],[object Object],[object Object]" state="default" required="true" errormessage="Valor inválido" searchable="false" width="" fluid="true" disabled="false" tooltipicon="info-outline" optionsfield="name" returnvalue="false" supportingtext="" mobile="false" floatinglabel="false" addable="false" name="race" rules="required" colspan="2" component="CdsSelect" data-testid="test-race"></cds-select-stub>
+    </div>
+    <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
+      <cds-select-stub data-v-1916aed6="" label="Sexo" placeholder="Selecione..." options="[object Object],[object Object]" state="default" required="true" errormessage="Valor inválido" searchable="false" width="" fluid="true" disabled="false" tooltipicon="info-outline" optionsfield="name" returnvalue="false" supportingtext="" mobile="false" floatinglabel="false" addable="false" name="gender" rules="required" colspan="2" component="CdsSelect" data-testid="test-gender"></cds-select-stub>
+    </div>
+    <div data-v-051eccea="" data-v-1916aed6="" class="grid-item pregnant__container">
+      <cds-checkbox-stub data-v-1916aed6="" modelvalue="false" label="Está gestante" variant="green" indeterminate="false" prominent="false" disabled="true" name="pregnant" required="false" rules="" colspan="2" component="CdsCheckbox" fluid="" data-testid="test-pregnant" state="default"></cds-checkbox-stub>
+    </div>
+    <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
+      <cds-text-input-stub data-v-1916aed6="" label="Telefone" disabled="false" state="default" inputtype="text" required="false" placeholder="(00) 00000-0000" errormessage="Valor inválido" fluid="true" mask="(##) #####-####" tooltipicon="info-outline" linkurl="https://cuida.framer.wiki/" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="phone" rules="" colspan="3" component="CdsTextInput" data-testid="test-phone"></cds-text-input-stub>
+    </div>
+    <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
+      <cds-text-input-stub data-v-1916aed6="" label="E-mail" disabled="false" state="default" inputtype="text" required="false" placeholder="seu.email@exemplo.com" errormessage="Valor inválido" fluid="true" tooltipicon="info-outline" linkurl="https://cuida.framer.wiki/" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="email" rules="" colspan="3" component="CdsTextInput" data-testid="test-email"></cds-text-input-stub>
+    </div>
+    <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
+      <cds-text-input-stub data-v-1916aed6="" label="Rua" disabled="false" state="default" inputtype="text" required="true" placeholder="Ex.: Rua Coronel Exemplio Lima" errormessage="Valor inválido" fluid="true" tooltipicon="info-outline" linkurl="https://cuida.framer.wiki/" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="street" rules="required" colspan="4" component="CdsTextInput" data-testid="test-street"></cds-text-input-stub>
+    </div>
+    <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
+      <cds-text-input-stub data-v-1916aed6="" label="Número" disabled="false" state="default" inputtype="text" required="true" placeholder="00" errormessage="Valor inválido" fluid="true" tooltipicon="info-outline" linkurl="https://cuida.framer.wiki/" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="number" rules="required" colspan="2" component="CdsTextInput" data-testid="test-number"></cds-text-input-stub>
+    </div>
+    <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
+      <cds-text-input-stub data-v-1916aed6="" label="Complemento" disabled="false" state="default" inputtype="text" required="false" placeholder="Ex.: Casa, prédio..." errormessage="Valor inválido" fluid="true" tooltipicon="info-outline" linkurl="https://cuida.framer.wiki/" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="complement" rules="" colspan="3" component="CdsTextInput" data-testid="test-complement"></cds-text-input-stub>
+    </div>
+    <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
+      <cds-text-input-stub data-v-1916aed6="" label="Bairro" disabled="false" state="default" inputtype="text" required="true" placeholder="Ex.: Centro" errormessage="Valor inválido" fluid="true" tooltipicon="info-outline" linkurl="https://cuida.framer.wiki/" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="neighborhood" rules="required" colspan="3" component="CdsTextInput" data-testid="test-neighborhood"></cds-text-input-stub>
+    </div>
+  </div>
+</form>"
+`;
