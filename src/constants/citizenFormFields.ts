@@ -1,6 +1,7 @@
 import type { CitizenFormField } from '@/types';
 import { races } from './races';
 import { genders } from './genders';
+import ufs from './ufs';
 
 export default (hiddenFields: string[]): CitizenFormField[] => {
 	const fields: CitizenFormField[] = [
@@ -17,7 +18,7 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			name: 'cns',
 			label: 'CNS',
 			required: true,
-			rules: 'required|cns',
+			rules: 'cns|required_without:@cpf',
 			colSpan: 3,
 			placeholder: '000 0000 0000 0000',
 			mask: '### #### #### ####',
@@ -27,7 +28,7 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			name: 'cpf',
 			label: 'CPF',
 			required: true,
-			rules: 'required|cpf',
+			rules: 'cpf|required_without:@cns',
 			colSpan: 3,
 			placeholder: '000.000.000-00',
 			mask: '###.###.###-##',
@@ -43,6 +44,16 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			maxDate: new Date().toISOString().split('T')[0],
 		},
 		{
+			name: 'cpf_responsible',
+			label: 'CPF do responsável',
+			required: false,
+			rules: 'cpf',
+			colSpan: 3,
+			placeholder: '000.000.000-00',
+			mask: '###.###.###-##',
+			component: 'CdsTextInput',
+		},
+		{
 			name: 'identification_document',
 			label: 'RG',
 			required: false,
@@ -50,6 +61,15 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			colSpan: 3,
 			component: 'CdsTextInput',
 			mask: '###########',
+		},
+		{
+			name: 'issuing_agency',
+			label: 'Orgão emissor',
+			required: false,
+			rules: '',
+			colSpan: 3,
+			component: 'CdsTextInput',
+			placeholder: 'Ex.: SSP',
 		},
 		{
 			name: 'race',
@@ -80,11 +100,30 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			component: 'CdsCheckbox',
 		},
 		{
+			name: 'mother_name',
+			label: 'Nome da mãe',
+			required: true,
+			rules: 'min:5',
+			colSpan: 6,
+			placeholder: 'Nome da mãe',
+			component: 'CdsTextInput',
+		},
+		{
 			name: 'phone',
 			label: 'Telefone',
 			required: false,
 			rules: '',
-			colSpan: 3,
+			colSpan: 2,
+			component: 'CdsTextInput',
+			mask: '(##) #####-####',
+			placeholder: '(00) 00000-0000',
+		},
+		{
+			name: 'cellphone',
+			label: 'Celular',
+			required: false,
+			rules: '',
+			colSpan: 2,
 			component: 'CdsTextInput',
 			mask: '(##) #####-####',
 			placeholder: '(00) 00000-0000',
@@ -94,7 +133,7 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			label: 'E-mail',
 			required: false,
 			rules: '',
-			colSpan: 3,
+			colSpan: 2,
 			component: 'CdsTextInput',
 			placeholder: 'seu.email@exemplo.com',
 		},
@@ -103,18 +142,9 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			label: 'Rua',
 			required: true,
 			rules: 'required',
-			colSpan: 4,
+			colSpan: 6,
 			component: 'CdsTextInput',
 			placeholder: 'Ex.: Rua Coronel Exemplio Lima',
-		},
-		{
-			name: 'number',
-			label: 'Número',
-			required: true,
-			rules: 'required',
-			colSpan: 2,
-			component: 'CdsTextInput',
-			placeholder: '00',
 		},
 		{
 			name: 'complement',
@@ -133,6 +163,33 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			colSpan: 3,
 			component: 'CdsTextInput',
 			placeholder: 'Ex.: Centro',
+		},
+		{
+			name: 'uf',
+			label: 'UF',
+			required: true,
+			rules: 'required',
+			colSpan: 1,
+			component: 'CdsSelect',
+			options: ufs,
+			optionsField: 'shortName',
+		},
+		{
+			name: 'city',
+			label: 'Cidade',
+			required: true,
+			rules: 'required',
+			colSpan: 3,
+			component: 'CdsSelect',
+		},
+		{
+			name: 'number',
+			label: 'Número',
+			required: true,
+			rules: 'required',
+			colSpan: 2,
+			component: 'CdsTextInput',
+			placeholder: '00',
 		},
 	];
 
