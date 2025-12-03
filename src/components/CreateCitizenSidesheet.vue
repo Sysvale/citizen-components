@@ -28,14 +28,27 @@
 						v-bind="formField"
 						as=""
 					>
+						<CdsSelect
+							v-if="formField.name === 'city'"
+							v-model="field.value"
+							v-bind="{
+								...field,
+								...formField,
+							}"
+							:disabled="resolveDisabledState(formField.name)"
+							:options="cities"
+							fluid
+						/>
 						<component
 							:is="formField.component"
+							v-else
 							v-bind="{
 								...field,
 								...formField,
 							}"
 							v-model="field.value"
 							fluid
+							:required="resolveRequiredState(formField.name, formField.required)"
 							:disabled="resolveDisabledState(formField.name)"
 							:state="inputStateResolver(meta)"
 							:error-message="errors[0]"
@@ -52,6 +65,7 @@ import { computed, inject, ref } from 'vue';
 import { Form, Field, type FormContext } from 'vee-validate';
 import inputStateResolver from '@/utils/inputStateResolver';
 import { CitizenService } from '@/services/citizen/citizen.service';
+import { getCitiesByUf } from '@/services/ibge';
 import { Citizen } from '@/models/Citizen';
 import citizenFormFields from '@/constants/citizenFormFields';
 
@@ -77,6 +91,8 @@ const emits = defineEmits(['success']);
 const model = defineModel<boolean>();
 const formRef = ref<FormContext | null>(null);
 const isLoading = ref(false);
+const isLoadingCities = ref(false);
+const cities = ref<object[]>([]);
 const citizenService = new CitizenService();
 
 const formFields = computed(() => citizenFormFields(props.hiddenFields));
@@ -170,7 +186,21 @@ function resolveDisabledState(fieldName: string) {
 		return resolvePregnantFieldDisabledState();
 	}
 
+	if (fieldName === 'city') {
+		return !formRef.value?.values.uf || isLoadingCities.value;
+	}
+
 	return false;
+}
+
+function resolveRequiredState(fieldName: string, isRequired: boolean | undefined) {
+	if (!['cpf', 'cns'].includes(fieldName)) return isRequired;
+
+	if (fieldName === 'cpf') {
+		return !formRef.value?.values.cns;
+	}
+
+	return !formRef.value?.values.cpf;
 }
 
 function handleGenderChange(gender: 'M' | 'F') {
@@ -182,10 +212,42 @@ function handleGenderChange(gender: 'M' | 'F') {
 	console.log('handleGenderChange', formRef.value);
 }
 
-function handleFieldInput(fieldName: string, fieldValue: any) {
-	if (fieldName !== 'gender') return;
+function handleUfSelect(ibgeCode: string) {
+	isLoadingCities.value = true;
 
-	handleGenderChange(fieldValue.value);
+	getCitiesByUf(ibgeCode)
+		.then((response: { data: Array<{ nome: string }> }) => {
+			cities.value = response.data.map((city) => ({ id: city.nome, value: city.nome }));
+		})
+		.catch(() => {
+			// @ts-ignore
+			useToast().fire({
+				title: 'Erro ao buscar cidades',
+				description: `Não foi possível carregar a lista de cidades.
+					Se o problema persistir, contate o suporte.`,
+				dismissible: true,
+				dismissAfter: 6000,
+				autoDismissible: true,
+				variant: 'danger',
+				light: false,
+			});
+		})
+		.finally(() => {
+			isLoadingCities.value = false;
+		});
+}
+
+function handleFieldInput(fieldName: string, fieldValue: any) {
+	switch (fieldName) {
+		case 'gender':
+			handleGenderChange(fieldValue.value);
+			break;
+		case 'uf':
+			handleUfSelect(fieldValue.id);
+			break;
+		default:
+			break;
+	}
 }
 </script>
 
