@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`CitizenSummaryViewer > is rendered correctly 1`] = `
-"<div data-v-07590091="" class="citizen-resume-viewer citizen-resume-viewer--limit-width">
+"<div data-v-07590091="" class="summary--limit-width">
   <div data-v-399209eb="" data-v-07590091="" class="box--gray">
     <div data-v-399209eb="" class="clickable__container--not-clickable box__container">
       <div data-v-209b589c="" data-v-399209eb="" class="spacer">
