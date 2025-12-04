@@ -53,10 +53,21 @@ export type Race = {
 };
 
 export interface Address {
-	street: string;
-	number: string;
+	street?: string;
+	number?: string;
 	complement?: string;
-	neighborhood: string;
-	city?: string;
-	uf?: string;
+	neighborhood?: string;
+	city?: string | {
+		id: string;
+		value: string;
+	};
+	uf?: string | {
+		ibgeCode: string;
+		name: string;
+		shortName: string;
+		id: string;
+	};
+	asFormData?: any;
+	asRequestPayload?: any;
+	fancyAddress?: string;
 }
