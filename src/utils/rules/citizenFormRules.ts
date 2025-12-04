@@ -23,8 +23,6 @@ defineRule('email', email);
 defineRule('required_without', (value: string, target: string[]) => {
 	const res = requiredWithout(value, target);
 
-	console.log(value, target);
-
 	if (!res) {
 		return 'Este campo é obrigatório';
 	}
