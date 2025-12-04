@@ -30,14 +30,10 @@ const props = withDefaults(
 	defineProps<{
 		toastSuccessDescription?: string;
 		toastErrorDescription?: string;
-		disabledFields?: string[] | 'all';
-		hiddenFields?: string[];
 	}>(),
 	{
 		toastSuccessDescription: 'Cidadão cadastrado com sucesso.',
 		toastErrorDescription: 'Houve um erro ao cadastrar o cidadão.',
-		disabledFields: () => ([]),
-		hiddenFields: () => ([]),
 	}
 );
 
