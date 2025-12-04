@@ -1,9 +1,8 @@
 <template>
 	<Form ref="formRef">
 		<CdsGrid
-			:cols="6"
 			col-gap="2"
-			row-gap="4"
+			:cols="12"
 		>
 			<CdsGridItem
 				v-for="formField in formFields"
@@ -12,22 +11,39 @@
 				:class="formField.name === 'pregnant' ? 'pregnant__container' : ''"
 			>
 				<Field
+					:ref="`validation${startCase(formField.name)}Ref`"
 					v-slot="{ field, errors, meta }"
 					v-bind="formField"
 					as=""
 				>
+					<CdsSelect
+						v-if="formField.name === 'city'"
+						v-model="field.value"
+						v-bind="{
+							...field,
+							...formField,
+						}"
+						:options="cities"
+						:data-testid="`test-${formField.name}`"
+						:state="inputStateResolver(meta)"
+						:error-message="errors[0]"
+						:disabled="resolveDisabledState(formField.name) || isLoadingCities"
+						fluid
+					/>
 					<component
 						:is="formField.component"
+						v-else
 						v-bind="{
 							...field,
 							...formField,
 						}"
 						v-model="field.value"
-						fluid
 						:data-testid="`test-${formField.name}`"
 						:disabled="resolveDisabledState(formField.name)"
 						:state="inputStateResolver(meta)"
 						:error-message="errors[0]"
+						class="field__container"
+						fluid
 						@update:model-value="(event: any) => handleFieldInput(formField.name, event)"
 					/>
 				</Field>
@@ -37,29 +53,49 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted, inject } from 'vue';
 import { Form, Field, type FormContext } from 'vee-validate';
 import inputStateResolver from '@/utils/inputStateResolver';
 import citizenFormFields from '@/constants/citizenFormFields';
+import { getCitiesByUf } from '@/services/ibge';
+import { startCase } from 'lodash';
+import { Citizen } from '@/models/Citizen';
 
 const props = withDefaults(
 	defineProps<{
 		disabledFields?: string[] | 'all';
-		initialState?: object;
+		initialData?: object | null;
 		hiddenFields?: string[];
 		disabled?: boolean;
 	}>(),
 	{
-		initialState: () => ({}),
+		initialData: null,
 		disabledFields: () => ([]),
 		hiddenFields: () => ([]),
 		disabled: false,
 	}
 );
 
+const useToast = inject('useToast');
+
 const formRef = ref<FormContext | null>(null);
+const validationCityRef = ref<any[] | null>(null);
+const cities = ref<object[]>([]);
+const isLoadingCities = ref<boolean>(false);
+const internalCitizen = ref<Citizen>(new Citizen({}));
 
 const formFields = computed(() => citizenFormFields(props.hiddenFields));
+
+onMounted(() => {
+	if (!props.initialData) return;
+
+	internalCitizen.value = new Citizen(props.initialData);
+	formRef.value?.resetForm({ values: internalCitizen.value.asFormData() });
+
+	if (!internalCitizen.value.uf) return;
+
+	handleUfSelect(internalCitizen.value.uf.ibgeCode);
+});
 
 function resolvePregnantFieldDisabledState() {
 	if (!formRef.value) return false;
@@ -72,11 +108,14 @@ function resolveDisabledState(fieldName: string) {
 		return true;
 	}
 
-	if (fieldName === 'pregnant') {
-		return resolvePregnantFieldDisabledState();
+	switch (fieldName) {
+		case 'pregnant':
+			return resolvePregnantFieldDisabledState();
+		case 'city':
+			return !formRef.value?.values.uf;
+		default:
+			return false;
 	}
-
-	return false;
 }
 
 function handleGenderChange(gender: 'M' | 'F') {
@@ -87,10 +126,43 @@ function handleGenderChange(gender: 'M' | 'F') {
 	formRef.value?.setFieldValue('pregnant', null);
 }
 
-function handleFieldInput(fieldName: string, fieldValue: any) {
-	if (fieldName !== 'gender') return;
+function handleUfSelect(ibgeCode: string | number) {
+	isLoadingCities.value = true;
 
-	handleGenderChange(fieldValue.value);
+	getCitiesByUf(ibgeCode)
+		.then((response: { data: Array<{ nome: string }> }) => {
+			cities.value = response.data.map((city) => ({ id: city.nome, value: city.nome }));
+		})
+		.catch(() => {
+			// @ts-ignore
+			useToast().fire({
+				title: 'Erro ao buscar cidades',
+				description: `Não foi possível carregar a lista de cidades.
+					Se o problema persistir, contate o suporte.`,
+				dismissible: true,
+				dismissAfter: 6000,
+				autoDismissible: true,
+				variant: 'danger',
+				light: false,
+			});
+		})
+		.finally(() => {
+			isLoadingCities.value = false;
+		});
+}
+
+function handleFieldInput(fieldName: string, fieldValue: any) {
+	switch (fieldName) {
+		case 'gender':
+			handleGenderChange(fieldValue.value);
+			break;
+		case 'uf':
+			validationCityRef.value?.[0].reset();
+			handleUfSelect(fieldValue.ibgeCode);
+			break;
+		default:
+			break;
+	}
 }
 
 defineExpose({
@@ -102,7 +174,10 @@ defineExpose({
 					return;
 				}
 
-				resolve(formRef.value?.values);
+				resolve({
+					...formRef.value?.values,
+					id: internalCitizen.value.id,
+				});
 			})
 			.catch(reject);
 	}),
@@ -113,16 +188,12 @@ defineExpose({
 <style lang="scss" scoped>
 @import '@sysvale/cuida/dist/@sysvale/tokens.scss';
 
-.pregnant {
-	&__container {
-		padding: pt(9);
-		height: 100%;
-	}
+.pregnant__container {
+	padding: pt(2);
+	height: 100%;
 }
 
-.multifield {
-	&__container {
-		padding: py(4);
-	}
+.field__container {
+	min-height: 80px;
 }
 </style>
