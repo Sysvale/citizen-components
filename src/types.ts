@@ -57,12 +57,12 @@ export interface Address {
 	number?: string;
 	complement?: string;
 	neighborhood?: string;
-	city?: string | {
+	city?: {
 		id: string;
 		value: string;
 	};
-	uf?: string | {
-		ibgeCode: string;
+	uf?: {
+		ibgeCode: number | string;
 		name: string;
 		shortName: string;
 		id: string;
