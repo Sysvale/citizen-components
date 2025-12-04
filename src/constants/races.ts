@@ -26,7 +26,12 @@ export const indigenous: Race = {
 }
 export const races: Race[] = [white, black, mixed, asian, indigenous];
 
-export const raceMapByValue = Object.fromEntries(
-	races.map(race => [race.value, race])
-);
+export const raceByValue = (race: string) => {
+	const resolvedRace = races.find(raceItem => raceItem.value === race);
 
+	if (!resolvedRace) {
+		return white;
+	}
+
+	return resolvedRace;
+}

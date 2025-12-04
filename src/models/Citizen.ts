@@ -1,7 +1,10 @@
-import type { CreateCitizenParams } from '@/services/citizen/citizen.types';
+import type { CitizenParams } from '@/services/citizen/citizen.types';
 import type { Address, Gender, Race } from '@/types';
-import { raceMapByValue } from '@/constants/races';
+import { genders } from '@/constants/genders';
+import { Address as AddressModel } from './Address';
+import { raceByValue } from '@/constants/races';
 import { genderFromType } from '@/constants/genders';
+// @ts-ignore
 import { DateTime } from 'luxon';
 import {
 	removeCpfMask,
@@ -9,105 +12,180 @@ import {
 	maskCpf,
 	maskCns,
 	maskPhone,
+	// @ts-ignore
 } from '@sysvale/foundry';
 
 export class Citizen {
+	public id?: string;
 	public cpf: string | undefined;
+	public cpf_responsible: string | undefined;
 	public cns: string | undefined;
 	public name: string;
-	private internalGender: Gender = {
-		name: 'Masculino',
-		value: 'M',
-	};
 	public birth_date: string;
 	public identification_document: string;
 	public pregnant: boolean;
-	public address?: Address;
+	public mother_name?: string;
 	public cellphone?: string;
 	public phone: string;
 	public email: string;
-	public race?: Race;
+	public issuing_agency?: string;
+	private _gender: Gender = genders()[0] as Gender;
+	private _race?: Race;
+	private _address: Address = new AddressModel({});
 
 	constructor(args: any) {
+		this.id = args.id;
 		this.cpf = args.cpf;
+		this.cpf_responsible = args.cpf_responsible;
 		this.cns = args.cns;
 		this.name = args.name;
 		this.gender = args.gender;
+		this.race = args.race;
 		this.birth_date = args.birth_date;
 		this.identification_document = args.identification_document;
+		this.mother_name = args.mother_name;
 		this.pregnant = args.pregnant;
-		this.address = args.address;
 		this.phone = args.phone;
 		this.cellphone = args.cellphone;
 		this.email = args.email;
+		this.issuing_agency = args.issuing_agency;
+		this.address = args.address
+			?? {
+				city: args.city,
+				uf: args.uf,
+				street: args.street,
+				neighborhood: args.neighborhood,
+				number: args.number,
+				complement: args.complement,
+			};
+	}
 
-		if (args.race) {
-			this.race = typeof args.race === 'string'
-				? raceMapByValue[args.race]
-				: args.race;
+	set race(race: Race | string) {
+		if (!race) return;
+
+		if (typeof race === 'string') {
+			this._race = raceByValue(race);
+			return;
 		}
+
+		this._race = race;
 	}
 
 	set gender(gender: Gender | string) {
 		if (typeof gender === 'string') {
-			this.internalGender = genderFromType(gender);
-			return
+			this._gender = genderFromType(gender);
+			return;
 		}
-		this.internalGender = gender;
+
+		this._gender = gender;
 	}
 
-	get gender() {
-		return this.internalGender;
+	set address(address: Address) {
+		this._address = new AddressModel(address);
 	}
 
-	get personalInfo() {
+	get address(): Address {
+		return this._address;
+	}
+
+	get city(): Address['city'] {
+		return this._address.city;
+	}
+
+	get uf(): Address['uf'] {
+		return this._address.uf;
+	}
+
+	get street(): Address['street'] {
+		return this._address.street;
+	}
+
+	get neighborhood(): Address['neighborhood'] {
+		return this._address.neighborhood;
+	}
+
+	get number(): Address['number'] {
+		return this._address.number;
+	}
+
+	get complement(): Address['complement'] {
+		return this._address.complement;
+	}
+
+	get race(): Race | undefined {
+		return this._race;
+	}
+
+	get gender(): Gender {
+		return this._gender;
+	}
+
+	get personalInfo(): { label: string; value: string; fill?: boolean }[] {
 		return [
-			{ label: 'CPF', value: maskCpf(this.cpf) ?? 'Não informado' },
-			{ label: 'CNS', value: maskCns(this.cns) ?? 'Não informado' },
+			{ label: 'CPF', value: this.cpf ? maskCpf(this.cpf) : 'Não informado' },
+			{ label: 'CNS', value: this.cns ?maskCns(this.cns) : 'Não informado' },
 			{ label: 'RG', value: this.identification_document ?? 'Não informado' },
 			{ label: 'Data de nascimento', value: DateTime.fromISO(this.birth_date).toFormat('dd/MM/yyyy') },
-			{ label: 'Sexo', value: this.internalGender.name },
+			{ label: 'Sexo', value: this._gender.name },
 			{ label: 'Raça/Cor', value: this.race?.name ?? 'Não informado' },
-		];	
+		];
 	}
 
-	get contactInfo() {
+	get contactInfo(): { label: string; value?: string; fill?: boolean }[] {
 		return [
-			{ label: 'Telefone', value: maskPhone(this.phone) ?? 'Não informado' },
-			{ label: 'Celular', value: maskPhone(this.cellphone) ?? 'Não informado' },
+			{ label: 'Telefone', value: this.phone ? maskPhone(this.phone) : 'Não informado' },
+			{ label: 'Celular', value: this.cellphone ? maskPhone(this.cellphone) : 'Não informado' },
 			{ label: 'E-mail', value: this.email ?? 'Não informado' },
 			{ label: 'Endereço', value: this.fancyAddress, fill: true },
 		];
 	}
 
 	get isPregnant() {
-		return this.internalGender.value === 'F' && this.pregnant;
+		return this._gender.value === 'F' && this.pregnant;
 	}
 
 	get fancyAddress() {
-		if (!this.address) {
-			return 'Não informado';
-		}
-
-		return `${this.address.street},
-			${this.address.number},
-			${this.address.neighborhood},
-			${this.address.city} - ${this.address.uf}`
+		return this.address?.fancyAddress;
 	}
 
-	asRequestPayload = (): CreateCitizenParams => {
+	asFormData = (): any => {
 		return {
-			cpf: removeCpfMask(this.cpf),
-			cns: removeCnsMask(this.cns),
+			cpf: this.cpf,
+			cpf_responsible: this.cpf_responsible,
+			cns: this.cns,
 			name: this.name,
-			gender: this.internalGender?.value,
+			gender: this._gender,
 			birth_date: this.birth_date,
 			identification_document: this.identification_document,
+			mother_name: this.mother_name,
 			pregnant: this.pregnant,
-			...(this.address && { address: this.address }),
+			phone: this.phone,
+			cellphone: this.cellphone,
+			email: this.email,
+			issuing_agency: this.issuing_agency,
+			race: this.race,
+			...this.address.asFormData,
+		};
+	}
+
+	asRequestPayload = (): CitizenParams => {
+		return {
+			id: this.id,
+			cpf: removeCpfMask(this.cpf),
+			cpf_responsible: removeCpfMask(this.cpf_responsible),
+			cns: removeCnsMask(this.cns),
+			name: this.name,
+			gender: this._gender?.value,
+			birth_date: this.birth_date,
+			identification_document: this.identification_document,
+			mother_name: this.mother_name,
+			pregnant: this.pregnant,
+			address: this.address.asRequestPayload,
 			phone: this.phone,
 			email: this.email,
+			cellphone: this.cellphone,
+			issuing_agency: this.issuing_agency,
 			...(this.race && { race: this.race.value }),
-		} as CreateCitizenParams;
+		} as CitizenParams;
 	};
 }
