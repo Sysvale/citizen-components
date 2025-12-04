@@ -3,6 +3,8 @@ import type {
 	CitizenResponse,
 	CreateCitizenParams,
 	CreateCitizenResponse,
+	Citizen,
+	UpdateCitizenParams,
 } from './citizen.types';
 import { makeCitizens } from './citizen.factory';
 import { getConfig, type CitizenComponentsConfig, type Endpoints } from '../../config';
@@ -51,16 +53,38 @@ export class CitizenService {
 		}
 	}
 
+	async update(data: UpdateCitizenParams): Promise<CreateCitizenResponse> {
+		if (!this.isCustomEndpointSet('update')) {
+			await this.delay(1000);
+			return this.citizenUpdateMock(data);
+		}
+
+		try {
+			const response = await this.apiCall('update', {
+				data,
+				method: 'put',
+				id: data.id,
+			});
+
+			return response;
+		} catch (error) {
+			throw this.handleErrors(error);
+		}
+	}
+
 	private async apiCall<T = any>(
 		endpointName: keyof Endpoints,
 		options?: {
 			method?: 'get' | 'post' | 'put' | 'patch' | 'delete';
 			params?: object;
 			data?: object;
+			id?: string;
 		}
 	): Promise<T> {
 		const endpointUri = this.config.endpoints[endpointName];
-		const url = `${this.config.apiBaseUrl}${endpointUri}`;
+		const url = options?.id
+			? `${this.config.apiBaseUrl}${endpointUri}/${options.id}`
+			: `${this.config.apiBaseUrl}${endpointUri}`;
 
 		const axiosConfig: any = {
 			url,
@@ -129,6 +153,23 @@ export class CitizenService {
 
 	private async citizenCreationMock(
 		params: CreateCitizenParams
+	): Promise<CreateCitizenResponse> {
+		let citizen = makeCitizens(1);
+
+		const response = {
+			data: {
+				citizen: {
+					...citizen[0],
+					...params,
+				},
+			},
+		};
+
+		return response as CreateCitizenResponse;
+	}
+
+	private async citizenUpdateMock(
+		params: UpdateCitizenParams
 	): Promise<CreateCitizenResponse> {
 		let citizen = makeCitizens(1);
 
