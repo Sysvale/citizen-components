@@ -14,6 +14,10 @@ describe('CitizenForm', () => {
 	let wrapper: VueWrapper<any>;
 
 	beforeEach(() => {
+		vi.useFakeTimers();
+
+		vi.setSystemTime(new Date('2025-12-04'));
+
 		wrapper = mount(CitizenForm, {
 			global: {
 				plugins: [Cuida],
@@ -31,6 +35,7 @@ describe('CitizenForm', () => {
 	});
 
 	afterEach(() => {
+		vi.useRealTimers();
 		wrapper.unmount();
 	});
 
