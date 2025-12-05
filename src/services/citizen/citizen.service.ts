@@ -138,9 +138,7 @@ export class CitizenService {
 		let citizens = makeCitizens(150);
 
 		if (params.search_string) {
-			console.log(citizens);
-			// citizens = this.citizensFilter(citizens, params.search_string);
-			citizens = [citizens[0]];
+			citizens = this.citizensFilter(citizens, params.search_string);
 		}
 
 		let paginatedCitizens = citizens.slice(
