@@ -2,11 +2,11 @@ import { describe, test, expect, vi, beforeEach, type Mock } from 'vitest';
 import { CitizenService } from './citizen.service';
 import { getConfig } from '../../config';
 import axios from 'axios';
-import { makeCitizens } from './citizen.factory';
+import { makeCitizens } from './citizen.mock';
 
 vi.mock('../../config');
 vi.mock('axios');
-vi.mock('./citizen.factory');
+vi.mock('./citizen.mock');
 
 describe('CitizenService', () => {
 	let service: CitizenService;

@@ -3,7 +3,7 @@ import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import { mount, VueWrapper } from '@vue/test-utils';
 import '../../utils/rules/citizenFormRules';
 import citizenFormFields from '@/constants/citizenFormFields';
-import { makeCitizen } from '@/services/citizen/citizen.factory';
+import { makeCitizen } from '@/services/citizen/citizen.mock';
 // @ts-ignore
 import Cuida from '@sysvale/cuida';
 

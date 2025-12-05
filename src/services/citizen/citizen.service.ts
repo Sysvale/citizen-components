@@ -8,7 +8,7 @@ import type {
 	ReadCitizenResponse,
 	UpdateCitizenParams,
 } from './citizen.types';
-import { makeCitizen, makeCitizens } from './citizen.factory';
+import { makeCitizen, makeCitizens } from './citizen.mock';
 import { getConfig, type CitizenComponentsConfig, type Endpoints } from '../../config';
 import { removeCpfMask, removeCnsMask } from '@sysvale/foundry';
 import axios from 'axios';
