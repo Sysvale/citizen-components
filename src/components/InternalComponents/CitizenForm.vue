@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, inject } from 'vue';
+import { computed, ref, onMounted, inject, watch } from 'vue';
 import { Form, Field, type FormContext } from 'vee-validate';
 import inputStateResolver from '@/utils/inputStateResolver';
 import citizenFormFields from '@/constants/citizenFormFields';
@@ -89,13 +89,29 @@ const formFields = computed(() => citizenFormFields(props.hiddenFields));
 onMounted(() => {
 	if (!props.initialData) return;
 
-	internalCitizen.value = new Citizen(props.initialData);
+	fillForm(props.initialData);
+});
+
+watch(
+	() => props.initialData,
+	(newValue) => {
+		if (!newValue) return;
+
+		fillForm(newValue);
+	}
+);
+
+function fillForm(citizenData: object) {
+	internalCitizen.value = new Citizen(citizenData);
 	formRef.value?.resetForm({ values: internalCitizen.value.asFormData() });
+
+	console.log('citizenData: ', citizenData);
+	console.log(internalCitizen.value);
 
 	if (!internalCitizen.value.uf) return;
 
 	handleUfSelect(internalCitizen.value.uf.ibgeCode);
-});
+}
 
 function resolvePregnantFieldDisabledState() {
 	if (!formRef.value) return false;
@@ -168,8 +184,9 @@ function handleFieldInput(fieldName: string, fieldValue: any) {
 defineExpose({
 	validate: () => new Promise((resolve, reject) => {
 		formRef.value?.validate()
-			.then(({ valid }) => {
-				if (!valid) {
+			.then((response) => {
+				if (!response.valid) {
+					console.log(response);
 					reject(new Error('validation'));
 					return;
 				}

@@ -15,12 +15,13 @@
 			ref="editCitizenFormRef"
 			v-bind="$attrs"
 			:disabled="isLoading"
+			:initial-data="selectedCitizen"
 		/>
 	</CdsSideSheet>
 </template>
 
 <script setup lang="ts">
-import { ref, inject } from 'vue';
+import { ref, inject, watch } from 'vue';
 import CitizenForm from './InternalComponents/CitizenForm.vue';
 import { Citizen } from '@/models/Citizen';
 import { CitizenService } from '@/services/citizen/citizen.service';
@@ -36,6 +37,7 @@ const props = withDefaults(
 	defineProps<{
 		toastSuccessDescription?: string;
 		toastErrorDescription?: string;
+		citizen: string;
 	}>(),
 	{
 		toastSuccessDescription: 'Cidadão atualizado com sucesso.',
@@ -44,8 +46,24 @@ const props = withDefaults(
 );
 
 const editCitizenFormRef = ref<InstanceType<typeof CitizenForm> | null>(null);
-const isLoading = ref<boolean>(false);
 const citizenService = new CitizenService();
+const isLoading = ref<boolean>(false);
+const selectedCitizen = ref<object | null>(null);
+
+watch(model, (newValue) => {
+	if (!newValue) return;
+
+	fetchCitizen();
+});
+
+async function fetchCitizen() {
+	isLoading.value = true;
+	citizenService.read({ document: props.citizen })
+		.then(({ data }) => {
+			selectedCitizen.value = data;
+		})
+		.finally(() => isLoading.value = false);
+}
 
 async function updateCitizen(formData: UpdateCitizenParams) {
 	if (!formData.id) {
@@ -92,6 +110,7 @@ function handleOk() {
 			updateCitizen(new Citizen(values).asRequestPayload() as UpdateCitizenParams);
 		})
 		.catch((error) => {
+			isLoading.value = false;
 			if (error.message === 'validation') {
 				return;
 			}
