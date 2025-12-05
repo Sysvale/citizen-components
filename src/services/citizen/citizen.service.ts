@@ -4,9 +4,11 @@ import type {
 	CreateCitizenParams,
 	CreateCitizenResponse,
 	Citizen,
+	ReadCitizenParams,
+	ReadCitizenResponse,
 	UpdateCitizenParams,
 } from './citizen.types';
-import { makeCitizens } from './citizen.factory';
+import { makeCitizen, makeCitizens } from './citizen.factory';
 import { getConfig, type CitizenComponentsConfig, type Endpoints } from '../../config';
 import { removeCpfMask, removeCnsMask } from '@sysvale/foundry';
 import axios from 'axios';
@@ -45,6 +47,23 @@ export class CitizenService {
 			const response = await this.apiCall('create', {
 				data,
 				method: 'post',
+			});
+
+			return response;
+		} catch (error) {
+			throw this.handleErrors(error);
+		}
+	}
+
+	async read(params: ReadCitizenParams): Promise<ReadCitizenResponse> {
+		if (!this.isCustomEndpointSet('index')) {
+			await this.delay(1000);
+			return this.showMock();
+		}
+
+		try {
+			const response = await this.apiCall('index', {
+				params,
 			});
 
 			return response;
@@ -119,7 +138,9 @@ export class CitizenService {
 		let citizens = makeCitizens(150);
 
 		if (params.search_string) {
-			citizens = this.citizensFilter(citizens, params.search_string);
+			console.log(citizens);
+			// citizens = this.citizensFilter(citizens, params.search_string);
+			citizens = [citizens[0]];
 		}
 
 		let paginatedCitizens = citizens.slice(
@@ -149,6 +170,12 @@ export class CitizenService {
 		};
 
 		return response;
+	}
+
+	private async showMock(): Promise<ReadCitizenResponse> {
+		return {
+			data: makeCitizen(),
+		} as unknown as ReadCitizenResponse;
 	}
 
 	private async citizenCreationMock(

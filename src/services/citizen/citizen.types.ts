@@ -15,6 +15,10 @@ export interface CitizenResponse {
 	};
 }
 
+export interface ReadCitizenResponse {
+	data: Citizen;
+}
+
 export interface CitizenServiceParams {
 	page: number;
 	fields?: string[];
@@ -99,4 +103,8 @@ export interface CreateCitizenResponse {
 	data: {
 		citizen: Citizen;
 	};
+}
+
+export interface ReadCitizenParams {
+	document: string;
 }
