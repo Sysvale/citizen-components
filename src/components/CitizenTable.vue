@@ -171,13 +171,18 @@ function updateFieldList(newList: CustomTableField[]) {
 	fetchCitizens();
 }
 
+function unmaskSearchString(searchString: string) {
+	if (searchString.match('[a-zA-z]')) return searchString;
+	return searchString.replace(/\D/g, '');
+}
+
 async function handleSearch(search: string) {
 	isLoading.value = true;
 
 	try {
 		const response = await citizenService.index({
 			...payload.value,
-			search_string: search,
+			search_string: unmaskSearchString(search),
 			page: 1,
 		});
 
