@@ -69,5 +69,5 @@ export interface Address {
 	};
 	asFormData?: any;
 	asRequestPayload?: any;
-	fancyAddress?: string;
+	fancyAddress: string;
 }

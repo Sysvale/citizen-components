@@ -71,7 +71,7 @@ export class Address {
 		return this._uf;
 	}
 
-	get fancyAddress() {
+	get fancyAddress(): string {
 		if (!this.city || !this.uf) {
 			return `${this.street},
 				${this.number},
@@ -81,7 +81,7 @@ export class Address {
 		return `${this.street},
 			${this.number},
 			${this.neighborhood},
-			${this.city.value} - ${this.uf.shortName}`
+			${this.city.value} - ${this.uf.shortName}`;
 	}
 
 	get asFormData() {

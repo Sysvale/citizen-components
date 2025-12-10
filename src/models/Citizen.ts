@@ -31,7 +31,7 @@ export class Citizen {
 	public issuing_agency?: string;
 	private _gender: Gender = genders()[0] as Gender;
 	private _race?: Race;
-	private _address: Address = new AddressModel({});
+	private _address: Address | null = null;
 
 	constructor(args: any) {
 		this.id = args.id;
@@ -84,32 +84,32 @@ export class Citizen {
 		this._address = new AddressModel(address);
 	}
 
-	get address(): Address {
+	get address(): Address | null {
 		return this._address;
 	}
 
 	get city(): Address['city'] {
-		return this._address.city;
+		return this._address?.city;
 	}
 
 	get uf(): Address['uf'] {
-		return this._address.uf;
+		return this._address?.uf;
 	}
 
 	get street(): Address['street'] {
-		return this._address.street;
+		return this._address?.street;
 	}
 
 	get neighborhood(): Address['neighborhood'] {
-		return this._address.neighborhood;
+		return this._address?.neighborhood;
 	}
 
 	get number(): Address['number'] {
-		return this._address.number;
+		return this._address?.number;
 	}
 
 	get complement(): Address['complement'] {
-		return this._address.complement;
+		return this._address?.complement;
 	}
 
 	get race(): Race | undefined {
@@ -120,24 +120,28 @@ export class Citizen {
 		return this._gender;
 	}
 
-	get personalInfo(): { label: string; value: string; fill?: boolean }[] {
-		return [
-			{ label: 'CPF', value: this.cpf ? maskCpf(this.cpf) : 'Não informado' },
-			{ label: 'CNS', value: this.cns ?maskCns(this.cns) : 'Não informado' },
-			{ label: 'RG', value: this.identification_document ?? 'Não informado' },
-			{ label: 'Data de nascimento', value: DateTime.fromISO(this.birth_date).toFormat('dd/MM/yyyy') },
-			{ label: 'Sexo', value: this._gender.name },
-			{ label: 'Raça/Cor', value: this.race?.name ?? 'Não informado' },
+	getPersonalInfo(fieldsToHide?: string[]): { label: string; value: string; fill?: boolean, field?: string }[] {
+		const fields = [
+			{ label: 'CPF', value: this.cpf ? maskCpf(this.cpf) : 'Não informado', field: 'cpf' },
+			{ label: 'CNS', value: this.cns ? maskCns(this.cns) : 'Não informado', field: 'cns' },
+			{ label: 'RG', value: this.identification_document || 'Não informado', field: 'identification_document' },
+			{ label: 'Data de nascimento', value: DateTime.fromISO(this.birth_date).toFormat('dd/MM/yyyy'), field: 'birth_date' },
+			{ label: 'Sexo', value: this._gender.name, field: 'gender' },
+			{ label: 'Raça/Cor', value: this.race?.name || 'Não informado', field: 'race' },
 		];
+
+		return fields.filter(({ field }) => !fieldsToHide?.includes(field));
 	}
 
-	get contactInfo(): { label: string; value?: string; fill?: boolean }[] {
-		return [
-			{ label: 'Telefone', value: this.phone ? maskPhone(this.phone) : 'Não informado' },
-			{ label: 'Celular', value: this.cellphone ? maskPhone(this.cellphone) : 'Não informado' },
-			{ label: 'E-mail', value: this.email ?? 'Não informado' },
-			{ label: 'Endereço', value: this.fancyAddress, fill: true },
+	getContactInfo(fieldsToHide?: string[]): { label: string; value: Nullable<string>; fill?: boolean, field?: string }[] {
+		const fields = [
+			{ label: 'Telefone', value: this.phone ? maskPhone(this.phone) : 'Não informado', field: 'phone' },
+			{ label: 'Celular', value: this.cellphone ? maskPhone(this.cellphone) : 'Não informado', field: 'cellphone' },
+			{ label: 'E-mail', value: this.email || 'Não informado', field: 'email' },
+			{ label: 'Endereço', value: this.fancyAddress, fill: true, field: 'address' },
 		];
+
+		return fields.filter(({ field }) => !fieldsToHide?.includes(field));
 	}
 
 	get isPregnant() {
@@ -145,6 +149,10 @@ export class Citizen {
 	}
 
 	get fancyAddress() {
+		if (!this.address) {
+			return 'Não informado';
+		}
+
 		return this.address?.fancyAddress;
 	}
 
@@ -164,7 +172,7 @@ export class Citizen {
 			email: this.email,
 			issuing_agency: this.issuing_agency,
 			race: this.race,
-			...this.address.asFormData,
+			...this.address?.asFormData,
 		};
 	}
 
@@ -180,7 +188,7 @@ export class Citizen {
 			identification_document: this.identification_document,
 			mother_name: this.mother_name,
 			pregnant: this.pregnant,
-			address: this.address.asRequestPayload,
+			address: this.address?.asRequestPayload || {},
 			phone: this.phone,
 			email: this.email,
 			cellphone: this.cellphone,

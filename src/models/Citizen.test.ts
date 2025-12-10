@@ -32,26 +32,36 @@ describe('Citizen model', () => {
 		expect(newCitizen.gender).toEqual(gender);
 	});
 
-	test('personalInfo object is resolved correctly', () => {
+	test('personalInfo is resolved correctly', () => {
 		const fancyGender = genderFromType(citizenFixture.gender).name;
 		const fancyRace = raceByValue(citizenFixture.race).name;
 
-		expect(citizen.personalInfo).toEqual([
-			{ label: 'CPF', value: maskCpf(citizenFixture.cpf) },
-			{ label: 'CNS', value: maskCns(citizenFixture.cns) },
-			{ label: 'RG', value: 'Não informado' },
-			{ label: 'Data de nascimento', value: DateTime.fromISO(citizenFixture.birth_date).toFormat('dd/MM/yyyy') },
-			{ label: 'Sexo', value: fancyGender },
-			{ label: 'Raça/Cor', value: fancyRace },
+		const fieldsToHide = ['race'];
+
+		expect(citizen.getPersonalInfo()).toEqual([
+			{ label: 'CPF', value: maskCpf(citizenFixture.cpf), field: 'cpf' },
+			{ label: 'CNS', value: maskCns(citizenFixture.cns), field: 'cns' },
+			{ label: 'RG', value: 'Não informado', field: 'identification_document' },
+			{ label: 'Data de nascimento', value: DateTime.fromISO(citizenFixture.birth_date).toFormat('dd/MM/yyyy'), field: 'birth_date' },
+			{ label: 'Sexo', value: fancyGender, field: 'gender' },
+			{ label: 'Raça/Cor', value: fancyRace, field: 'race' },
+		]);
+
+		expect(citizen.getPersonalInfo(fieldsToHide)).toEqual([
+			{ label: 'CPF', value: maskCpf(citizenFixture.cpf), field: 'cpf' },
+			{ label: 'CNS', value: maskCns(citizenFixture.cns), field: 'cns' },
+			{ label: 'RG', value: 'Não informado', field: 'identification_document' },
+			{ label: 'Data de nascimento', value: DateTime.fromISO(citizenFixture.birth_date).toFormat('dd/MM/yyyy'), field: 'birth_date' },
+			{ label: 'Sexo', value: fancyGender, field: 'gender' },
 		]);
 	});
 
-	test('contactInfo object is resolved correctly', () => {
-		expect(citizen.contactInfo).toEqual([
-			{ label: 'Telefone', value: 'Não informado' },
-			{ label: 'Celular', value: maskPhone(citizenFixture.cellphone) },
-			{ label: 'E-mail', value: 'Não informado' },
-			{ label: 'Endereço', value: citizen.fancyAddress, fill: true },
+	test('contactInfo is resolved correctly', () => {
+		expect(citizen.getContactInfo()).toEqual([
+			{ label: 'Telefone', value: 'Não informado', field: 'phone' },
+			{ label: 'Celular', value: maskPhone(citizenFixture.cellphone), field: 'cellphone' },
+			{ label: 'E-mail', value: 'Não informado', field: 'email' },
+			{ label: 'Endereço', value: citizen.fancyAddress, fill: true, field: 'address' },
 		]);
 	});
 
