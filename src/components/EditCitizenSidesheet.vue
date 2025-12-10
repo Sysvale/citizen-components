@@ -24,8 +24,10 @@
 import { ref, inject, watch } from 'vue';
 import CitizenForm from './InternalComponents/CitizenForm.vue';
 import { Citizen } from '@/models/Citizen';
-import { CitizenService } from '@/services/citizen/citizen.service';
+import { CitizenService } from '@/services/citizen/citizen.service'; 
 import type { UpdateCitizenParams } from '@/services/citizen/citizen.types';
+
+const emits = defineEmits(['success']);
 
 const model = defineModel<boolean>({
 	default: false
@@ -48,7 +50,7 @@ const props = withDefaults(
 const editCitizenFormRef = ref<InstanceType<typeof CitizenForm> | null>(null);
 const citizenService = new CitizenService();
 const isLoading = ref<boolean>(false);
-const selectedCitizen = ref<object | null>(null);
+const selectedCitizen = ref<object | null | undefined>(null);
 
 watch(model, (newValue) => {
 	if (!newValue) return;
@@ -58,9 +60,13 @@ watch(model, (newValue) => {
 
 async function fetchCitizen() {
 	isLoading.value = true;
-	citizenService.read({ document: props.citizen })
+	citizenService.read({ search_string: props.citizen })
 		.then(({ data }) => {
-			selectedCitizen.value = data;
+			if (data.length === 0) {
+				return;
+			}
+
+			[selectedCitizen.value] = data;
 		})
 		.finally(() => isLoading.value = false);
 }
@@ -72,7 +78,8 @@ async function updateCitizen(formData: UpdateCitizenParams) {
 	}
 
 	citizenService.update(formData)
-		.then(() => {
+		.then(({ data }) => {
+			emits('success', data.citizen);
 			// @ts-ignore
 			useToast().fire({
 				title: 'Sucesso',
