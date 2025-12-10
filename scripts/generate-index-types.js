@@ -45,10 +45,28 @@ export interface CreateCitizenSidesheetProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
+export interface EditCitizenSidesheetProps {
+  okButtonText?: string;
+  cancelButtonText?: string;
+  actionButtonVariant?: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  citizen: string;
+}
+
+export interface CitizenSummaryViewerProps {
+  citizen: Partial<Citizen>,
+	fluid?: boolean,
+	hideEditButton?: boolean,
+	hideCloseButton?: boolean,
+	hideActions?: boolean,
+}
+
 // Export components
 export declare const CitizenSelect: DefineComponent<CitizenSelectProps>;
 export declare const CitizenTable: DefineComponent<CitizenTableProps>;
 export declare const CreateCitizenSidesheet: DefineComponent<CreateCitizenSidesheetProps>;
+export declare const EditCitizenSidesheet: DefineComponent<EditCitizenSidesheetProps>;
+export declare const CitizenSummaryViewer: DefineComponent<CitizenSummaryViewerProps>;
 
 // Export plugin
 export declare const CitizenComponentsPlugin: Plugin;
