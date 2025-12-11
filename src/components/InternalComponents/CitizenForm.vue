@@ -25,7 +25,7 @@
 						}"
 						:options="cities"
 						:data-testid="`test-${formField.name}`"
-						:state="inputStateResolver(meta)"
+						:state="resolveInputState(meta)"
 						:error-message="errors[0]"
 						:disabled="resolveDisabledState(formField.name) || isLoadingCities"
 						fluid
@@ -40,7 +40,7 @@
 						v-model="field.value"
 						:data-testid="`test-${formField.name}`"
 						:disabled="resolveDisabledState(formField.name)"
-						:state="inputStateResolver(meta)"
+						:state="resolveInputState(meta)"
 						:error-message="errors[0]"
 						class="field__container"
 						fluid
@@ -101,12 +101,13 @@ watch(
 	}
 );
 
+function resolveInputState(meta: any) {
+	return inputStateResolver(meta);
+}
+
 function fillForm(citizenData: object) {
 	internalCitizen.value = new Citizen(citizenData);
 	formRef.value?.resetForm({ values: internalCitizen.value.asFormData() });
-
-	console.log('citizenData: ', citizenData);
-	console.log(internalCitizen.value);
 
 	if (!internalCitizen.value.uf) return;
 
