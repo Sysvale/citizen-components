@@ -16,7 +16,7 @@ export interface CitizenResponse {
 }
 
 export interface ReadCitizenResponse {
-	data: Citizen;
+	data: Citizen[];
 }
 
 export interface CitizenServiceParams {
@@ -106,5 +106,5 @@ export interface CreateCitizenResponse {
 }
 
 export interface ReadCitizenParams {
-	document: string;
+	search_string: string;
 }
