@@ -78,11 +78,15 @@ export class CitizenService {
 			return this.citizenUpdateMock(data);
 		}
 
+		const resolvedDocument = data.cns
+			? data.cns
+			: data.cpf;
+
 		try {
 			const response = await this.apiCall('update', {
 				data,
 				method: 'put',
-				id: data.id,
+				id: resolvedDocument,
 			});
 
 			return response;
@@ -172,7 +176,7 @@ export class CitizenService {
 
 	private async showMock(): Promise<ReadCitizenResponse> {
 		return {
-			data: makeCitizen(),
+			data: [makeCitizen()],
 		} as unknown as ReadCitizenResponse;
 	}
 
