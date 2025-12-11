@@ -3,7 +3,27 @@
 		:class="{ 'summary--limit-width': !fluid }"
 	>
 		<CdsBox fluid>
+			<CdsSpacer
+				v-if="!citizen"
+			>
+				<CdsEmptyState
+					:hide-action-button="hideCreateButton"
+					title="Nenhum cidadão selecionado"
+					text="Ao selecionar um cidadão, suas informações serão exibidas aqui."
+					action-button-text="Adicionar novo cidadão"
+					@action-button-click="emits('create')"
+				>
+					<template #graphic-element>
+						<CdsImage
+							:src="emptyStateImage"
+							alt="Imagem de empty state"
+							height="150"
+						/>
+					</template>
+				</CdsEmptyState>
+			</CdsSpacer>
 			<CdsFlexbox
+				v-else
 				gap="6"
 				direction="column"
 			>
@@ -20,7 +40,7 @@
 							font-weight="semibold"
 							color="n-700"
 						>
-							{{ smartTitleCase(citizen.name) }}
+							{{ smartTitleCase(citizen?.name) }}
 						</CdsText>
 						<CdsBadge
 							v-if="internalCitizen?.isPregnant"
@@ -56,12 +76,12 @@
 				<SummarySection
 					v-if="internalCitizen"
 					title="Dados pessoais"
-					:items="internalCitizen.personalInfo"
+					:items="internalCitizen.getPersonalInfo(hiddenFields)"
 				/>
 				<SummarySection
 					v-if="internalCitizen"
 					title="Informações de contato"
-					:items="internalCitizen?.contactInfo"
+					:items="internalCitizen?.getContactInfo(hiddenFields)"
 				/>
 			</CdsFlexbox>
 		</CdsBox>
@@ -69,36 +89,45 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref, onMounted } from 'vue';
+import { watch, ref, onMounted, toRef } from 'vue';
 // @ts-ignore
 import { smartTitleCase } from '@sysvale/foundry';
 import { Citizen as CitizenModel } from '@/models/Citizen';
+import { type Citizen } from '@/types';
+import emptyState from '../assets/images/summary-empty-state.svg';
 import SummarySection from './InternalComponents/SummarySection.vue';
 
 const props = withDefaults(defineProps<{
-	citizen: Partial<Citizen>,
+	citizen?: Partial<Citizen> | null,
 	fluid?: boolean,
 	hideEditButton?: boolean,
 	hideCloseButton?: boolean,
 	hideActions?: boolean,
+	hideCreateButton?: boolean,
+	hiddenFields?: string[],
 }>(),
 {
+	citizen: null,
 	hideEditButton: false,
 	hideCloseButton: false,
-	hideActions: false
+	hideActions: false,
+	hiddenFields: () => [],
 });
 
-const emits = defineEmits(['edit', 'close']);
+const emits = defineEmits(['create', 'edit', 'close']);
 
 const internalCitizen = ref<CitizenModel>();
+const emptyStateImage = emptyState;
 
-onMounted(() => {
-	internalCitizen.value = new CitizenModel(props.citizen);
-});
+onMounted(() => fillCitizen(props.citizen));
 
-watch(props.citizen, (newValue) => {
-	internalCitizen.value = new CitizenModel(newValue);
-})
+watch(toRef(props, 'citizen'), (newValue) => fillCitizen(newValue));
+
+function fillCitizen(citizenInfo: any | null) {
+	if (!citizenInfo) return;
+
+	internalCitizen.value = new CitizenModel(citizenInfo);
+}
 </script>
 
 <style lang="scss" scoped>
