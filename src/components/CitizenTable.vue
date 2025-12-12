@@ -99,6 +99,7 @@ const items = ref<Citizen[]>([]);
 const isLoading = ref(false);
 const fields = ref<TableField[]>(createFields());
 const customFieldsList = ref<CustomTableField[]>(createCustomFields());
+const searchString = ref<string>('');
 
 const paginationMetaData = ref({
 	currentPage: 1,
@@ -139,7 +140,10 @@ function markDefaultFieldsAsVisible() {
 async function fetchCitizens() {
 	isLoading.value = true;
 	try {
-		const response = await citizenService.index(payload.value);
+		const response = await citizenService.index({
+			...payload.value,
+			search_string: searchString.value,
+		});
 		items.value = response.data;
 		paginationMetaData.value = {
 			currentPage: response.meta.current_page,
@@ -178,11 +182,12 @@ function unmaskSearchString(searchString: string) {
 
 async function handleSearch(search: string) {
 	isLoading.value = true;
+	searchString.value = unmaskSearchString(search);
 
 	try {
 		const response = await citizenService.index({
 			...payload.value,
-			search_string: unmaskSearchString(search),
+			search_string: searchString.value,
 			page: 1,
 		});
 
