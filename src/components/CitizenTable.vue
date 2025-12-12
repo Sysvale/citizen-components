@@ -12,7 +12,7 @@
 			custom-fields-searchable
 			custom-fields-track-by="key"
 			@update-fields-list="updateFieldList"
-			@search="(value: string) => $attrs['search-input-delay'] && handleSearch(value)"
+			@search="handleSearch"
 			@search-button-click="handleSearch"
 		>
 			<template #table-item="{ data, field, colIndex, rowIndex }">
