@@ -17,7 +17,23 @@
 					as=""
 				>
 					<CdsSelect
-						v-if="formField.name === 'city'"
+						v-if="formField.name === 'uf'"
+						v-model="field.value"
+						v-bind="{
+							...field,
+							...formField,
+						}"
+						:options="resolvedUfs"
+						:data-testid="`test-${formField.name}`"
+						:state="resolveInputState(meta)"
+						:error-message="errors[0]"
+						:disabled="resolveDisabledState(formField.name) || isLoadingCities"
+						options-field="shortName"
+						fluid
+						@update:model-value="(event: any) => handleFieldInput(formField.name, event)"
+					/>
+					<CdsSelect
+						v-else-if="formField.name === 'city'"
 						v-model="field.value"
 						v-bind="{
 							...field,
@@ -60,6 +76,7 @@ import citizenFormFields from '@/constants/citizenFormFields';
 import { getCitiesByUf } from '@/services/ibge';
 import { startCase } from 'lodash';
 import { Citizen } from '@/models/Citizen';
+import ufs from '@/constants/ufs';
 
 const props = withDefaults(
 	defineProps<{
@@ -67,12 +84,16 @@ const props = withDefaults(
 		initialData?: object | null;
 		hiddenFields?: string[];
 		disabled?: boolean;
+		allowedUfs?: string[] | null;
+		allowedCities?: string[] | null;
 	}>(),
 	{
 		initialData: null,
 		disabledFields: () => ([]),
 		hiddenFields: () => ([]),
 		disabled: false,
+		allowedUfs: null,
+		allowedCities: null,
 	}
 );
 
@@ -80,11 +101,16 @@ const useToast = inject('useToast');
 
 const formRef = ref<FormContext | null>(null);
 const validationCityRef = ref<any[] | null>(null);
-const cities = ref<object[]>([]);
+const cities = ref<{ id: string; value: string }[]>([]);
 const isLoadingCities = ref<boolean>(false);
 const internalCitizen = ref<Citizen>(new Citizen({}));
 
 const formFields = computed(() => citizenFormFields(props.hiddenFields));
+const resolvedUfs = computed(() => {
+	if (!props.allowedUfs) return ufs;
+
+	return ufs.filter((uf) => props.allowedUfs?.includes(uf.shortName));
+});
 
 onMounted(() => {
 	if (!props.initialData) return;
@@ -149,6 +175,10 @@ function handleUfSelect(ibgeCode: string | number) {
 	getCitiesByUf(ibgeCode)
 		.then((response: { data: Array<{ nome: string }> }) => {
 			cities.value = response.data.map((city) => ({ id: city.nome, value: city.nome }));
+
+			if (!props.allowedCities) return;
+
+			cities.value = cities.value.filter(({ id }) => props.allowedCities?.includes(id));
 		})
 		.catch(() => {
 			// @ts-ignore

@@ -1,7 +1,6 @@
 import type { CitizenFormField } from '@/types';
 import { races } from './races';
 import { genders } from './genders';
-import ufs from './ufs';
 
 export default (hiddenFields: string[]): CitizenFormField[] => {
 	const fields: CitizenFormField[] = [
@@ -180,8 +179,6 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			rules: 'required',
 			colSpan: 3,
 			component: 'CdsSelect',
-			options: ufs,
-			optionsField: 'shortName',
 		},
 		{
 			name: 'city',
