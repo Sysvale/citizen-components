@@ -3,6 +3,7 @@
 		v-bind="$attrs"
 		v-model="model"
 		title="Cadastrar usuário SUS"
+		size="lg"
 		no-close-ok-button
 		:disable-ok-button="isLoading || $attrs['disable-ok-button']"
 		:disable-cancel-button="isLoading || $attrs['disable-cancel-button']"
@@ -10,136 +11,16 @@
 		@ok="handleOk"
 		@cancel="handleCancel"
 	>
-		<template #default>
-			<Form ref="formRef">
-				<CdsGrid
-					:cols="2"
-					gap="20px"
-				>
-					<CdsGridItem :col-span="2">
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="name"
-							label="nome"
-							rules="required|minLength:5"
-						>
-							<CdsTextInput
-								v-bind="field"
-								v-model="field.value"
-								label="Nome"
-								placeholder="Nome do usuário"
-								required
-								fluid
-								:disabled="isLoading"
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-
-					<CdsGridItem>
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="cns"
-							label="CNS"
-							rules="required|cns"
-						>
-							<CdsTextInput
-								v-bind="field"
-								v-model="field.value"
-								label="CNS"
-								placeholder="000 0000 0000 0000"
-								mask="### #### #### ####"
-								required
-								fluid
-								:disabled="isLoading"
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-
-					<CdsGridItem>
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="cpf"
-							label="CPF"
-							rules="required|cpf"
-						>
-							<CdsTextInput
-								v-bind="field"
-								v-model="field.value"
-								label="CPF"
-								placeholder="000.000.000-00"
-								required
-								fluid
-								:disabled="isLoading"
-								mask="###.###.###-##"
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-
-					<CdsGridItem>
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="birth_date"
-							label="data de nascimento"
-							rules="required"
-						>
-							<CdsDateInput
-								v-bind="field"
-								v-model="field.value"
-								label="Data de nascimento"
-								fluid
-								:variant="$attrs['action-button-variant']"
-								:disabled="isLoading"
-								:max-date="computedMaxDate"
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-
-					<CdsGridItem>
-						<Field
-							v-slot="{ field, errors, meta }"
-							name="gender"
-							label="sexo"
-							rules="required"
-						>
-							<CdsSelect
-								v-bind="field"
-								v-model="field.value"
-								options-field="name"
-								:options="genders()"
-								fluid
-								:disabled="isLoading"
-								label="Sexo"
-								placeholder="Selecione o sexo"
-								required
-								:state="inputStateResolver(meta)"
-								:error-message="errors[0]"
-							/>
-						</Field>
-					</CdsGridItem>
-
-					<CdsToast
-						variant="green"
-						size="md"
-						text="Lorem Ipsum"
-					/>
-				</CdsGrid>
-			</Form>
-		</template>
+		<CitizenForm
+			ref="citizenFormRef"
+			v-bind="$attrs"
+			:disabled="isLoading"
+		/>
 	</CdsSideSheet>
 </template>
 <script setup lang="ts">
-import { computed, inject, ref } from 'vue';
-import { Form, Field, type FormContext } from 'vee-validate';
-import inputStateResolver from '@/utils/inputStateResolver';
-import { genders } from '@/constants/genders';
+import { inject, ref } from 'vue';
+import CitizenForm from './InternalComponents/CitizenForm.vue';
 import { CitizenService } from '@/services/citizen/citizen.service';
 import { Citizen } from '@/models/Citizen';
 
@@ -159,47 +40,21 @@ const props = withDefaults(
 const emits = defineEmits(['success']);
 
 const model = defineModel<boolean>();
-const formRef = ref<FormContext | null>(null);
+const citizenFormRef = ref<InstanceType<typeof CitizenForm> | null>(null);
 const isLoading = ref(false);
-
-const computedMaxDate = computed(() => {
-	return new Date().toISOString().split('T')[0];
-});
-
 const citizenService = new CitizenService();
 
-async function handleOk() {
-	let formValidationResult;
-
-	if (!formRef.value) return;
-
-	try {
-		formValidationResult = await formRef.value.validate();
-	} catch (error) {
-		console.error(error);
-		useToast().fire({
-			title: 'Erro ao validar o formulário',
-			description:
-				'Houve um erro ao validar o formulário. Se o problema persistir, contate o suporte.',
-			dismissible: true,
-			dismissAfter: 6000,
-			autoDismissible: true,
-			variant: 'danger',
-			light: false,
-		});
-	}
-
-	if (!formValidationResult?.valid) return;
-
+async function saveCitizen(formData: object) {
 	try {
 		isLoading.value = true;
 		const citizen = await citizenService.create(
-			new Citizen(formRef.value.values).asRequestPayload()
+			new Citizen(formData).asRequestPayload()
 		);
 
-		formRef.value.resetForm();
+		citizenFormRef.value?.resetForm();
 		model.value = false;
 
+		// @ts-ignore
 		useToast().fire({
 			title: 'Sucesso',
 			description: props.toastSuccessDescription,
@@ -221,6 +76,7 @@ async function handleOk() {
 					: error.message;
 		}
 
+		// @ts-ignore
 		useToast().fire({
 			title: 'Erro',
 			description: errorMessage,
@@ -230,12 +86,51 @@ async function handleOk() {
 			variant: 'danger',
 			light: false,
 		});
-	} finally {
-		isLoading.value = false;
 	}
 }
 
+function handleOk() {
+	citizenFormRef.value?.validate() 
+		.then((values: any) => {
+			isLoading.value = true;
+			saveCitizen(values);
+		})
+		.catch((error) => {
+			if (error.message === 'validation') {
+				return;
+			}
+
+			// @ts-ignore
+			useToast().fire({
+				title: 'Erro',
+				description: error,
+				dismissible: true,
+				dismissAfter: 6000,
+				autoDismissible: true,
+				variant: 'danger',
+				light: false,
+			});
+		});
+}
+
 function handleCancel() {
-	formRef.value?.resetForm();
+	citizenFormRef.value?.resetForm();
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@sysvale/cuida/dist/@sysvale/tokens.scss';
+
+.pregnant {
+	&__container {
+		padding: pt(9);
+		height: 100%;
+	}
+}
+
+.multifield {
+	&__container {
+		padding: py(4);
+	}
+}
+</style>

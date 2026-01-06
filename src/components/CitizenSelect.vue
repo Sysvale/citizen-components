@@ -83,7 +83,9 @@ const useToast = inject('useToast');
 
 defineOptions({
 	inheritAttrs: false
-})
+});
+
+const emits = defineEmits(['not-found']);
 
 const model = defineModel<CitizenSelectModelType>('modelValue');
 
@@ -170,6 +172,10 @@ async function search() {
 		const citizensList = await citizenService.index(payload.value);
 		options.value = citizensList.data;
 		isActive.value = true;
+
+		if (!options.value.length) {
+			emits('not-found');
+		}
 	} catch (error) {
 		isActive.value = false;
 		const errorMessage = error instanceof Error ? error.message : 'Unknown error';

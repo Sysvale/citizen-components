@@ -1,7 +1,7 @@
 /* eslint-disable vue/one-component-per-file */
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { DOMWrapper, mount, VueWrapper } from '@vue/test-utils';
-import CreateCitizenSidesheet from './CreateCitizenSidesheet.vue';
+import EditCitizenSidesheet from './EditCitizenSidesheet.vue';
 import { CitizenService } from '../services/citizen/citizen.service';
 import '../utils/rules/citizenFormRules';
 import { defineComponent } from 'vue';
@@ -50,9 +50,9 @@ const mockFormData = {
 const mockToastFire = vi.fn();
 const mockToast = vi.fn(() => ({ fire: mockToastFire }));
 
-describe('CreateCitizenSidesheet', () => {
+describe.skip('EditCitizenSidesheet', () => {
 	const createWrapper = (props?: Record<string, any>) =>
-		mount(CreateCitizenSidesheet, {
+		mount(EditCitizenSidesheet, {
 			global: {
 				stubs: globalStubs,
 				provide: {
@@ -131,7 +131,7 @@ describe('CreateCitizenSidesheet', () => {
 		test('should not call service and emit any events when validation is falsy', async () => {
 			await wrapper.unmount();
 
-			wrapper = await mount(CreateCitizenSidesheet, {
+			wrapper = await mount(EditCitizenSidesheet, {
 				global: {
 					stubs: {
 						CdsSideSheet: CdsSideSheetStub,

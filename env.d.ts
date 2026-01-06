@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+import type { Citizen } from './src/services/citizen/citizen.types';
 
 declare module '*.vue' {
 	import type { DefineComponent } from 'vue';
@@ -7,39 +8,13 @@ declare module '*.vue' {
 }
 
 declare global {
+	// eslint-disable-next-line no-unused-vars
 	type Nullable<T> = T | null;
 
 	// eslint-disable-next-line no-unused-vars
 	type CitizenSelectModelType = Citizen | Partial<Citizen> | string | null;
 
-	interface Citizen {
-		id: string;
-		cpf: string;
-		cns: string;
-		name: string;
-		gender: string;
-		cpf_responsible: Nullable<string>;
-		mother_name: string;
-		birth_date: string;
-		phone: Nullable<string>;
-		cellphone: Nullable<string>;
-		email: Nullable<string>;
-		address: {
-			cep: Nullable<string>;
-			street: Nullable<string>;
-			number: Nullable<string>;
-			complement: Nullable<string>;
-			neighborhood: Nullable<string>;
-			city: Nullable<string>;
-			uf: Nullable<string>;
-		};
-		race: string;
-		co_cidadao: number;
-		is_dead: boolean;
-		pregnant?: boolean | null;
-		identification_document?: Nullable<string>;
-		issuing_agency?: Nullable<string>;
-	}
+	Citizen;
 }
 
 export {};

@@ -13,13 +13,22 @@
 		>
 			Change Model
 		</CdsButton>
+
+		<CdsFlexbox justify="center" style="background-color: grey; padding: 30px">
+			<div style="width: 1000px;">
+				<CitizenResumeViewer :citizen="citizen" />
+			</div>
+		</CdsFlexbox>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import CitizenSelect from './components/CitizenSelect.vue';
+import CitizenResumeViewer from './components/CitizenResumeViewer.vue';
 const citizen = ref<CitizenSelectModelType>(null);
+
+changeModel();
 
 function changeModel() {
 	console.log('no change model')
@@ -34,7 +43,7 @@ function changeModel() {
 		'birth_date': '1946-10-02',
 		'phone': '38 4017-7733',
 		'cellphone': '83 7530-1849',
-		'email': 'Delta1@hotmail.com',
+		'email': 'joaopaulosncastro@sysvale.com.br',
 		'address': {
 			'cep': '44443',
 			'street': 'Jakubowski Manors',
@@ -47,7 +56,7 @@ function changeModel() {
 		'race': 'black',
 		'co_cidadao': 2852,
 		'is_dead': true,
-		'pregnant': false,
+		'pregnant': true,
 		'identification_document': '040516263',
 		'issuing_agency': 'SSP'
 	}

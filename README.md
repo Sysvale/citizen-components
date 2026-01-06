@@ -8,6 +8,9 @@ Este pacote fornece componentes reutilizáveis para integração com APIs de cid
 
 - **CitizenSelect**: Componente de busca e seleção de cidadãos com dropdown
 - **CitizenService**: Serviço para buscar dados de cidadãos via API ou mock
+- **CreateCitizenSidesheet**: Componente para a criação de um novo cidadão
+- **EditCitizenSidesheet**: Componente para a edição de um cidadão
+- **CitizenSummaryViewer**: Componente para exibir um resumo estruturado dos dados mais relevantes de um cidadão
 - Suporte a fallback para dados mockados quando a API não está configurada
 - TypeScript com tipos exportados
 

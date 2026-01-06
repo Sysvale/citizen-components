@@ -1,28 +1,37 @@
-import { defineRule } from 'vee-validate';
+import { defineRule, configure } from 'vee-validate';
+import { email, min, required } from '@vee-validate/rules';
+import { localize, setLocale } from '@vee-validate/i18n';
+// @ts-ignore
 import { cpfValidator, cnsValidator } from '@sysvale/foundry';
+import requiredWithout from './requiredWithout';
 
-defineRule('required', (value: string | object) => {
-	if (!value) {
-		return 'Esse campo é obrigatório';
-	}
+setLocale('pt-BR');
 
-	return true;
+configure({
+	generateMessage: localize('pt-BR', {
+		messages: {
+			required: 'Este campo é obrigatório',
+			email: 'O e-mail é inválido',
+			min: 'O campo deve ter no mínimo 0:{min} caracteres',
+		}
+	})
 });
 
-defineRule('minLength', (value: string, [limit]: [number]) => {
-	if (!value || !value.length) {
-		return true;
-	}
+defineRule('required', required);
+defineRule('min', min);
+defineRule('email', email);
+defineRule('required_without', (value: string, target: string[]) => {
+	const res = requiredWithout(value, target);
 
-	if (value.length < limit) {
-		return `O campo deve ter no mínimo ${limit} caracteres`;
+	if (!res) {
+		return 'Este campo é obrigatório';
 	}
 
 	return true;
 });
 
 defineRule('cpf', (value: string) => {
-	const res = cpfValidator(value);
+	const res = cpfValidator(value ?? '');
 
 	if (!res) {
 		return 'O CPF é inválido';
@@ -32,7 +41,11 @@ defineRule('cpf', (value: string) => {
 });
 
 defineRule('cns', (value: string) => {
-	const res = cnsValidator(value);
+	if (!value || value === '') {
+		return true;
+	}
+
+	const res = cnsValidator(value ?? '');
 
 	if (!res) {
 		return 'O CNS é inválido';
