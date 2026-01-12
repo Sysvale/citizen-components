@@ -1,6 +1,6 @@
 import type { CitizenFormField } from '@/types';
-import { races } from './races';
 import { genders } from './genders';
+import { races } from './races';
 
 export default (hiddenFields: string[]): CitizenFormField[] => {
 	const fields: CitizenFormField[] = [
@@ -137,13 +137,38 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			placeholder: 'seu.email@exemplo.com',
 		},
 		{
+			name: 'uf',
+			label: 'UF',
+			required: true,
+			rules: 'required',
+			colSpan: 3,
+			component: 'CdsSelect',
+		},
+		{
+			name: 'city',
+			label: 'Cidade',
+			required: true,
+			rules: 'required',
+			colSpan: 3,
+			component: 'CdsSelect',
+		},
+		{
+			name: 'neighborhood',
+			label: 'Bairro',
+			required: true,
+			rules: 'required',
+			colSpan: 6,
+			component: 'CdsSelect',
+			placeholder: 'Ex.: Centro',
+		},
+		{
 			name: 'street',
 			label: 'Rua',
 			required: true,
 			rules: 'required',
 			colSpan: 4,
-			component: 'CdsTextInput',
-			placeholder: 'Ex.: Rua Coronel Exemplio Lima',
+			component: 'CdsSelect',
+			placeholder: 'Ex.: Rua Coronel Exemplio',
 		},
 		{
 			name: 'number',
@@ -162,31 +187,6 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			colSpan: 5,
 			component: 'CdsTextInput',
 			placeholder: 'Ex.: Casa, prédio...',
-		},
-		{
-			name: 'neighborhood',
-			label: 'Bairro',
-			required: true,
-			rules: 'required',
-			colSpan: 6,
-			component: 'CdsTextInput',
-			placeholder: 'Ex.: Centro',
-		},
-		{
-			name: 'uf',
-			label: 'UF',
-			required: true,
-			rules: 'required',
-			colSpan: 3,
-			component: 'CdsSelect',
-		},
-		{
-			name: 'city',
-			label: 'Cidade',
-			required: true,
-			rules: 'required',
-			colSpan: 3,
-			component: 'CdsSelect',
 		},
 	];
 

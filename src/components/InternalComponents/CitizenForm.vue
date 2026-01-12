@@ -45,6 +45,35 @@
 						:error-message="errors[0]"
 						:disabled="resolveDisabledState(formField.name) || isLoadingCities"
 						fluid
+						@update:model-value="(event: any) => handleFieldInput(formField.name, event)"
+					/>
+					<CdsSelect
+						v-else-if="formField.name === 'neighborhood'"
+						v-model="field.value"
+						v-bind="{
+							...field,
+							...formField,
+						}"
+						:options="neighborhoods"
+						:data-testid="`test-${formField.name}`"
+						:state="resolveInputState(meta)"
+						:error-message="errors[0]"
+						:disabled="resolveDisabledState(formField.name) || isLoadingNeighborhoods || !neighborhoods.length"
+						fluid
+					/>
+					<CdsSelect
+						v-else-if="formField.name === 'street'"
+						v-model="field.value"
+						v-bind="{
+							...field,
+							...formField,
+						}"
+						:options="streets"
+						:data-testid="`test-${formField.name}`"
+						:state="resolveInputState(meta)"
+						:error-message="errors[0]"
+						:disabled="resolveDisabledState(formField.name) || isLoadingStreets || !streets.length"
+						fluid
 					/>
 					<component
 						:is="formField.component"
@@ -69,14 +98,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, inject, watch } from 'vue';
-import { Form, Field, type FormContext } from 'vee-validate';
-import inputStateResolver from '@/utils/inputStateResolver';
 import citizenFormFields from '@/constants/citizenFormFields';
-import { getCitiesByUf } from '@/services/ibge';
-import { startCase } from 'lodash';
-import { Citizen } from '@/models/Citizen';
 import ufs from '@/constants/ufs';
+import { Citizen } from '@/models/Citizen';
+import { getCitiesByUf } from '@/services/ibge';
+import { getNeighborhoodsByCityAndUf } from '@/services/localities/localities';
+import inputStateResolver from '@/utils/inputStateResolver';
+import { startCase } from 'lodash';
+import { Field, Form, type FormContext } from 'vee-validate';
+import { computed, inject, onMounted, ref, watch } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -102,7 +132,11 @@ const useToast = inject('useToast');
 const formRef = ref<FormContext | null>(null);
 const validationCityRef = ref<any[] | null>(null);
 const cities = ref<{ id: string; value: string }[]>([]);
+const streets = ref<{ id: string; value: string }[]>([]);
+const neighborhoods = ref<{ id: string; value: string }[]>([]);
 const isLoadingCities = ref<boolean>(false);
+const isLoadingStreets = ref<boolean>(false);
+const isLoadingNeighborhoods = ref<boolean>(false);
 const internalCitizen = ref<Citizen>(new Citizen({}));
 
 const formFields = computed(() => citizenFormFields(props.hiddenFields));
@@ -198,6 +232,35 @@ function handleUfSelect(ibgeCode: string | number) {
 		});
 }
 
+async function handleCitySelect(cityName: string) {
+	isLoadingNeighborhoods.value = true;
+	const cityUfObject = {
+		city: cityName,
+		uf: formRef.value?.values.uf.shortName,
+	}
+
+	getNeighborhoodsByCityAndUf(cityUfObject)
+		.then((response: { data: Array<{ name: string }> }) => {
+			console.log("🚀 ~ handleCitySelect ~ response.data:", response.data)
+			neighborhoods.value = response.data.map((neighborhood) => ({ id: neighborhood.name, value: neighborhood.name }));
+		}).catch(() => {
+			// @ts-ignore
+			useToast().fire({
+				title: 'Erro ao buscar bairros',
+				description: `Não foi possível carregar a lista de bairros.
+					Se o problema persistir, contate o suporte.`,
+				dismissible: true,
+				dismissAfter: 6000,
+				autoDismissible: true,
+				variant: 'danger',
+				light: false,
+			});
+		})
+		.finally(() => {
+			isLoadingNeighborhoods.value = false;
+		});
+}
+
 function handleFieldInput(fieldName: string, fieldValue: any) {
 	switch (fieldName) {
 		case 'gender':
@@ -206,6 +269,9 @@ function handleFieldInput(fieldName: string, fieldValue: any) {
 		case 'uf':
 			validationCityRef.value?.[0].reset();
 			handleUfSelect(fieldValue.ibgeCode);
+			break;
+		case 'city':
+			handleCitySelect(fieldValue.value);
 			break;
 		default:
 			break;
