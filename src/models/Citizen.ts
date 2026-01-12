@@ -12,6 +12,7 @@ import {
 	maskCpf,
 	maskCns,
 	maskPhone,
+	removePhoneMask,
 	// @ts-ignore
 } from '@sysvale/foundry';
 
@@ -189,9 +190,9 @@ export class Citizen {
 			mother_name: this.mother_name,
 			pregnant: this.pregnant,
 			address: this.address?.asRequestPayload || {},
-			phone: this.phone,
+			phone: removePhoneMask(this.phone),
 			email: this.email,
-			cellphone: this.cellphone,
+			cellphone: removePhoneMask(this.cellphone),
 			issuing_agency: this.issuing_agency,
 			...(this.race && { race: this.race.value }),
 		} as CitizenParams;
