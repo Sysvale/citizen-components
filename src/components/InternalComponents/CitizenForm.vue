@@ -5,6 +5,14 @@
 			:cols="12"
 		>
 			<CdsGridItem
+				col-span="12"
+			>
+				<CdsAlert
+					text="O preenchimento do CPF e do CNS são condicionais: pelo menos um deles deve ser preenchido."
+					fluid
+				/>
+			</CdsGridItem>
+			<CdsGridItem
 				v-for="formField in formFields"
 				:key="formField.name"
 				:col-span="formField.colSpan"
