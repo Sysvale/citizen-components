@@ -159,7 +159,6 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			rules: 'required',
 			colSpan: 6,
 			component: 'CdsSelect',
-			placeholder: 'Ex.: Centro',
 		},
 		{
 			name: 'street',
@@ -168,7 +167,6 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			rules: 'required',
 			colSpan: 4,
 			component: 'CdsSelect',
-			placeholder: 'Ex.: Rua Coronel Exemplio',
 		},
 		{
 			name: 'number',

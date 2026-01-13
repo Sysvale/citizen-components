@@ -6,6 +6,16 @@ type City = {
 	value: string;
 };
 
+type Neighborhood = {
+	id: string;
+	value: string;
+};
+
+type Street = {
+	id: string;
+	value: string;
+};
+
 type Uf = {
 	id: string;
 	ibgeCode: string | number;
@@ -14,20 +24,20 @@ type Uf = {
 };
 
 export class Address {
-	public street?: string;
 	public number?: string;
 	public complement?: string;
-	public neighborhood?: string;
 	private _city?: City;
 	private _uf?: Uf;
+	private _neighborhood?: Neighborhood;
+	private _street?: Street;
 
 	constructor(args: AddressType) {
-		this.street = args.street;
 		this.number = args.number;
 		this.complement = args.complement;
-		this.neighborhood = args.neighborhood;
 		this.city = args.city;
 		this.uf = args.uf;
+		this.neighborhood = args.neighborhood;
+		this.street = args.street;
 	}
 
 	set city(city: City | string | undefined) {
@@ -39,6 +49,28 @@ export class Address {
 				value: city,
 			}
 			: city;
+	}
+
+	set neighborhood(neighborhood: Neighborhood | string | undefined) {
+		if (!neighborhood) return;
+
+		this._neighborhood = typeof neighborhood === 'string'
+			? {
+				id: neighborhood,
+				value: neighborhood,
+			}
+			: neighborhood;
+	}
+
+	set street(street: Street | string | undefined) {
+		if (!street) return;
+
+		this._street = typeof street === 'string'
+			? {
+				id: street,
+				value: street,
+			}
+			: street;
 	}
 
 	set uf(uf: Uf | string | undefined) {
@@ -71,16 +103,24 @@ export class Address {
 		return this._uf;
 	}
 
+	get neighborhood(): Neighborhood | undefined {
+		return this._neighborhood;
+	}
+
+	get street(): Street | undefined {
+		return this._street;
+	}
+
 	get fancyAddress(): string {
 		if (!this.city || !this.uf) {
-			return `${this.street},
+			return `${this.street?.value},
 				${this.number},
-				${this.neighborhood}`;
+				${this.neighborhood?.value}`;
 		}
 
 		return `${this.street},
 			${this.number},
-			${this.neighborhood},
+			${this.neighborhood?.value},
 			${this.city.value} - ${this.uf.shortName}`;
 	}
 
@@ -97,10 +137,10 @@ export class Address {
 
 	get asRequestPayload() {
 		return {
-			street: this.street,
+			street: typeof this.street === 'object' ? this.street.id : this.street,
 			number: this.number,
 			complement: this.complement,
-			neighborhood: this.neighborhood,
+			neighborhood: typeof this.neighborhood === 'object' ? this.neighborhood?.id : this.neighborhood,
 			city: typeof this.city === 'object' ? this.city?.id : this.city,
 			uf: typeof this.uf === 'object' ? this.uf?.id : this.uf,
 		};

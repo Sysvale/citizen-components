@@ -25,11 +25,24 @@
 
 		<div>
 			<EditCitizenSidesheet
-				:model-value="true"
+				v-model="showEditSidesheet"
 				citizen="Jose"
 				:with-overlay="true"
 			/>
 		</div>
+		<CdsButton @button-click="showEditSidesheet = true">
+			Abrir Sidesheet de edição
+		</CdsButton>
+
+		<div>
+			<CreateCitizenSidesheet
+				v-model="showCreateSidesheet"
+				:with-overlay="true"
+			/>
+		</div>
+		<CdsButton @button-click="showCreateSidesheet = true">
+			Abrir Sidesheet de criação
+		</CdsButton>
 	</div>
 </template>
 
@@ -38,7 +51,11 @@ import { ref } from 'vue';
 import CitizenSelect from './components/CitizenSelect.vue';
 import CitizenSummaryViewer from './components/CitizenSummaryViewer.vue';
 import EditCitizenSidesheet from './components/EditCitizenSidesheet.vue';
+import CreateCitizenSidesheet from './components/CreateCitizenSidesheet.vue';
+
 const citizen = ref<CitizenSelectModelType>(null);
+const showCreateSidesheet = ref<boolean>(false);
+const showEditSidesheet = ref<boolean>(false);
 
 changeModel();
 

@@ -36,7 +36,7 @@
 						v-else-if="formField.name === 'city'"
 						v-model="field.value"
 						v-bind="{
-							...field,
+							...cleanVeeValidateField(field, selectFieldHiddenProps),
 							...formField,
 						}"
 						:options="cities"
@@ -45,35 +45,44 @@
 						:error-message="errors[0]"
 						:disabled="resolveDisabledState(formField.name) || isLoadingCities"
 						fluid
+						searchable
+						deep-search
 						@update:model-value="(event: any) => handleFieldInput(formField.name, event)"
 					/>
 					<CdsSelect
 						v-else-if="formField.name === 'neighborhood'"
 						v-model="field.value"
 						v-bind="{
-							...field,
+							...cleanVeeValidateField(field, selectFieldHiddenProps),
 							...formField,
 						}"
 						:options="neighborhoods"
 						:data-testid="`test-${formField.name}`"
 						:state="resolveInputState(meta)"
 						:error-message="errors[0]"
-						:disabled="resolveDisabledState(formField.name) || isLoadingNeighborhoods || !neighborhoods.length"
+						:disabled="resolveDisabledState(formField.name) || isLoadingNeighborhoods"
 						fluid
+						searchable
+						deep-search
+						addable
+						@update:model-value="(event: any) => handleFieldInput(formField.name, event)"
 					/>
 					<CdsSelect
 						v-else-if="formField.name === 'street'"
 						v-model="field.value"
 						v-bind="{
-							...field,
+							...cleanVeeValidateField(field, selectFieldHiddenProps),
 							...formField,
 						}"
 						:options="streets"
 						:data-testid="`test-${formField.name}`"
 						:state="resolveInputState(meta)"
 						:error-message="errors[0]"
-						:disabled="resolveDisabledState(formField.name) || isLoadingStreets || !streets.length"
+						:disabled="resolveDisabledState(formField.name) || isLoadingStreets"
 						fluid
+						searchable
+						deep-search
+						addable
 					/>
 					<component
 						:is="formField.component"
@@ -102,7 +111,8 @@ import citizenFormFields from '@/constants/citizenFormFields';
 import ufs from '@/constants/ufs';
 import { Citizen } from '@/models/Citizen';
 import { getCitiesByUf } from '@/services/ibge';
-import { getNeighborhoodsByCityAndUf } from '@/services/localities/localities';
+import { getNeighborhoodsByCityAndUf, getStreetsFromNeighborhoods } from '@/services/localities/localities';
+import { cleanVeeValidateField } from '@/utils/cleanVeeValidateField';
 import inputStateResolver from '@/utils/inputStateResolver';
 import { startCase } from 'lodash';
 import { Field, Form, type FormContext } from 'vee-validate';
@@ -131,6 +141,8 @@ const useToast = inject('useToast');
 
 const formRef = ref<FormContext | null>(null);
 const validationCityRef = ref<any[] | null>(null);
+const validationNeighborhoodRef = ref<any[] | null>(null);
+const validationStreetRef = ref<any[] | null>(null);
 const cities = ref<{ id: string; value: string }[]>([]);
 const streets = ref<{ id: string; value: string }[]>([]);
 const neighborhoods = ref<{ id: string; value: string }[]>([]);
@@ -138,6 +150,7 @@ const isLoadingCities = ref<boolean>(false);
 const isLoadingStreets = ref<boolean>(false);
 const isLoadingNeighborhoods = ref<boolean>(false);
 const internalCitizen = ref<Citizen>(new Citizen({}));
+const selectFieldHiddenProps = ['onChange', 'onInput'];
 
 const formFields = computed(() => citizenFormFields(props.hiddenFields));
 const resolvedUfs = computed(() => {
@@ -190,6 +203,10 @@ function resolveDisabledState(fieldName: string) {
 			return resolvePregnantFieldDisabledState();
 		case 'city':
 			return !formRef.value?.values.uf;
+		case 'neighborhood':
+			return !formRef.value?.values.uf || !formRef.value?.values.city;
+		case 'street':
+			return !formRef.value?.values.uf || !formRef.value?.values.city || !formRef.value?.values.neighborhood;
 		default:
 			return false;
 	}
@@ -241,7 +258,6 @@ async function handleCitySelect(cityName: string) {
 
 	getNeighborhoodsByCityAndUf(cityUfObject)
 		.then((response: { data: Array<{ name: string }> }) => {
-			console.log("🚀 ~ handleCitySelect ~ response.data:", response.data)
 			neighborhoods.value = response.data.map((neighborhood) => ({ id: neighborhood.name, value: neighborhood.name }));
 		}).catch(() => {
 			// @ts-ignore
@@ -261,17 +277,61 @@ async function handleCitySelect(cityName: string) {
 		});
 }
 
+async function handleNeighborhoodSelect(neighborhood: string) {
+	isLoadingStreets.value = true;
+	const neighborhoodCityUfObject = {
+		neighborhood: neighborhood,
+		city: formRef.value?.values.city.value,
+		uf: formRef.value?.values.uf.shortName,
+	}
+
+	getStreetsFromNeighborhoods(neighborhoodCityUfObject)
+		.then((response: { data: Array<{ name: string }> }) => {
+			streets.value = response.data.map((street) => ({ id: street.name, value: street.name }));
+		}).catch(() => {
+			// @ts-ignore
+			useToast().fire({
+				title: 'Erro ao buscar ruas',
+				description: `Não foi possível carregar a lista de ruas.
+					Se o problema persistir, contate o suporte.`,
+				dismissible: true,
+				dismissAfter: 6000,
+				autoDismissible: true,
+				variant: 'danger',
+				light: false,
+			});
+		})
+		.finally(() => {
+			isLoadingStreets.value = false;
+		});
+}
+
+function clearValidationRefs(refs: Array<any | null>) {
+	refs.forEach((ref) => {
+		ref.value?.[0].reset({
+			value: undefined,
+			touched: false,
+			errors: []
+		});
+	});
+}
+
 function handleFieldInput(fieldName: string, fieldValue: any) {
 	switch (fieldName) {
 		case 'gender':
 			handleGenderChange(fieldValue.value);
 			break;
 		case 'uf':
-			validationCityRef.value?.[0].reset();
+			clearValidationRefs([validationCityRef, validationNeighborhoodRef, validationStreetRef]);
 			handleUfSelect(fieldValue.ibgeCode);
 			break;
 		case 'city':
+			clearValidationRefs([validationNeighborhoodRef, validationStreetRef]);
 			handleCitySelect(fieldValue.value);
+			break;
+		case 'neighborhood':
+			clearValidationRefs([validationStreetRef]);
+			handleNeighborhoodSelect(fieldValue.value);
 			break;
 		default:
 			break;
@@ -283,7 +343,6 @@ defineExpose({
 		formRef.value?.validate()
 			.then((response) => {
 				if (!response.valid) {
-					console.log(response);
 					reject(new Error('validation'));
 					return;
 				}
