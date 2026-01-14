@@ -78,8 +78,8 @@ async function updateCitizen(formData: UpdateCitizenParams) {
 	}
 
 	citizenService.update(formData)
-		.then(({ data }) => {
-			emits('success', data.citizen);
+		.then((citizen) => {
+			emits('success', citizen);
 			// @ts-ignore
 			useToast().fire({
 				title: 'Sucesso',

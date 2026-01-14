@@ -1,5 +1,14 @@
 <template>
 	<Form ref="formRef">
+		<CdsSpacer :margin-bottom="4">
+			<CdsText
+				class="conditional__indicator"
+				as="caption"
+				font-weight="semibold"
+			>
+				** - Campos condicionais. Pelo menos um deles precisa ser preenchido.
+			</CdsText>
+		</CdsSpacer>
 		<CdsGrid
 			col-gap="2"
 			:cols="12"
@@ -46,6 +55,37 @@
 						:disabled="resolveDisabledState(formField.name) || isLoadingCities"
 						fluid
 					/>
+					<CdsTextInput
+						v-else-if="['cpf', 'cns'].includes(formField.name)"
+						v-model="field.value"
+						v-bind="{
+							...field,
+							...formField,
+						}"
+						:data-testid="`test-${formField.name}`"
+						:disabled="resolveDisabledState(formField.name) || isLoadingCities"
+						fluid
+					>
+						<template #label>
+							<CdsSpacer :margin-bottom="2">
+								<CdsFlexbox>
+									<CdsText
+										as="caption"
+										font-weight="semibold"
+									>
+										{{ formField.label }}
+									</CdsText>
+									<CdsText
+										class="conditional__indicator"
+										as="caption"
+										font-weight="semibold"
+									>
+										**
+									</CdsText>
+								</CdsFlexbox>
+							</CdsSpacer>
+						</template>
+					</CdsTextInput>
 					<component
 						:is="formField.component"
 						v-else
@@ -243,5 +283,9 @@ defineExpose({
 
 .field__container {
 	min-height: 80px;
+}
+
+.conditional__indicator {
+	color: $rc-600 !important;
 }
 </style>
