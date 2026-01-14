@@ -2,15 +2,16 @@
 
 exports[`CitizenForm > is rendered correctly 1`] = `
 "<form data-v-1916aed6="" novalidate="">
+  <div data-v-209b589c="" data-v-1916aed6="" class="spacer"><small data-v-3eda92df="" data-v-1916aed6="" class="text-alignment n-800 semibold conditional__indicator"> ** - Campos condicionais. Pelo menos um deles precisa ser preenchido. </small></div>
   <div data-v-ff0b2888="" data-v-1916aed6="" class="grid">
     <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
       <cds-text-input-stub data-v-1916aed6="" label="Nome" disabled="false" state="default" inputtype="text" required="true" placeholder="Nome do usuário" errormessage="Valor inválido" fluid="true" tooltipicon="info-outline" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="name" rules="required|min:5" colspan="12" component="CdsTextInput" data-testid="test-name" class="field__container"></cds-text-input-stub>
     </div>
     <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
-      <cds-text-input-stub data-v-1916aed6="" label="CNS" disabled="false" state="default" inputtype="text" required="true" placeholder="000 0000 0000 0000" errormessage="Valor inválido" fluid="true" mask="### #### #### ####" tooltipicon="info-outline" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="cns" rules="cns|required_without:@cpf" colspan="6" component="CdsTextInput" data-testid="test-cns" class="field__container"></cds-text-input-stub>
+      <cds-text-input-stub data-v-1916aed6="" label="CNS" disabled="false" state="default" inputtype="text" required="true" placeholder="000 0000 0000 0000" errormessage="Valor inválido" fluid="true" mask="### #### #### ####" tooltipicon="info-outline" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="cns" rules="cns|required_without:@cpf" colspan="6" component="CdsTextInput" data-testid="test-cns"></cds-text-input-stub>
     </div>
     <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
-      <cds-text-input-stub data-v-1916aed6="" label="CPF" disabled="false" state="default" inputtype="text" required="true" placeholder="000.000.000-00" errormessage="Valor inválido" fluid="true" mask="###.###.###-##" tooltipicon="info-outline" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="cpf" rules="cpf|required_without:@cns" colspan="6" component="CdsTextInput" data-testid="test-cpf" class="field__container"></cds-text-input-stub>
+      <cds-text-input-stub data-v-1916aed6="" label="CPF" disabled="false" state="default" inputtype="text" required="true" placeholder="000.000.000-00" errormessage="Valor inválido" fluid="true" mask="###.###.###-##" tooltipicon="info-outline" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="cpf" rules="cpf|required_without:@cns" colspan="6" component="CdsTextInput" data-testid="test-cpf"></cds-text-input-stub>
     </div>
     <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
       <cds-date-input-stub data-v-1916aed6="" label="Data de nascimento" variant="green" state="default" mode="picking" range="false" required="true" disabled="false" fluid="true" mobile="false" floatinglabel="false" showtodaydot="false" highlighttoday="false" placeholder="Selecione uma data" errormessage="Valor inválido" mindate="" maxdate="2025-12-04" tooltipicon="info-outline" supportingtext="" name="birth_date" rules="required" colspan="6" component="CdsDateInput" data-testid="test-birth_date" class="field__container"></cds-date-input-stub>
