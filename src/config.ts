@@ -2,6 +2,8 @@ export interface Endpoints {
 	index: string;
 	create: string;
 	update: string;
+	neighborhoods: string;
+	streets: string;
 }
 
 export interface CitizenComponentsConfig {
@@ -15,6 +17,8 @@ const defaultConfig: CitizenComponentsConfig = {
 		index: '/citizens',
 		create: '/citizens',
 		update: '/citizens',
+		neighborhoods: '/neighborhoods',
+		streets: '/streets',
 	},
 };
 

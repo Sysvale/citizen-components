@@ -45,7 +45,7 @@
 						v-else-if="formField.name === 'city'"
 						v-model="field.value"
 						v-bind="{
-							...field,
+							...cleanVeeValidateField(field, selectFieldHiddenProps),
 							...formField,
 						}"
 						:options="cities"
@@ -54,6 +54,44 @@
 						:error-message="errors[0]"
 						:disabled="resolveDisabledState(formField.name) || isLoadingCities"
 						fluid
+						searchable
+						deep-search
+						@update:model-value="(event: any) => handleFieldInput(formField.name, event)"
+					/>
+					<CdsSelect
+						v-else-if="formField.name === 'neighborhood'"
+						v-model="field.value"
+						v-bind="{
+							...cleanVeeValidateField(field, selectFieldHiddenProps),
+							...formField,
+						}"
+						:options="neighborhoods"
+						:data-testid="`test-${formField.name}`"
+						:state="resolveInputState(meta)"
+						:error-message="errors[0]"
+						:disabled="resolveDisabledState(formField.name) || isLoadingNeighborhoods"
+						fluid
+						searchable
+						deep-search
+						addable
+						@update:model-value="(event: any) => handleFieldInput(formField.name, event)"
+					/>
+					<CdsSelect
+						v-else-if="formField.name === 'street'"
+						v-model="field.value"
+						v-bind="{
+							...cleanVeeValidateField(field, selectFieldHiddenProps),
+							...formField,
+						}"
+						:options="streets"
+						:data-testid="`test-${formField.name}`"
+						:state="resolveInputState(meta)"
+						:error-message="errors[0]"
+						:disabled="resolveDisabledState(formField.name) || isLoadingStreets"
+						fluid
+						searchable
+						deep-search
+						addable
 					/>
 					<CdsTextInput
 						v-else-if="['cpf', 'cns'].includes(formField.name)"
@@ -109,14 +147,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, inject, watch } from 'vue';
-import { Form, Field, type FormContext } from 'vee-validate';
-import inputStateResolver from '@/utils/inputStateResolver';
 import citizenFormFields from '@/constants/citizenFormFields';
-import { getCitiesByUf } from '@/services/ibge';
-import { startCase } from 'lodash';
-import { Citizen } from '@/models/Citizen';
 import ufs from '@/constants/ufs';
+import { Citizen } from '@/models/Citizen';
+import { getCitiesByUf } from '@/services/ibge';
+import { getNeighborhoodsByCityAndUf, getStreetsFromNeighborhoods } from '@/services/localities/localities.service';
+import { cleanVeeValidateField } from '@/utils/cleanVeeValidateField';
+import clearValidationRefs from '@/utils/clearValidationRefs';
+import inputStateResolver from '@/utils/inputStateResolver';
+import { startCase } from 'lodash';
+import { Field, Form, type FormContext } from 'vee-validate';
+import { computed, inject, onMounted, ref, watch } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -141,9 +182,16 @@ const useToast = inject('useToast');
 
 const formRef = ref<FormContext | null>(null);
 const validationCityRef = ref<any[] | null>(null);
+const validationNeighborhoodRef = ref<any[] | null>(null);
+const validationStreetRef = ref<any[] | null>(null);
 const cities = ref<{ id: string; value: string }[]>([]);
+const streets = ref<{ id: string; value: string }[]>([]);
+const neighborhoods = ref<{ id: string; value: string }[]>([]);
 const isLoadingCities = ref<boolean>(false);
+const isLoadingStreets = ref<boolean>(false);
+const isLoadingNeighborhoods = ref<boolean>(false);
 const internalCitizen = ref<Citizen>(new Citizen({}));
+const selectFieldHiddenProps = ['onChange', 'onInput'];
 
 const formFields = computed(() => citizenFormFields(props.hiddenFields));
 const resolvedUfs = computed(() => {
@@ -196,6 +244,10 @@ function resolveDisabledState(fieldName: string) {
 			return resolvePregnantFieldDisabledState();
 		case 'city':
 			return !formRef.value?.values.uf;
+		case 'neighborhood':
+			return !formRef.value?.values.uf || !formRef.value?.values.city;
+		case 'street':
+			return !formRef.value?.values.uf || !formRef.value?.values.city || !formRef.value?.values.neighborhood;
 		default:
 			return false;
 	}
@@ -238,14 +290,79 @@ function handleUfSelect(ibgeCode: string | number) {
 		});
 }
 
+async function handleCitySelect(cityName: string) {
+	isLoadingNeighborhoods.value = true;
+	const cityUfObject = {
+		city: cityName,
+		uf: formRef.value?.values.uf.shortName,
+	}
+
+	getNeighborhoodsByCityAndUf(cityUfObject)
+		.then((response: { data: Array<{ id: string, name: string }> }) => {
+			neighborhoods.value = response.data.map((neighborhood) => ({ id: neighborhood.id, value: neighborhood.name }));
+		}).catch(() => {
+			// @ts-ignore
+			useToast().fire({
+				title: 'Erro ao buscar bairros',
+				description: `Não foi possível carregar a lista de bairros.
+					Se o problema persistir, contate o suporte.`,
+				dismissible: true,
+				dismissAfter: 6000,
+				autoDismissible: true,
+				variant: 'danger',
+				light: false,
+			});
+		})
+		.finally(() => {
+			isLoadingNeighborhoods.value = false;
+		});
+}
+
+async function handleNeighborhoodSelect(neighborhoodId: string) {
+	isLoadingStreets.value = true;
+	const neighborhoodCityUfObject = {
+		neighborhood_id: neighborhoodId,
+		city: formRef.value?.values.city.value,
+		uf: formRef.value?.values.uf.shortName,
+	}
+
+	getStreetsFromNeighborhoods(neighborhoodCityUfObject)
+		.then((response: { data: Array<{ name: string }> }) => {
+			streets.value = response.data.map((street) => ({ id: street.name, value: street.name }));
+		}).catch(() => {
+			// @ts-ignore
+			useToast().fire({
+				title: 'Erro ao buscar ruas',
+				description: `Não foi possível carregar a lista de ruas.
+					Se o problema persistir, contate o suporte.`,
+				dismissible: true,
+				dismissAfter: 6000,
+				autoDismissible: true,
+				variant: 'danger',
+				light: false,
+			});
+		})
+		.finally(() => {
+			isLoadingStreets.value = false;
+		});
+}
+
 function handleFieldInput(fieldName: string, fieldValue: any) {
 	switch (fieldName) {
 		case 'gender':
 			handleGenderChange(fieldValue.value);
 			break;
 		case 'uf':
-			validationCityRef.value?.[0].reset();
+			clearValidationRefs([validationCityRef, validationNeighborhoodRef, validationStreetRef]);
 			handleUfSelect(fieldValue.ibgeCode);
+			break;
+		case 'city':
+			clearValidationRefs([validationNeighborhoodRef, validationStreetRef]);
+			handleCitySelect(fieldValue.value);
+			break;
+		case 'neighborhood':
+			clearValidationRefs([validationStreetRef]);
+			handleNeighborhoodSelect(fieldValue.id);
 			break;
 		default:
 			break;
@@ -257,7 +374,6 @@ defineExpose({
 		formRef.value?.validate()
 			.then((response) => {
 				if (!response.valid) {
-					console.log(response);
 					reject(new Error('validation'));
 					return;
 				}

@@ -69,7 +69,7 @@ describe('CitizenForm', () => {
 		});
 
 		citizenFormFields([]).forEach(({ name }) => {
-			if (['pregnant', 'city'].includes(name)) {
+			if (['pregnant', 'city', 'neighborhood', 'street'].includes(name)) {
 				expect(wrapper.find(`[data-testid="test-${name}"]`).attributes().disabled).toBe('true');
 				return;
 			}
