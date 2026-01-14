@@ -113,6 +113,7 @@ import { Citizen } from '@/models/Citizen';
 import { getCitiesByUf } from '@/services/ibge';
 import { getNeighborhoodsByCityAndUf, getStreetsFromNeighborhoods } from '@/services/localities/localities.service';
 import { cleanVeeValidateField } from '@/utils/cleanVeeValidateField';
+import clearValidationRefs from '@/utils/clearValidationRefs';
 import inputStateResolver from '@/utils/inputStateResolver';
 import { startCase } from 'lodash';
 import { Field, Form, type FormContext } from 'vee-validate';
@@ -304,16 +305,6 @@ async function handleNeighborhoodSelect(neighborhoodId: string) {
 		.finally(() => {
 			isLoadingStreets.value = false;
 		});
-}
-
-function clearValidationRefs(refs: Array<any | null>) {
-	refs.forEach((ref) => {
-		ref.value?.[0].reset({
-			value: undefined,
-			touched: false,
-			errors: []
-		});
-	});
 }
 
 function handleFieldInput(fieldName: string, fieldValue: any) {
