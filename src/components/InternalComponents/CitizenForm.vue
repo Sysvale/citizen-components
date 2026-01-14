@@ -257,8 +257,8 @@ async function handleCitySelect(cityName: string) {
 	}
 
 	getNeighborhoodsByCityAndUf(cityUfObject)
-		.then((response: { data: Array<{ name: string }> }) => {
-			neighborhoods.value = response.data.map((neighborhood) => ({ id: neighborhood.name, value: neighborhood.name }));
+		.then((response: { data: Array<{ id: string, name: string }> }) => {
+			neighborhoods.value = response.data.map((neighborhood) => ({ id: neighborhood.id, value: neighborhood.name }));
 		}).catch(() => {
 			// @ts-ignore
 			useToast().fire({
@@ -277,10 +277,10 @@ async function handleCitySelect(cityName: string) {
 		});
 }
 
-async function handleNeighborhoodSelect(neighborhood: string) {
+async function handleNeighborhoodSelect(neighborhoodId: string) {
 	isLoadingStreets.value = true;
 	const neighborhoodCityUfObject = {
-		neighborhood: neighborhood,
+		neighborhood_id: neighborhoodId,
 		city: formRef.value?.values.city.value,
 		uf: formRef.value?.values.uf.shortName,
 	}
@@ -331,7 +331,7 @@ function handleFieldInput(fieldName: string, fieldValue: any) {
 			break;
 		case 'neighborhood':
 			clearValidationRefs([validationStreetRef]);
-			handleNeighborhoodSelect(fieldValue.value);
+			handleNeighborhoodSelect(fieldValue.id);
 			break;
 		default:
 			break;

@@ -8,7 +8,7 @@ const { apiBaseUrl }: CitizenComponentsConfig = getConfig();
 export const getNeighborhoodsByCityAndUf = (cityAndUf: {
 	city: string;
 	uf: string;
-}): Promise<{ data: { name: string }[] }> => {
+}): Promise<{ data: { id: string, name: string }[] }> => {
 	if (!isCustomEndpointSet('neighborhoods')) {
 		return new Promise(resolve =>
 			setTimeout(() => {
@@ -21,7 +21,7 @@ export const getNeighborhoodsByCityAndUf = (cityAndUf: {
 };
 
 export const getStreetsFromNeighborhoods = (neighborhoodCityUfObject: {
-	neighborhood: string;
+	neighborhood_id: string;
 	city: string;
 	uf: string;
 }): Promise<{ data: { name: string }[] }> => {

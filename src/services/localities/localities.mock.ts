@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 
 export const makeNeighborhood = () => {
 	return {
+		id: faker.string.uuid(),
 		name: faker.location.county(),
 		city: faker.location.city(),
 		uf: faker.location.state({ abbreviated: true }),
