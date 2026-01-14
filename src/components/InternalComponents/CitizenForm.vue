@@ -62,6 +62,8 @@
 							...field,
 							...formField,
 						}"
+						:data-testid="`test-${formField.name}`"
+						:disabled="resolveDisabledState(formField.name) || isLoadingCities"
 						fluid
 					>
 						<template #label>
