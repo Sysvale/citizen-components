@@ -12,6 +12,7 @@ import { makeCitizen, makeCitizens } from './citizen.mock';
 import { getConfig, type CitizenComponentsConfig, type Endpoints } from '../../config';
 import { removeCpfMask, removeCnsMask } from '@sysvale/foundry';
 import axios from 'axios';
+import isCustomEndpointSet from '@/utils/isCustomEndpointSet';
 
 export class CitizenService {
 	private config: CitizenComponentsConfig;
@@ -21,7 +22,7 @@ export class CitizenService {
 	}
 
 	async index(params: CitizenServiceParams): Promise<CitizenResponse> {
-		if (!this.isCustomEndpointSet('index')) {
+		if (!isCustomEndpointSet('index')) {
 			await this.delay(1000);
 			return this.indexMock(params);
 		}
@@ -38,7 +39,7 @@ export class CitizenService {
 	}
 
 	async create(data: CreateCitizenParams): Promise<CreateCitizenResponse> {
-		if (!this.isCustomEndpointSet('create')) {
+		if (!isCustomEndpointSet('create')) {
 			await this.delay(1000);
 			return this.citizenCreationMock(data);
 		}
@@ -56,7 +57,7 @@ export class CitizenService {
 	}
 
 	async read(params: ReadCitizenParams): Promise<ReadCitizenResponse> {
-		if (!this.isCustomEndpointSet('index')) {
+		if (!isCustomEndpointSet('index')) {
 			await this.delay(1000);
 			return this.showMock();
 		}
@@ -73,7 +74,7 @@ export class CitizenService {
 	}
 
 	async update(data: UpdateCitizenParams): Promise<CreateCitizenResponse> {
-		if (!this.isCustomEndpointSet('update')) {
+		if (!isCustomEndpointSet('update')) {
 			await this.delay(1000);
 			return this.citizenUpdateMock(data);
 		}
@@ -122,14 +123,6 @@ export class CitizenService {
 		const response = await axios.request<T>(axiosConfig);
 
 		return response.data;
-	}
-
-	private isCustomEndpointSet(endpoint: keyof Endpoints) {
-		return (
-			this.config.apiBaseUrl &&
-			this.config.endpoints &&
-			this.config.endpoints[endpoint]
-		);
 	}
 
 	private handleErrors(error: unknown): never {

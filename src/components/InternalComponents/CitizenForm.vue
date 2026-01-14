@@ -111,7 +111,7 @@ import citizenFormFields from '@/constants/citizenFormFields';
 import ufs from '@/constants/ufs';
 import { Citizen } from '@/models/Citizen';
 import { getCitiesByUf } from '@/services/ibge';
-import { getNeighborhoodsByCityAndUf, getStreetsFromNeighborhoods } from '@/services/localities/localities';
+import { getNeighborhoodsByCityAndUf, getStreetsFromNeighborhoods } from '@/services/localities/localities.service';
 import { cleanVeeValidateField } from '@/utils/cleanVeeValidateField';
 import inputStateResolver from '@/utils/inputStateResolver';
 import { startCase } from 'lodash';
