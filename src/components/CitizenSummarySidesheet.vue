@@ -14,8 +14,8 @@
 		>
 			<CdsSkeleton
 				v-if="isLoading"
-				:width="200"
-				:height="30"
+				width="200"
+				height="30"
 			/>
 			<CdsText
 				v-else

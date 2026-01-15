@@ -20,13 +20,13 @@
 				:col-span="1"
 			>
 				<CdsSkeleton
-					:width="100"
-					:height="25"
+					width="100"
+					height="25"
 				/>
 				<CdsSpacer margin-top="1">
 					<CdsSkeleton
-						:width="150"
-						:height="20"
+						width="150"
+						height="20"
 					/>
 				</CdsSpacer>
 			</CdsGridItem>
