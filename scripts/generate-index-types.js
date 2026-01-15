@@ -59,6 +59,12 @@ export interface CitizenSummaryViewerProps {
 	hideEditButton?: boolean,
 	hideCloseButton?: boolean,
 	hideActions?: boolean,
+  hiddenFields?: string[],
+}
+
+export interface CitizenSummarySidesheetProps {
+  citizen: string,
+  hiddenFields?: string[],
 }
 
 // Export components
@@ -67,6 +73,7 @@ export declare const CitizenTable: DefineComponent<CitizenTableProps>;
 export declare const CreateCitizenSidesheet: DefineComponent<CreateCitizenSidesheetProps>;
 export declare const EditCitizenSidesheet: DefineComponent<EditCitizenSidesheetProps>;
 export declare const CitizenSummaryViewer: DefineComponent<CitizenSummaryViewerProps>;
+export declare const CitizenSummarySidesheet: DefineComponent<CitizenSummarySidesheetProps>;
 
 // Export plugin
 export declare const CitizenComponentsPlugin: Plugin;
