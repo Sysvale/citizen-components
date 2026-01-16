@@ -11,6 +11,7 @@ Este pacote fornece componentes reutilizáveis para integração com APIs de cid
 - **CreateCitizenSidesheet**: Componente para a criação de um novo cidadão
 - **EditCitizenSidesheet**: Componente para a edição de um cidadão
 - **CitizenSummaryViewer**: Componente para exibir um resumo estruturado dos dados mais relevantes de um cidadão
+- **CitizenSummarySidesheet**: Componente para exibir um resumo estruturado dos dados mais relevantes de um cidadão baseado apenas no CNS/CPF
 - Suporte a fallback para dados mockados quando a API não está configurada
 - TypeScript com tipos exportados
 
