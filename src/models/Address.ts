@@ -118,7 +118,7 @@ export class Address {
 				${this.neighborhood?.value}`;
 		}
 
-		return `${this.street},
+		return `${this.street?.value},
 			${this.number},
 			${this.neighborhood?.value},
 			${this.city.value} - ${this.uf.shortName}`;

@@ -23,15 +23,14 @@
 			</div>
 		</CdsFlexbox>
 
-		<div>
-			<EditCitizenSidesheet
-				v-model="showEditSidesheet"
-				citizen="Jose"
-				:with-overlay="true"
-			/>
-		</div>
-		<CdsButton @button-click="showEditSidesheet = true">
-			Abrir Sidesheet de edição
+		<CitizenSummarySidesheet 
+			v-model="showDetailsSidesheet"
+			title="Detalhes"
+			:citizen="citizen.cpf"
+		/>
+
+		<CdsButton @button-click="showDetailsSidesheet = true">
+			Abrir Sidesheet de detalhamento
 		</CdsButton>
 
 		<div>
@@ -50,12 +49,12 @@
 import { ref } from 'vue';
 import CitizenSelect from './components/CitizenSelect.vue';
 import CitizenSummaryViewer from './components/CitizenSummaryViewer.vue';
-import EditCitizenSidesheet from './components/EditCitizenSidesheet.vue';
 import CreateCitizenSidesheet from './components/CreateCitizenSidesheet.vue';
+import CitizenSummarySidesheet from './components/CitizenSummarySidesheet.vue';
 
 const citizen = ref<CitizenSelectModelType>(null);
 const showCreateSidesheet = ref<boolean>(false);
-const showEditSidesheet = ref<boolean>(false);
+const showDetailsSidesheet = ref<boolean>(false);
 
 changeModel();
 
