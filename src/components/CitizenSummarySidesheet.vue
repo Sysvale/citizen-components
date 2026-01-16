@@ -1,7 +1,7 @@
 <template>
 	<CdsSideSheet
 		v-model="model"
-		:title="title"
+		:title
 		size="lg"
 		:no-close-on-backdrop="isLoading"
 		:no-close-on-esc="isLoading"
