@@ -55,10 +55,10 @@ export interface EditCitizenSidesheetProps {
 
 export interface CitizenSummaryViewerProps {
   citizen: Partial<Citizen>,
-	fluid?: boolean,
-	hideEditButton?: boolean,
-	hideCloseButton?: boolean,
-	hideActions?: boolean,
+  fluid?: boolean,
+  hideEditButton?: boolean,
+  hideCloseButton?: boolean,
+  hideActions?: boolean,
   hiddenFields?: string[],
 }
 
