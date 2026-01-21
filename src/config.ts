@@ -17,8 +17,8 @@ const defaultConfig: CitizenComponentsConfig = {
 		index: '/citizens',
 		create: '/citizens',
 		update: '/citizens',
-		neighborhoods: '/neighborhoods',
-		streets: '/streets',
+		neighborhoods: '/citizens/neighborhoods',
+		streets: '/citizens/streets',
 	},
 };
 
