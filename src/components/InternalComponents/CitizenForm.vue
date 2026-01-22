@@ -226,6 +226,7 @@ function fillForm(citizenData: object) {
 	if (!internalCitizen.value.uf) return;
 
 	handleUfSelect(internalCitizen.value.uf.ibgeCode);
+	internalCitizen.value.city && handleCitySelect(internalCitizen.value.city.value);
 }
 
 function resolvePregnantFieldDisabledState() {
@@ -299,7 +300,7 @@ async function handleCitySelect(cityName: string) {
 
 	getNeighborhoodsByCityAndUf(cityUfObject)
 		.then((response: { data: Array<{ id: string, name: string }> }) => {
-			neighborhoods.value = response.data.map((neighborhood) => ({ id: neighborhood.id, value: neighborhood.name }));
+			neighborhoods.value = response.data.map((neighborhood) => ({ id: neighborhood.name, value: neighborhood.name }));
 		}).catch(() => {
 			// @ts-ignore
 			useToast().fire({

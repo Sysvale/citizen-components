@@ -1,5 +1,5 @@
-import { type Address as AddressType } from '@/types';
 import ufs from '@/constants/ufs';
+import type { Address as AddressType } from '@/types';
 
 type City = {
 	id: string;
@@ -43,34 +43,37 @@ export class Address {
 	set city(city: City | string | undefined) {
 		if (!city) return;
 
-		this._city = typeof city === 'string'
-			? {
-				id: city,
-				value: city,
-			}
-			: city;
+		this._city =
+			typeof city === 'string'
+				? {
+						id: city,
+						value: city,
+					}
+				: city;
 	}
 
 	set neighborhood(neighborhood: Neighborhood | string | undefined) {
 		if (!neighborhood) return;
 
-		this._neighborhood = typeof neighborhood === 'string'
-			? {
-				id: neighborhood,
-				value: neighborhood,
-			}
-			: neighborhood;
+		this._neighborhood =
+			typeof neighborhood === 'string'
+				? {
+						id: neighborhood,
+						value: neighborhood,
+					}
+				: neighborhood;
 	}
 
 	set street(street: Street | string | undefined) {
 		if (!street) return;
 
-		this._street = typeof street === 'string'
-			? {
-				id: street,
-				value: street,
-			}
-			: street;
+		this._street =
+			typeof street === 'string'
+				? {
+						id: street,
+						value: street,
+					}
+				: street;
 	}
 
 	set uf(uf: Uf | string | undefined) {
@@ -140,8 +143,11 @@ export class Address {
 			street: typeof this.street === 'object' ? this.street.id : this.street,
 			number: this.number,
 			complement: this.complement,
-			neighborhood: typeof this.neighborhood === 'object' ? this.neighborhood?.id : this.neighborhood,
-			city: typeof this.city === 'object' ? this.city?.id : this.city,
+			neighborhood:
+				typeof this.neighborhood === 'object'
+					? this.neighborhood?.value
+					: this.neighborhood,
+			city: typeof this.city === 'object' ? this.city?.value : this.city,
 			uf: typeof this.uf === 'object' ? this.uf?.id : this.uf,
 		};
 	}

@@ -53,10 +53,16 @@ export type Race = {
 };
 
 export interface Address {
-	street?: string;
+	street?: {
+		id: string;
+		value: string;
+	};
 	number?: string;
 	complement?: string;
-	neighborhood?: string;
+	neighborhood?: {
+		id: string;
+		value: string;
+	};
 	city?: {
 		id: string;
 		value: string;
