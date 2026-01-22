@@ -157,7 +157,7 @@ import clearValidationRefs from '@/utils/clearValidationRefs';
 import inputStateResolver from '@/utils/inputStateResolver';
 import { startCase } from 'lodash';
 import { Field, Form, type FormContext } from 'vee-validate';
-import { computed, inject, onMounted, ref, watch } from 'vue';
+import { computed, inject, onMounted, ref, watch, useTemplateRef } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -181,9 +181,9 @@ const props = withDefaults(
 const useToast = inject('useToast');
 
 const formRef = ref<FormContext | null>(null);
-const validationCityRef = ref<any[] | null>(null);
-const validationNeighborhoodRef = ref<any[] | null>(null);
-const validationStreetRef = ref<any[] | null>(null);
+const validationCityRef = useTemplateRef<any[] | null>('validationCityRef');
+const validationNeighborhoodRef = useTemplateRef<any[] | null>('validationNeighborhoodRef');
+const validationStreetRef = useTemplateRef<any[] | null>('validationStreetRef');
 const cities = ref<{ id: string; value: string }[]>([]);
 const streets = ref<{ id: string; value: string }[]>([]);
 const neighborhoods = ref<{ id: string; value: string }[]>([]);
