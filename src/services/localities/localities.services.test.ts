@@ -10,7 +10,10 @@ import {
 vi.mock('../../config', () => ({
 	getConfig: vi.fn(() => ({
 		apiBaseUrl: 'https://api.example.com',
-		endpoints: { neighborhoods: '/neighborhoods' },
+		endpoints: {
+			neighborhoods: '/citizens/neighborhoods',
+			streets: '/citizens/streets',
+		},
 	})),
 }));
 
@@ -72,19 +75,19 @@ describe('LocalitiesService', () => {
 		beforeEach(() => {
 			mockApiConfig.mockReturnValue({
 				apiBaseUrl: 'https://api.example.com',
-				endpoints: { neighborhoods: '/neighborhoods' },
+				endpoints: { neighborhoods: '/citizens/neighborhoods' },
 			});
 			mockAxiosGetRequest.mockResolvedValue(mockApiGetNeighborhoodsResponse);
 		});
 
 		test('calls API with correct data', async () => {
-			const data = { city: 'Jacobina', uf: 'BA' };
-			await getNeighborhoodsService(data);
+			const params = { city: 'Jacobina', uf: 'BA' };
+			await getNeighborhoodsService(params);
 
 			expect(mockAxiosGetRequest).toHaveBeenCalledWith(
-				'https://api.example.com/neighborhoods',
+				'https://api.example.com/citizens/neighborhoods',
 				{
-					data,
+					params,
 				}
 			);
 		});
@@ -110,12 +113,12 @@ describe('LocalitiesService', () => {
 
 		test('uses mock when endpoint is not setted up', async () => {
 			vi.useFakeTimers();
-			const data = {
-				neighborhood: `Caixa d'água`,
+			const params = {
+				neighborhood_name: 'Caixa da Laranjeira',
 				city: 'Jacobina',
 				uf: 'BA',
 			};
-			const promise = getStreetsFromNeighborhoods(data);
+			const promise = getStreetsFromNeighborhoods(params);
 
 			await nextTick();
 			vi.runAllTimers();
@@ -133,23 +136,23 @@ describe('LocalitiesService', () => {
 		beforeEach(() => {
 			mockApiConfig.mockReturnValue({
 				apiBaseUrl: 'https://api.example.com',
-				endpoints: { streets: '/streets' },
+				endpoints: { streets: '/citizens/streets' },
 			});
 			mockAxiosGetRequest.mockResolvedValue(mockApiGetStreetsResponse);
 		});
 
 		test('calls API with correct data', async () => {
-			const data = {
-				neighborhood: `Caixa d'água`,
+			const params = {
+				neighborhood_name: 'Caixa da Laranjeira',
 				city: 'Jacobina',
 				uf: 'BA',
 			};
-			await getStreetsService(data);
+			await getStreetsService(params);
 
 			expect(mockAxiosGetRequest).toHaveBeenCalledWith(
-				'https://api.example.com/streets',
+				'https://api.example.com/citizens/streets',
 				{
-					data,
+					params,
 				}
 			);
 		});

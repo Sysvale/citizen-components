@@ -54,8 +54,8 @@ app.use(CitizenComponentsPlugin, {
 	endpoints: {
 		index: '/api/v1/citizens', // padrão: '/citizens'
 		create: '/api/v1/citizens', // padrão: '/citizens'
-		neighborhoods: '/api/v1/citizens', // padrão: '/neighborhoods'
-		streets: '/api/v1/citizens', // padrão: '/streets'
+		neighborhoods: '/api/v1/citizens/neighborhoods', // padrão: '/citizens/neighborhoods'
+		streets: '/api/v1/citizens/streets', // padrão: '/citizens/streets'
 	},
 });
 ```

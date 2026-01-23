@@ -3,7 +3,7 @@ import isCustomEndpointSet from '@/utils/isCustomEndpointSet';
 import axios from 'axios';
 import { makeNeighborhoods, makeStreets } from './localities.mock';
 
-const { apiBaseUrl }: CitizenComponentsConfig = getConfig();
+const { apiBaseUrl, endpoints }: CitizenComponentsConfig = getConfig();
 
 export const getNeighborhoodsByCityAndUf = (cityAndUf: {
 	city: string;
@@ -17,11 +17,11 @@ export const getNeighborhoodsByCityAndUf = (cityAndUf: {
 		);
 	}
 
-	return axios.get(`${apiBaseUrl}/neighborhoods`, { data: cityAndUf });
+	return axios.get(`${apiBaseUrl}${endpoints['neighborhoods']}`, { params: cityAndUf });
 };
 
 export const getStreetsFromNeighborhoods = (neighborhoodCityUfObject: {
-	neighborhood_id: string;
+	neighborhood_name: string;
 	city: string;
 	uf: string;
 }): Promise<{ data: { name: string }[] }> => {
@@ -33,5 +33,5 @@ export const getStreetsFromNeighborhoods = (neighborhoodCityUfObject: {
 		);
 	}
 
-	return axios.get(`${apiBaseUrl}/streets`, { data: neighborhoodCityUfObject });
+	return axios.get(`${apiBaseUrl}${endpoints['streets']}`, { params: neighborhoodCityUfObject });
 };
