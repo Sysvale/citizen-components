@@ -21,7 +21,7 @@ export const getNeighborhoodsByCityAndUf = (cityAndUf: {
 };
 
 export const getStreetsFromNeighborhoods = (neighborhoodCityUfObject: {
-	neighborhood_id: string;
+	neighborhood_name: string;
 	city: string;
 	uf: string;
 }): Promise<{ data: { name: string }[] }> => {
