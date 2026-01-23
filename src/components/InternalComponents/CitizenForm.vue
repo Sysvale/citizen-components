@@ -301,6 +301,12 @@ async function handleCitySelect(cityName: string) {
 	getNeighborhoodsByCityAndUf(cityUfObject)
 		.then((response: { data: Array<{ id: string, name: string }> }) => {
 			neighborhoods.value = response.data.map((neighborhood) => ({ id: neighborhood.name, value: neighborhood.name }));
+
+			if (!internalCitizen.value.neighborhood || !neighborhoods.value.find(({ id }) => id === internalCitizen.value.neighborhood?.id)) {
+				return;
+			}
+
+			handleNeighborhoodSelect(internalCitizen.value.neighborhood);
 		}).catch(() => {
 			// @ts-ignore
 			useToast().fire({
@@ -319,10 +325,10 @@ async function handleCitySelect(cityName: string) {
 		});
 }
 
-async function handleNeighborhoodSelect(neighborhoodId: string) {
+async function handleNeighborhoodSelect(neighborhood: { id: string, value: string }) {
 	isLoadingStreets.value = true;
 	const neighborhoodCityUfObject = {
-		neighborhood_id: neighborhoodId,
+		neighborhood_name: neighborhood.value.toLowerCase(), 
 		city: formRef.value?.values.city.value,
 		uf: formRef.value?.values.uf.shortName,
 	}
@@ -363,7 +369,7 @@ function handleFieldInput(fieldName: string, fieldValue: any) {
 			break;
 		case 'neighborhood':
 			clearValidationRefs([validationStreetRef]);
-			handleNeighborhoodSelect(fieldValue.id);
+			handleNeighborhoodSelect(fieldValue);
 			break;
 		default:
 			break;
