@@ -140,7 +140,7 @@ export class Address {
 
 	get asRequestPayload() {
 		return {
-			street: typeof this.street === 'object' ? this.street.id : this.street,
+			street: typeof this.street === 'object' ? this.street.value : this.street,
 			number: this.number,
 			complement: this.complement,
 			neighborhood:
