@@ -114,7 +114,7 @@ describe('LocalitiesService', () => {
 		test('uses mock when endpoint is not setted up', async () => {
 			vi.useFakeTimers();
 			const params = {
-				neighborhood_id: '123abc',
+				neighborhood_name: 'Caixa da Laranjeira',
 				city: 'Jacobina',
 				uf: 'BA',
 			};
@@ -143,7 +143,7 @@ describe('LocalitiesService', () => {
 
 		test('calls API with correct data', async () => {
 			const params = {
-				neighborhood_id: '123abc',
+				neighborhood_name: 'Caixa da Laranjeira',
 				city: 'Jacobina',
 				uf: 'BA',
 			};
