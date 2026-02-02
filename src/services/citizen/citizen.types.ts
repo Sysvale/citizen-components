@@ -31,14 +31,14 @@ export interface Citizen {
 	cpf: string;
 	cns: string;
 	name: string;
-	gender: string;
+	gender?: Nullable<string>;
 	cpf_responsible?: Nullable<string>;
 	mother_name: string;
-	birth_date: string;
+	birth_date?: Nullable<string>;
 	phone: Nullable<string>;
 	cellphone: Nullable<string>;
 	email: Nullable<string>;
-	address: Address;
+	address?: Nullable<Address>;
 	race: string;
 	co_cidadao: number;
 	is_dead: boolean;
