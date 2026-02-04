@@ -127,7 +127,7 @@ export class Citizen {
 			{ label: 'CNS', value: this.cns ? maskCns(this.cns) : 'Não informado', field: 'cns' },
 			{ label: 'RG', value: this.identification_document || 'Não informado', field: 'identification_document' },
 			{ label: 'Data de nascimento', value: DateTime.fromISO(this.birth_date).toFormat('dd/MM/yyyy'), field: 'birth_date' },
-			{ label: 'Sexo', value: this._gender.name, field: 'gender' },
+			{ label: 'Sexo', value: this._gender ? this._gender.name : 'Não informado', field: 'gender' },
 			{ label: 'Raça/Cor', value: this.race?.name || 'Não informado', field: 'race' },
 		];
 
@@ -146,6 +146,10 @@ export class Citizen {
 	}
 
 	get isPregnant() {
+		if(!this._gender) {
+			return false;
+		}
+
 		return this._gender.value === 'F' && this.pregnant;
 	}
 
