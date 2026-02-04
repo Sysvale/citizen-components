@@ -2,7 +2,10 @@
 	<div
 		:class="{ 'summary--limit-width': !fluid }"
 	>
-		<CdsBox fluid>
+		<CdsBox
+			:variant="hasMissingFields ? 'amber' : 'gray'"
+			fluid
+		>
 			<CdsSpacer
 				v-if="!citizen"
 			>
@@ -52,11 +55,30 @@
 						</CdsBadge>
 					</CdsFlexbox>
 					<CdsFlexbox
-						v-if="!hideActions"
 						gap="3"
 					>
+						<CdsFlexbox
+							v-if="hasMissingFields"
+							align="center"
+							data-testid="missing-fields-alert"
+							gap="1"
+						>
+							<CdsIcon
+								height="24"
+								width="24"
+								name="warning-outline"
+								color="#EDA831"
+							/>
+							<CdsText
+								as="caption"
+								font-weight="semibold"
+								style="color: #EDA831"
+							>
+								Cadastro incompleto
+							</CdsText>
+						</CdsFlexbox>
 						<CdsIconButton
-							v-if="!hideEditButton"
+							v-if="!hideEditButton && !hideActions"
 							size="sm"
 							data-testid="edit-button"
 							tooltip-text="Editar"
@@ -64,7 +86,7 @@
 							@cds-click="emits('edit')"
 						/>
 						<CdsIconButton
-							v-if="!hideCloseButton"
+							v-if="!hideCloseButton && !hideActions"
 							size="sm"
 							data-testid="close-button"
 							tooltip-text="Fechar"
@@ -90,6 +112,7 @@
 
 <script setup lang="ts">
 import { watch, ref, onMounted, toRef } from 'vue';
+import { isEmpty, isNil, isObject, isString } from 'lodash';
 // @ts-ignore
 import { smartTitleCase } from '@sysvale/foundry';
 import { Citizen as CitizenModel } from '@/models/Citizen';
@@ -118,16 +141,71 @@ const emits = defineEmits(['create', 'edit', 'close']);
 
 const internalCitizen = ref<CitizenModel>();
 const emptyStateImage = emptyState;
+const hasMissingFields = ref(false);
 
-onMounted(() => fillCitizen(props.citizen));
+onMounted(() => {
+	checkMissingRequiredFields(props.citizen);
+	fillCitizen(props.citizen);
+});
 
-watch(toRef(props, 'citizen'), (newValue) => fillCitizen(newValue));
+watch(toRef(props, 'citizen'), (newValue) => {
+	checkMissingRequiredFields(newValue);
+	fillCitizen(newValue);
+});
 
 function fillCitizen(citizenInfo: any | null) {
 	if (!citizenInfo) return;
 
 	internalCitizen.value = new CitizenModel(citizenInfo);
 }
+
+function checkMissingRequiredFields(value: Partial<Citizen> | null) {
+	if (!value) {
+		hasMissingFields.value = false;
+		return;
+	}
+
+	const citizen = value as Record<string, unknown>;
+	const genderValue = citizen['gender'] ?? citizen['_gender'];
+	const addressValue = citizen['address'] ?? citizen['_address'];
+	const addressSource = (addressValue as Record<string, unknown>) ?? {
+		street: citizen['street'],
+		number: citizen['number'],
+		neighborhood: citizen['neighborhood'],
+		city: citizen['city'],
+		uf: citizen['uf'],
+	};
+
+	const missingCpfAndCnsFields = ['cpf', 'cns'].some(field => isEmptyValue(citizen[field]));
+
+	const missingCitizenFields = ['name', 'birth_date', 'mother_name'].some(field =>
+		isEmptyValue(citizen[field])
+	) || isEmptyValue(genderValue);
+
+	const missingAddressFields = ['street', 'number', 'neighborhood', 'city', 'uf'].some(
+		field => isEmptyValue(addressSource?.[field])
+	);
+
+	hasMissingFields.value = missingCitizenFields || missingAddressFields || missingCpfAndCnsFields;
+}
+
+function isEmptyValue(value: unknown) {
+	if (isNil(value)) return true;
+	if (isString(value)) return value.trim() === '';
+	if (!isObject(value)) return false;
+
+	const obj = value as Record<string, unknown>;
+	if ('value' in obj) return isEmptyValue(obj.value);
+	if ('name' in obj) return isEmptyValue(obj.name);
+	if ('shortName' in obj) return isEmptyValue(obj.shortName);
+	if ('id' in obj) return isEmptyValue(obj.id);
+
+	return isEmpty(obj);
+}
+
+defineExpose({
+	hasMissingFields,
+})
 </script>
 
 <style lang="scss" scoped>

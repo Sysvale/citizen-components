@@ -15,6 +15,7 @@ import {
 } from '@sysvale/foundry';
 // @ts-ignore
 import { DateTime } from 'luxon';
+import { every } from 'lodash';
 
 export class Citizen {
 	public id?: string;
@@ -50,15 +51,20 @@ export class Citizen {
 		this.cellphone = args.cellphone;
 		this.email = args.email;
 		this.issuing_agency = args.issuing_agency;
-		this.address = args.address
-			? {
-				city: args.city,
-				uf: args.uf,
-				street: args.street,
-				neighborhood: args.neighborhood,
-				number: args.number,
-				complement: args.complement,
-			} : args.address;
+
+		if (!args.address) {
+			this.address = new AddressModel({});
+			return;
+		}
+
+		this.address = {
+			city: args.address.city,
+			uf: args.address.uf,
+			street: args.address.street,
+			neighborhood: args.address.neighborhood,
+			number: args.address.number,
+			complement: args.address.complement,
+		};
 	}
 
 	set race(race: Race | string) {
@@ -83,9 +89,7 @@ export class Citizen {
 		this._gender = gender;
 	}
 
-	set address(address: Address) {
-		if (!address) return;
-
+	set address(address: any) {
 		this._address = new AddressModel(address);
 	}
 
@@ -156,7 +160,7 @@ export class Citizen {
 	}
 
 	get fancyAddress() {
-		if (!this.address) {
+		if (!this.address || every(this.address, (value) => !value)) {
 			return 'Não informado';
 		}
 

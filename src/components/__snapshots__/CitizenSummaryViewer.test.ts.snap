@@ -12,6 +12,7 @@ exports[`CitizenSummaryViewer > is rendered correctly 1`] = `
               <!--v-if-->
             </div>
             <div data-v-76655835="" data-v-07590091="" class="flexbox">
+              <!--v-if-->
               <cds-icon-button-stub data-v-07590091="" size="sm" icon="edit-outline" disabled="false" tooltiptext="Editar" feedbackonclick="false" feedbackicon="check-outline" variant="white" data-testid="edit-button"></cds-icon-button-stub>
               <cds-icon-button-stub data-v-07590091="" size="sm" icon="x-outline" disabled="false" tooltiptext="Fechar" feedbackonclick="false" feedbackicon="check-outline" variant="white" data-testid="close-button"></cds-icon-button-stub>
             </div>
