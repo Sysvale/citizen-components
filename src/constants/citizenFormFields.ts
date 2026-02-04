@@ -102,7 +102,7 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			name: 'mother_name',
 			label: 'Nome da mãe',
 			required: true,
-			rules: 'min:5',
+			rules: 'required|min:5',
 			colSpan: 12,
 			placeholder: 'Nome da mãe',
 			component: 'CdsTextInput',

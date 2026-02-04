@@ -156,7 +156,11 @@ export class Citizen {
 	}
 
 	get isPregnant() {
-		return this._gender && this._gender.value === 'F' && this.pregnant;
+		if(!this._gender) {
+			return false;
+		}
+
+		return this._gender.value === 'F' && this.pregnant;
 	}
 
 	get fancyAddress() {
