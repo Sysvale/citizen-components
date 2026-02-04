@@ -78,6 +78,7 @@ import { onClickOutside } from '@vueuse/core';
 import { CitizenService } from '../services/citizen/citizen.service';
 import SelectDropdown from './InternalComponents/SelectDropdown.vue';
 import { maskCpf, maskCns } from '@sysvale/foundry';
+import { isNull } from 'lodash';
 
 const useToast = inject('useToast');
 
@@ -194,7 +195,11 @@ async function search() {
 	}
 }
 
-function dmyFormatter(date: string) {
+function dmyFormatter(date: string|null) {
+	if(isNull(date)) {
+		return '--';
+	}
+
 	const [year, month, day] = date.split('-').map(Number);
 
 	return new Date(year, month - 1, day).toLocaleDateString('pt-BR');
