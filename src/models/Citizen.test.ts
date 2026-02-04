@@ -22,7 +22,7 @@ describe('Citizen model', () => {
 	});
 
 	test('gender is resolved correctly with both types', () => {
-		const gender = genderFromType(citizenFixture.gender);
+		const gender = genderFromType(citizenFixture.gender as string);
 		const newCitizen = new Citizen({
 			...citizenFixture,
 			gender,
@@ -33,7 +33,7 @@ describe('Citizen model', () => {
 	});
 
 	test('personalInfo is resolved correctly', () => {
-		const fancyGender = genderFromType(citizenFixture.gender).name;
+		const fancyGender = genderFromType(citizenFixture.gender as string).name;
 		const fancyRace = raceByValue(citizenFixture.race).name;
 
 		const fieldsToHide = ['race'];
@@ -82,6 +82,6 @@ describe('Citizen model', () => {
 	test('fancyAddress is created correctly', () => {
 		const address = new Address(citizenFixture.address);
 
-		expect(citizen.fancyAddress).toEqual(address.fancyAddress);
+		expect(citizen.fancyAddress).toEqual(address?.fancyAddress);
 	});
 });
