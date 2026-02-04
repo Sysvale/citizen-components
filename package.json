@@ -1,6 +1,6 @@
 {
 	"name": "@sysvale/citizen-components",
-	"version": "1.8.1",
+	"version": "1.15.3",
 	"type": "module",
 	"publishConfig": {
 		"access": "public"
