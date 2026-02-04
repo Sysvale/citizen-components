@@ -103,6 +103,8 @@
 						:data-testid="`test-${formField.name}`"
 						:disabled="resolveDisabledState(formField.name) || isLoadingCities"
 						fluid
+						:state="resolveInputState(meta)"
+						:error-message="errors[0]"
 					>
 						<template #label>
 							<CdsSpacer :margin-bottom="2">
