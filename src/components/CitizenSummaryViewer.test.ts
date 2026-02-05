@@ -40,6 +40,11 @@ const femaleCitizen: Partial<Citizen> = {
 	mother_name: 'Mary Doe',
 };
 
+const incompleteCitizen: Partial<Citizen> = {
+	...maleCitizen,
+	mother_name: '',
+};
+
 const stubs = {
 	CdsText: true,
 	CdsBadge: true,
@@ -83,6 +88,8 @@ describe('CitizenSummaryViewer', () => {
 
 		expect(wrapper.findComponent('[data-testid="pregnant-badge"]').exists()).toBeFalsy();
 		expect(pregnantCitizenWrapper.findComponent('[data-testid="pregnant-badge"]').exists()).toBeTruthy();
+
+		pregnantCitizenWrapper.unmount();
 	});
 
 	test('actions are hidden accordingly to props', async () => {
@@ -127,5 +134,52 @@ describe('CitizenSummaryViewer', () => {
 		const closeButton = wrapper.findComponent('[data-testid="close-button"]');
 		closeButton.trigger('cds-click');
 		expect(wrapper.emitted('close')).toBeTruthy();
+	});
+
+	test('shows missing fields warning and amber variant when required fields are missing', async () => {
+		const incompleteCitizenWrapper = await mount(CitizenSummaryViewer, {
+			props: {
+				citizen: incompleteCitizen,
+			},
+			global: {
+				plugins: [Cuida],
+				stubs: {
+					...stubs,
+					CdsText: false,
+				},
+			},
+		});
+
+		const missingFieldsAlert = incompleteCitizenWrapper.find('[data-testid="missing-fields-alert"]');
+
+		expect(incompleteCitizenWrapper.vm.hasMissingFields).toBeTruthy();
+		expect(incompleteCitizenWrapper.find('.box--amber').exists()).toBeTruthy();
+		expect(missingFieldsAlert.exists()).toBeTruthy();
+		expect(missingFieldsAlert.find('svg[aria-labelledby="warning-outline"]').exists()).toBeTruthy();
+		expect(missingFieldsAlert.text()).toContain('Cadastro incompleto');
+
+		incompleteCitizenWrapper.unmount();
+	});
+
+	test('should not show missing fields warning when hidden fields fields are missing', async () => {
+		const incompleteCitizenWrapper = await mount(CitizenSummaryViewer, {
+			props: {
+				citizen: incompleteCitizen,
+				hiddenFields: ['mother_name'],
+			},
+			global: {
+				plugins: [Cuida],
+				stubs: {
+					...stubs,
+					CdsText: false,
+				},
+			},
+		});
+
+		expect(incompleteCitizenWrapper.find('[data-testid="missing-fields-alert"]').exists()).toBeFalsy();
+		expect(incompleteCitizenWrapper.vm.hasMissingFields).toBeFalsy();
+		expect(incompleteCitizenWrapper.find('.box--amber').exists()).toBeFalsy();
+
+		incompleteCitizenWrapper.unmount();
 	});
 });
