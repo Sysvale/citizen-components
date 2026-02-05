@@ -1,5 +1,4 @@
 import ufs from '@/constants/ufs';
-import type { Address as AddressType } from '@/types';
 
 type City = {
 	id: string;
@@ -23,6 +22,12 @@ type Uf = {
 	shortName: string;
 };
 
+function resolveFancyField(field: string | undefined): string {
+	if (!field) return 'Não informado';
+
+	return field;
+}
+
 export class Address {
 	public number?: string;
 	public complement?: string;
@@ -31,7 +36,7 @@ export class Address {
 	private _neighborhood?: Neighborhood;
 	private _street?: Street;
 
-	constructor(args: AddressType) {
+	constructor(args: any) {
 		this.number = args.number;
 		this.complement = args.complement;
 		this.city = args.city;
@@ -46,9 +51,9 @@ export class Address {
 		this._city =
 			typeof city === 'string'
 				? {
-						id: city,
-						value: city,
-					}
+					id: city,
+					value: city,
+				}
 				: city;
 	}
 
@@ -58,9 +63,9 @@ export class Address {
 		this._neighborhood =
 			typeof neighborhood === 'string'
 				? {
-						id: neighborhood,
-						value: neighborhood,
-					}
+					id: neighborhood,
+					value: neighborhood,
+				}
 				: neighborhood;
 	}
 
@@ -70,9 +75,9 @@ export class Address {
 		this._street =
 			typeof street === 'string'
 				? {
-						id: street,
-						value: street,
-					}
+					id: street,
+					value: street,
+				}
 				: street;
 	}
 
@@ -116,15 +121,15 @@ export class Address {
 
 	get fancyAddress(): string {
 		if (!this.city || !this.uf) {
-			return `${this.street?.value},
-				${this.number},
-				${this.neighborhood?.value}`;
+			return `${resolveFancyField(this.street?.value)},
+				${resolveFancyField(this.number)},
+				${resolveFancyField(this.neighborhood?.value)}`;
 		}
 
-		return `${this.street?.value},
-			${this.number},
-			${this.neighborhood?.value},
-			${this.city.value} - ${this.uf.shortName}`;
+		return `${resolveFancyField(this.street?.value)},
+			${resolveFancyField(this.number)},
+			${resolveFancyField(this.neighborhood?.value)},
+			${resolveFancyField(this.city?.value)} - ${resolveFancyField(this.uf?.shortName)}`;
 	}
 
 	get asFormData() {

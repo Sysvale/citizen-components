@@ -1,20 +1,21 @@
+import { genderFromType } from '@/constants/genders';
+import { raceByValue } from '@/constants/races';
 import type { CitizenParams } from '@/services/citizen/citizen.types';
 import type { Address, Gender, Race } from '@/types';
-import { genders } from '@/constants/genders';
 import { Address as AddressModel } from './Address';
-import { raceByValue } from '@/constants/races';
-import { genderFromType } from '@/constants/genders';
 // @ts-ignore
-import { DateTime } from 'luxon';
 import {
-	removeCpfMask,
-	removeCnsMask,
-	maskCpf,
 	maskCns,
+	maskCpf,
 	maskPhone,
+	removeCnsMask,
+	removeCpfMask,
 	removePhoneMask,
 	// @ts-ignore
 } from '@sysvale/foundry';
+// @ts-ignore
+import { DateTime } from 'luxon';
+import { every } from 'lodash';
 
 export class Citizen {
 	public id?: string;
@@ -22,7 +23,7 @@ export class Citizen {
 	public cpf_responsible: string | undefined;
 	public cns: string | undefined;
 	public name: string;
-	public birth_date: string;
+	public birth_date?: string;
 	public identification_document: string;
 	public pregnant: boolean;
 	public mother_name?: string;
@@ -30,7 +31,7 @@ export class Citizen {
 	public phone: string;
 	public email: string;
 	public issuing_agency?: string;
-	private _gender: Gender = genders()[0] as Gender;
+	private _gender: Gender | null = null;
 	private _race?: Race;
 	private _address: Address | null = null;
 
@@ -50,15 +51,20 @@ export class Citizen {
 		this.cellphone = args.cellphone;
 		this.email = args.email;
 		this.issuing_agency = args.issuing_agency;
-		this.address = args.address
-			?? {
-				city: args.city,
-				uf: args.uf,
-				street: args.street,
-				neighborhood: args.neighborhood,
-				number: args.number,
-				complement: args.complement,
-			};
+
+		if (!args.address) {
+			this.address = new AddressModel({});
+			return;
+		}
+
+		this.address = {
+			city: args.address.city,
+			uf: args.address.uf,
+			street: args.address.street,
+			neighborhood: args.address.neighborhood,
+			number: args.address.number,
+			complement: args.address.complement,
+		};
 	}
 
 	set race(race: Race | string) {
@@ -73,6 +79,8 @@ export class Citizen {
 	}
 
 	set gender(gender: Gender | string) {
+		if (!gender) return;
+
 		if (typeof gender === 'string') {
 			this._gender = genderFromType(gender);
 			return;
@@ -81,7 +89,7 @@ export class Citizen {
 		this._gender = gender;
 	}
 
-	set address(address: Address) {
+	set address(address: any) {
 		this._address = new AddressModel(address);
 	}
 
@@ -117,7 +125,7 @@ export class Citizen {
 		return this._race;
 	}
 
-	get gender(): Gender {
+	get gender(): Gender | null {
 		return this._gender;
 	}
 
@@ -126,7 +134,9 @@ export class Citizen {
 			{ label: 'CPF', value: this.cpf ? maskCpf(this.cpf) : 'Não informado', field: 'cpf' },
 			{ label: 'CNS', value: this.cns ? maskCns(this.cns) : 'Não informado', field: 'cns' },
 			{ label: 'RG', value: this.identification_document || 'Não informado', field: 'identification_document' },
-			{ label: 'Data de nascimento', value: DateTime.fromISO(this.birth_date).toFormat('dd/MM/yyyy'), field: 'birth_date' },
+			{ label: 'Data de nascimento', value: this.birth_date
+				? DateTime.fromISO(this.birth_date).toFormat('dd/MM/yyyy')
+				: 'Não informada', field: 'birth_date' },
 			{ label: 'Sexo', value: this._gender ? this._gender.name : 'Não informado', field: 'gender' },
 			{ label: 'Raça/Cor', value: this.race?.name || 'Não informado', field: 'race' },
 		];
@@ -154,7 +164,7 @@ export class Citizen {
 	}
 
 	get fancyAddress() {
-		if (!this.address) {
+		if (!this.address || every(this.address, (value) => !value)) {
 			return 'Não informado';
 		}
 
