@@ -178,7 +178,7 @@ function checkMissingRequiredFields(value: Partial<Citizen> | null) {
 
 	const missingCpfAndCnsFields = ['cpf', 'cns'].some(field => isEmptyValue(citizen[field]));
 
-	const missingCitizenFields = ['name', 'birth_date', 'mother_name'].some(field =>
+	const missingCitizenFields = ['name', 'birth_date', 'mother_name', 'race'].some(field =>
 		isEmptyValue(citizen[field])
 	) || isEmptyValue(genderValue);
 
