@@ -176,9 +176,9 @@ function checkMissingRequiredFields(value: Partial<Citizen> | null) {
 		uf: citizen['uf'],
 	};
 
-	const missingCpfAndCnsFields = ['cpf', 'cns'].some(
-		field => isEmptyValue(citizen[field]) && !props.hiddenFields.includes(field)
-	);
+	const missingCpfField = isEmptyValue(citizen['cpf']) && !props.hiddenFields.includes('cpf');
+	const missingCnsField = isEmptyValue(citizen['cns']) && !props.hiddenFields.includes('cns');
+	const missingCpfAndCnsFields = missingCpfField && missingCnsField;
 
 	const missingCitizenFields = ['name', 'birth_date', 'mother_name', 'race'].some(
 		field => isEmptyValue(citizen[field]) && !props.hiddenFields.includes(field)
