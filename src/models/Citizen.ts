@@ -53,7 +53,14 @@ export class Citizen {
 		this.issuing_agency = args.issuing_agency;
 
 		if (!args.address) {
-			this.address = new AddressModel({});
+			this.address = {
+				city: args.city,
+				uf: args.uf,
+				street: args.street,
+				neighborhood: args.neighborhood,
+				number: args.number,
+				complement: args.complement,
+			};
 			return;
 		}
 
@@ -192,6 +199,7 @@ export class Citizen {
 	}
 
 	asRequestPayload = (): CitizenParams => {
+		console.log(this.address?.asRequestPayload);
 		return {
 			id: this.id,
 			cpf: removeCpfMask(this.cpf),
