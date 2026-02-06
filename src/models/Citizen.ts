@@ -199,7 +199,6 @@ export class Citizen {
 	}
 
 	asRequestPayload = (): CitizenParams => {
-		console.log(this.address?.asRequestPayload);
 		return {
 			id: this.id,
 			cpf: removeCpfMask(this.cpf),
