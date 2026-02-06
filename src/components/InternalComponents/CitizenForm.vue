@@ -330,7 +330,7 @@ async function handleCitySelect(cityName: string) {
 async function handleNeighborhoodSelect(neighborhood: { id: string, value: string }) {
 	isLoadingStreets.value = true;
 	const neighborhoodCityUfObject = {
-		neighborhood_name: neighborhood.value.toLowerCase(), 
+		neighborhood_name: neighborhood.value, 
 		city: formRef.value?.values.city.value,
 		uf: formRef.value?.values.uf.shortName,
 	}
