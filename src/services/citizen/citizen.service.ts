@@ -73,7 +73,7 @@ export class CitizenService {
 		}
 	}
 
-	async update(data: UpdateCitizenParams): Promise<CreateCitizenResponse> {
+	async update(data: UpdateCitizenParams, document?: string): Promise<CreateCitizenResponse> {
 		if (!isCustomEndpointSet('update')) {
 			await this.delay(1000);
 			return this.citizenUpdateMock(data);
@@ -87,7 +87,7 @@ export class CitizenService {
 			const response = await this.apiCall('update', {
 				data,
 				method: 'put',
-				id: resolvedDocument,
+				id: document ??resolvedDocument,
 			});
 
 			return response;
