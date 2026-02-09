@@ -87,7 +87,7 @@ export class CitizenService {
 			const response = await this.apiCall('update', {
 				data,
 				method: 'put',
-				id: document ??resolvedDocument,
+				id: document ?? resolvedDocument,
 			});
 
 			return response;
