@@ -77,7 +77,7 @@ async function updateCitizen(formData: UpdateCitizenParams) {
 		return;
 	}
 
-	citizenService.update(formData)
+	citizenService.update(formData, props.citizen)
 		.then((citizen) => {
 			emits('success', citizen);
 			// @ts-ignore
