@@ -37,7 +37,7 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			name: 'birth_date',
 			label: 'Data de nascimento',
 			required: true,
-			rules: 'required',
+			rules: `required|maxDate:${new Date().toISOString().split('T')[0]}`,
 			colSpan: 6,
 			component: 'CdsDateInput',
 			maxDate: new Date().toISOString().split('T')[0],

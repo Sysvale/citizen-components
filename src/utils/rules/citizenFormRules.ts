@@ -4,6 +4,8 @@ import { localize, setLocale } from '@vee-validate/i18n';
 // @ts-ignore
 import { cpfValidator, cnsValidator } from '@sysvale/foundry';
 import requiredWithout from './requiredWithout';
+import maxDate from './maxDate';
+import { dmyFormatter } from '../dmyFormatter';
 
 setLocale('pt-BR');
 
@@ -25,6 +27,22 @@ defineRule('required_without', (value: string, target: string[]) => {
 
 	if (!res) {
 		return 'Este campo é obrigatório';
+	}
+
+	return true;
+});
+
+defineRule('maxDate', (value: string, target: string[]) => {
+	const res = maxDate(value, target);
+
+	if (!res) {
+		const formattedMaxDate = dmyFormatter(target?.[0]?.trim?.() ?? '');
+
+		if (formattedMaxDate !== '--') {
+			return `A data deve ser menor ou igual a ${formattedMaxDate}`;
+		}
+
+		return 'A data deve ser menor ou igual à data máxima permitida';
 	}
 
 	return true;
