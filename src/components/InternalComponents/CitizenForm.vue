@@ -126,6 +126,20 @@
 							</CdsSpacer>
 						</template>
 					</CdsTextInput>
+					<CdsDateInput
+						v-else-if="formField.name === 'birth_date'"
+						:model-value="field.value"
+						v-bind="{
+							...formField,
+						}"
+						mode="typing"
+						:data-testid="`test-${formField.name}`"
+						:disabled="resolveDisabledState(formField.name) || isLoadingCities"
+						fluid
+						:state="resolveInputState(meta)"
+						:error-message="errors[0]"
+						@update:model-value="(event: any) => handleFieldInput(formField.name, event)"
+					/>
 					<component
 						:is="formField.component"
 						v-else
@@ -271,6 +285,12 @@ function handleUfSelect(ibgeCode: string | number) {
 		.then((response: { data: Array<{ nome: string }> }) => {
 			cities.value = response.data.map((city) => ({ id: city.nome, value: city.nome }));
 
+			const selectedCity = formRef.value?.values.city;
+
+			if (!selectedCity || !cities.value.find(({ id }) => id === selectedCity?.value)) {
+				clearValidationRefs([validationCityRef]);
+			}
+
 			if (!props.allowedCities) return;
 
 			cities.value = cities.value.filter(({ id }) => props.allowedCities?.includes(id));
@@ -304,11 +324,14 @@ async function handleCitySelect(cityName: string) {
 		.then((response: { data: Array<{ id: string, name: string }> }) => {
 			neighborhoods.value = response.data.map((neighborhood) => ({ id: neighborhood.name, value: neighborhood.name }));
 
-			if (!internalCitizen.value.neighborhood || !neighborhoods.value.find(({ id }) => id === internalCitizen.value.neighborhood?.id)) {
+			const selectedNeighborhood = formRef.value?.values.neighborhood;
+
+			if (!selectedNeighborhood || !neighborhoods.value.find(({ id }) => id === selectedNeighborhood?.value)) {
+				clearValidationRefs([validationNeighborhoodRef]);
 				return;
 			}
 
-			handleNeighborhoodSelect(internalCitizen.value.neighborhood);
+			handleNeighborhoodSelect(selectedNeighborhood);
 		}).catch(() => {
 			// @ts-ignore
 			useToast().fire({
@@ -338,6 +361,14 @@ async function handleNeighborhoodSelect(neighborhood: { id: string, value: strin
 	getStreetsFromNeighborhoods(neighborhoodCityUfObject)
 		.then((response: { data: Array<{ name: string }> }) => {
 			streets.value = response.data.map((street) => ({ id: street.name, value: street.name }));
+
+			const selectedStreet = formRef.value?.values.street;
+
+			if (selectedStreet && streets.value.find(({ id }) => id === selectedStreet?.value)) {
+				return;
+			}
+
+			clearValidationRefs([validationStreetRef]);
 		}).catch(() => {
 			// @ts-ignore
 			useToast().fire({
@@ -362,16 +393,16 @@ function handleFieldInput(fieldName: string, fieldValue: any) {
 			handleGenderChange(fieldValue.value);
 			break;
 		case 'uf':
-			clearValidationRefs([validationCityRef, validationNeighborhoodRef, validationStreetRef]);
 			handleUfSelect(fieldValue.ibgeCode);
 			break;
 		case 'city':
-			clearValidationRefs([validationNeighborhoodRef, validationStreetRef]);
 			handleCitySelect(fieldValue.value);
 			break;
 		case 'neighborhood':
-			clearValidationRefs([validationStreetRef]);
 			handleNeighborhoodSelect(fieldValue);
+			break;
+		case 'birth_date':
+			formRef.value?.setFieldValue('birth_date', fieldValue);
 			break;
 		default:
 			break;
