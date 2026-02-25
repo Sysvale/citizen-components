@@ -28,13 +28,17 @@
 					>
 						{{ item.label }}
 					</CdsText>
-					<CdsIcon
+					<CdsTooltip
 						v-if="item.incomplete"
-						height="16"
-						width="16"
-						name="warning-outline"
-						color="#EDA831"
-					/>
+						text="Campo obrigatório com dados incompletos"
+					>
+						<CdsIcon
+							height="16"
+							width="16"
+							name="warning-outline"
+							color="#EDA831"
+						/>
+					</CdsTooltip>
 				</CdsFlexbox>
 				<CdsSpacer margin-top="1">
 					<CdsText
