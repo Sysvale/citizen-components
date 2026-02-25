@@ -132,6 +132,16 @@ export class Address {
 			${resolveFancyField(this.city?.value)} - ${resolveFancyField(this.uf?.shortName)}`;
 	}
 
+	get isIncomplete(): boolean {
+		return (
+			!this.street ||
+			!this.number ||
+			!this.neighborhood ||
+			!this.city ||
+			!this.uf
+		);
+	}
+
 	get asFormData() {
 		return {
 			street: this.street,

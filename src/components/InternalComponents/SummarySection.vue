@@ -20,13 +20,22 @@
 				:key="item.label"
 				:col-span="item.fill ? 3 : 1"
 			>
-				<CdsText
-					as="caption"
-					color="n-600"
-					font-weight="semibold"
-				>
-					{{ item.label }}
-				</CdsText>
+				<CdsFlexbox gap="1">
+					<CdsText
+						as="caption"
+						color="n-600"
+						font-weight="semibold"
+					>
+						{{ item.label }}
+					</CdsText>
+					<CdsIcon
+						v-if="item.incomplete"
+						height="16"
+						width="16"
+						name="warning-outline"
+						color="#EDA831"
+					/>
+				</CdsFlexbox>
 				<CdsSpacer margin-top="1">
 					<CdsText
 						as="body-2"
@@ -47,6 +56,7 @@ defineProps<{
 		label: string,
 		value: Nullable<string>,
 		fill?: boolean,
+		incomplete?: boolean,
 	}>,
 }>()
 </script>
