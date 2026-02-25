@@ -17,7 +17,7 @@ exports[`CitizenSummaryViewer > is rendered correctly 1`] = `
               <cds-icon-button-stub data-v-07590091="" size="sm" icon="x-outline" disabled="false" tooltiptext="Fechar" feedbackonclick="false" feedbackicon="check-outline" variant="white" data-testid="close-button"></cds-icon-button-stub>
             </div>
           </div>
-          <summary-section-stub data-v-07590091="" title="Dados pessoais" items="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"></summary-section-stub>
+          <summary-section-stub data-v-07590091="" title="Dados pessoais" items="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"></summary-section-stub>
           <summary-section-stub data-v-07590091="" title="Informações de contato" items="[object Object],[object Object],[object Object],[object Object]"></summary-section-stub>
         </div>
       </div>
