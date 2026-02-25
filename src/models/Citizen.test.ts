@@ -36,32 +36,33 @@ describe('Citizen model', () => {
 		const fancyGender = genderFromType(citizenFixture.gender as string).name;
 		const fancyRace = raceByValue(citizenFixture.race).name;
 
-		const fieldsToHide = ['race'];
+		const fieldsToHide = ['race', 'mother_name'];
 
 		expect(citizen.getPersonalInfo()).toEqual([
-			{ label: 'CPF', value: maskCpf(citizenFixture.cpf), field: 'cpf' },
-			{ label: 'CNS', value: maskCns(citizenFixture.cns), field: 'cns' },
-			{ label: 'RG', value: 'Não informado', field: 'identification_document' },
-			{ label: 'Data de nascimento', value: DateTime.fromISO(citizenFixture.birth_date).toFormat('dd/MM/yyyy'), field: 'birth_date' },
-			{ label: 'Sexo', value: fancyGender, field: 'gender' },
-			{ label: 'Raça/Cor', value: fancyRace, field: 'race' },
+			{ label: 'CPF', value: maskCpf(citizenFixture.cpf), field: 'cpf', incomplete: false },
+			{ label: 'CNS', value: maskCns(citizenFixture.cns), field: 'cns', incomplete: false },
+			{ label: 'RG', value: 'Não informado', field: 'identification_document', incomplete: false },
+			{ label: 'Data de nascimento', value: DateTime.fromISO(citizenFixture.birth_date).toFormat('dd/MM/yyyy'), field: 'birth_date', incomplete: false },
+			{ label: 'Sexo', value: fancyGender, field: 'gender', incomplete: false },
+			{ label: 'Raça/Cor', value: fancyRace, field: 'race', incomplete: false },
+			{ label: 'Nome da mãe', value: citizenFixture.mother_name, field: 'mother_name', fill: true, incomplete: false },
 		]);
 
 		expect(citizen.getPersonalInfo(fieldsToHide)).toEqual([
-			{ label: 'CPF', value: maskCpf(citizenFixture.cpf), field: 'cpf' },
-			{ label: 'CNS', value: maskCns(citizenFixture.cns), field: 'cns' },
-			{ label: 'RG', value: 'Não informado', field: 'identification_document' },
-			{ label: 'Data de nascimento', value: DateTime.fromISO(citizenFixture.birth_date).toFormat('dd/MM/yyyy'), field: 'birth_date' },
-			{ label: 'Sexo', value: fancyGender, field: 'gender' },
+			{ label: 'CPF', value: maskCpf(citizenFixture.cpf), field: 'cpf', incomplete: false },
+			{ label: 'CNS', value: maskCns(citizenFixture.cns), field: 'cns', incomplete: false },
+			{ label: 'RG', value: 'Não informado', field: 'identification_document', incomplete: false },
+			{ label: 'Data de nascimento', value: DateTime.fromISO(citizenFixture.birth_date).toFormat('dd/MM/yyyy'), field: 'birth_date', incomplete: false },
+			{ label: 'Sexo', value: fancyGender, field: 'gender', incomplete: false },
 		]);
 	});
 
 	test('contactInfo is resolved correctly', () => {
 		expect(citizen.getContactInfo()).toEqual([
-			{ label: 'Telefone', value: 'Não informado', field: 'phone' },
-			{ label: 'Celular', value: maskPhone(citizenFixture.cellphone), field: 'cellphone' },
-			{ label: 'E-mail', value: 'Não informado', field: 'email' },
-			{ label: 'Endereço', value: citizen.fancyAddress, fill: true, field: 'address' },
+			{ label: 'Telefone', value: 'Não informado', field: 'phone', incomplete: false },
+			{ label: 'Celular', value: maskPhone(citizenFixture.cellphone), field: 'cellphone', incomplete: false },
+			{ label: 'E-mail', value: 'Não informado', field: 'email', incomplete: false },
+			{ label: 'Endereço', value: citizen.fancyAddress, fill: true, field: 'address', incomplete: false },
 		]);
 	});
 

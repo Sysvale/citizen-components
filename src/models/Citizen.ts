@@ -136,27 +136,83 @@ export class Citizen {
 		return this._gender;
 	}
 
-	getPersonalInfo(fieldsToHide?: string[]): { label: string; value: string; fill?: boolean, field?: string }[] {
+	getPersonalInfo(fieldsToHide?: string[], requiredFields: string[] = []): { label: string; value: string; fill?: boolean, field?: string }[] {
 		const fields = [
-			{ label: 'CPF', value: this.cpf ? maskCpf(this.cpf) : 'Não informado', field: 'cpf' },
-			{ label: 'CNS', value: this.cns ? maskCns(this.cns) : 'Não informado', field: 'cns' },
-			{ label: 'RG', value: this.identification_document || 'Não informado', field: 'identification_document' },
-			{ label: 'Data de nascimento', value: this.birth_date
-				? DateTime.fromISO(this.birth_date).toFormat('dd/MM/yyyy')
-				: 'Não informada', field: 'birth_date' },
-			{ label: 'Sexo', value: this._gender ? this._gender.name : 'Não informado', field: 'gender' },
-			{ label: 'Raça/Cor', value: this.race?.name || 'Não informado', field: 'race' },
+			{
+				label: 'CPF',
+				value: this.cpf ? maskCpf(this.cpf) : 'Não informado',
+				field: 'cpf',
+				incomplete: !this.cpf && requiredFields?.includes('cpf')
+			},
+			{
+				label: 'CNS',
+				value: this.cns ? maskCns(this.cns) : 'Não informado',
+				field: 'cns',
+				incomplete: !this.cns && requiredFields?.includes('cns')
+			},
+			{
+				label: 'RG',
+				value: this.identification_document || 'Não informado',
+				field: 'identification_document',
+				incomplete: !this.identification_document && requiredFields?.includes('identification_document')
+			},
+			{
+				label: 'Data de nascimento',
+				value: this.birth_date ? DateTime.fromISO(this.birth_date).toFormat('dd/MM/yyyy') : 'Não informada',
+				field: 'birth_date',
+				incomplete: !this.birth_date && requiredFields?.includes('birth_date')
+			},
+			{
+				label: 'Sexo',
+				value: this._gender ? this._gender.name : 'Não informado',
+				field: 'gender',
+				incomplete: !this._gender && requiredFields?.includes('gender')
+			},
+			{
+				label: 'Raça/Cor',
+				value: this.race?.name || 'Não informado',
+				field: 'race',
+				incomplete: !this.race && requiredFields?.includes('race')
+			},
+			{
+				label: 'Nome da mãe',
+				value: this.mother_name || 'Não informado',
+				fill: true,
+				field: 'mother_name',
+				incomplete: !this.mother_name && requiredFields?.includes('mother_name')
+			},
 		];
 
 		return fields.filter(({ field }) => !fieldsToHide?.includes(field));
 	}
 
-	getContactInfo(fieldsToHide?: string[]): { label: string; value: Nullable<string>; fill?: boolean, field?: string }[] {
+	getContactInfo(fieldsToHide?: string[], requiredFields: string[] = []): { label: string; value: Nullable<string>; fill?: boolean, field?: string }[] {
 		const fields = [
-			{ label: 'Telefone', value: this.phone ? maskPhone(this.phone) : 'Não informado', field: 'phone' },
-			{ label: 'Celular', value: this.cellphone ? maskPhone(this.cellphone) : 'Não informado', field: 'cellphone' },
-			{ label: 'E-mail', value: this.email || 'Não informado', field: 'email' },
-			{ label: 'Endereço', value: this.fancyAddress, fill: true, field: 'address' },
+			{
+				label: 'Telefone',
+				value: this.phone ? maskPhone(this.phone) : 'Não informado',
+				field: 'phone',
+				incomplete: !this.phone && requiredFields?.includes('phone')
+			},
+			{
+				label: 'Celular',
+				value: this.cellphone ? maskPhone(this.cellphone) : 'Não informado',
+				field: 'cellphone',
+				incomplete: !this.cellphone && requiredFields?.includes('cellphone')
+			},
+			{
+				label: 'E-mail',
+				value: this.email || 'Não informado',
+				field: 'email',
+				incomplete: !this.email && requiredFields?.includes('email')
+			},
+			{
+				label: 'Endereço',
+				value: this.fancyAddress,
+				fill: true,
+				field: 'address',
+				incomplete: this.address?.isIncomplete && requiredFields?.includes('address')
+			},
 		];
 
 		return fields.filter(({ field }) => !fieldsToHide?.includes(field));

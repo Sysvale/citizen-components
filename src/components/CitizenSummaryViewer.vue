@@ -98,12 +98,12 @@
 				<SummarySection
 					v-if="internalCitizen"
 					title="Dados pessoais"
-					:items="internalCitizen.getPersonalInfo(hiddenFields)"
+					:items="internalCitizen.getPersonalInfo(hiddenFields, requiredFields)"
 				/>
 				<SummarySection
 					v-if="internalCitizen"
 					title="Informações de contato"
-					:items="internalCitizen?.getContactInfo(hiddenFields)"
+					:items="internalCitizen?.getContactInfo(hiddenFields, requiredFields)"
 				/>
 			</CdsFlexbox>
 		</CdsBox>
@@ -142,6 +142,15 @@ const emits = defineEmits(['create', 'edit', 'close']);
 const internalCitizen = ref<CitizenModel>();
 const emptyStateImage = emptyState;
 const hasMissingFields = ref(false);
+const requiredFields = [
+	'cpf',
+	'cns',
+	'address',
+	'gender',
+	'race',
+	'mother_name',
+	'birth_date',
+];
 
 onMounted(() => {
 	checkMissingRequiredFields(props.citizen);

@@ -73,6 +73,7 @@ export interface Address {
 		shortName: string;
 		id: string;
 	};
+	isIncomplete: boolean;
 	asFormData?: any;
 	asRequestPayload?: any;
 	fancyAddress: string;
