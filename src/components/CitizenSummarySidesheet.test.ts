@@ -108,13 +108,13 @@ describe('CitizenSummarySidesheet', () => {
 	});
 
 	test('loads summary data correctly', async () => {
-		readSpy.mockResolvedValueOnce({ data: [baseCitizen] });
+		readSpy.mockResolvedValueOnce(baseCitizen);
 
 		wrapper = createWrapper();
 		await wrapper.setProps({ modelValue: true });
 
 		await vi.waitFor(() =>
-			expect(readSpy).toHaveBeenCalledWith({ search_string: '12345678900' })
+			expect(readSpy).toHaveBeenCalledWith({ id: '12345678900' })
 		);
 
 		await vi.waitFor(() =>
@@ -125,7 +125,7 @@ describe('CitizenSummarySidesheet', () => {
 	});
 
 	test('pregnant badge is show correctly', async () => {
-		readSpy.mockResolvedValueOnce({ data: [baseCitizen] });
+		readSpy.mockResolvedValueOnce(baseCitizen);
 
 		wrapper = createWrapper();
 		await wrapper.setProps({ modelValue: true });
@@ -150,7 +150,7 @@ describe('CitizenSummarySidesheet', () => {
 
 		expect(wrapper.find('[data-testid="summary-skeleton"]').exists()).toBe(true);
 
-		resolveRead({ data: [baseCitizen] });
+		resolveRead(baseCitizen);
 		await vi.waitFor(() =>
 			expect(wrapper.find('[data-testid="summary-skeleton"]').exists()).toBe(false)
 		);

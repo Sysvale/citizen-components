@@ -10,6 +10,7 @@ import type {
 } from './citizen.types';
 import { makeCitizen, makeCitizens } from './citizen.mock';
 import { getConfig, type CitizenComponentsConfig, type Endpoints } from '../../config';
+// @ts-ignore
 import { removeCpfMask, removeCnsMask } from '@sysvale/foundry';
 import axios from 'axios';
 import isCustomEndpointSet from '@/utils/isCustomEndpointSet';
@@ -63,9 +64,7 @@ export class CitizenService {
 		}
 
 		try {
-			const response = await this.apiCall('index', {
-				params,
-			});
+			const response = await this.apiCall('index', params);
 
 			return response;
 		} catch (error) {
