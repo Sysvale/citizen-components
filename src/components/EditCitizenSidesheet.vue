@@ -60,13 +60,13 @@ watch(model, (newValue) => {
 
 async function fetchCitizen() {
 	isLoading.value = true;
-	citizenService.read({ search_string: props.citizen })
-		.then(({ data }) => {
-			if (data.length === 0) {
+	citizenService.read({ id: props.citizen })
+		.then((data) => {
+			if (!data) {
 				return;
 			}
 
-			[selectedCitizen.value] = data;
+			selectedCitizen.value = data;
 		})
 		.finally(() => isLoading.value = false);
 }

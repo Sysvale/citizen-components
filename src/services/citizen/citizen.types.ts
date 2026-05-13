@@ -106,5 +106,5 @@ export interface CreateCitizenResponse {
 }
 
 export interface ReadCitizenParams {
-	search_string: string;
+	id: string;
 }
