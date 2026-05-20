@@ -16,6 +16,10 @@
 		},
 		"./style.css": "./dist/citizen-components.css"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sysvale/citizen-components.git"
+	},
 	"files": [
 		"dist"
 	],
