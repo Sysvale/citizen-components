@@ -85,4 +85,31 @@ describe('Citizen model', () => {
 
 		expect(citizen.fancyAddress).toEqual(address?.fancyAddress);
 	});
+
+	test('cep is read from the response and returned by asRequestPayload', () => {
+		const payload = citizen.asRequestPayload();
+
+		expect(citizen.cep).toEqual('56330180');
+		expect(payload.address).toEqual(
+			expect.objectContaining({ cep: '56330180' }),
+		);
+	});
+
+	test('cep is preserved when address is passed as nested object', () => {
+		const newCitizen = new Citizen({
+			...citizenFixture,
+			address: {
+				...citizenFixture.address,
+				cep: '12345678',
+			},
+		});
+
+		expect(newCitizen.cep).toEqual('12345678');
+	});
+
+	test('asFormData includes cep', () => {
+		const formData = citizen.asFormData();
+
+		expect(formData.cep).toEqual('56330180');
+	});
 });

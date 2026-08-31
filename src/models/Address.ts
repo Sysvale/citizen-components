@@ -31,6 +31,7 @@ function resolveFancyField(field: string | undefined): string {
 export class Address {
 	public number?: string;
 	public complement?: string;
+	public cep?: string;
 	private _city?: City;
 	private _uf?: Uf;
 	private _neighborhood?: Neighborhood;
@@ -39,6 +40,7 @@ export class Address {
 	constructor(args: any) {
 		this.number = args.number;
 		this.complement = args.complement;
+		this.cep = args.cep;
 		this.city = args.city;
 		this.uf = args.uf;
 		this.neighborhood = args.neighborhood;
@@ -147,6 +149,7 @@ export class Address {
 			street: this.street,
 			number: this.number,
 			complement: this.complement,
+			cep: this.cep,
 			neighborhood: this.neighborhood,
 			city: this.city,
 			uf: this.uf,
@@ -158,6 +161,7 @@ export class Address {
 			street: typeof this.street === 'object' ? this.street.value : this.street,
 			number: this.number,
 			complement: this.complement,
+			cep: this.cep,
 			neighborhood:
 				typeof this.neighborhood === 'object'
 					? this.neighborhood?.value

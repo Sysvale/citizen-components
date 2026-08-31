@@ -60,6 +60,7 @@ export class Citizen {
 				neighborhood: args.neighborhood,
 				number: args.number,
 				complement: args.complement,
+				cep: args.cep,
 			};
 			return;
 		}
@@ -71,6 +72,7 @@ export class Citizen {
 			neighborhood: args.address.neighborhood,
 			number: args.address.number,
 			complement: args.address.complement,
+			cep: args.address.cep,
 		};
 	}
 
@@ -126,6 +128,10 @@ export class Citizen {
 
 	get complement(): Address['complement'] {
 		return this._address?.complement;
+	}
+
+	get cep(): Address['cep'] {
+		return this._address?.cep;
 	}
 
 	get race(): Race | undefined {
