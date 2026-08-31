@@ -28,6 +28,16 @@ function resolveFancyField(field: string | undefined): string {
 	return field;
 }
 
+function formatCep(cep: string | undefined): string {
+	if (!cep) return '';
+
+	const digits = cep.replace(/\D/g, '');
+
+	if (digits.length !== 8) return cep;
+
+	return `${digits.slice(0, 5)}-${digits.slice(5)}`;
+}
+
 export class Address {
 	public number?: string;
 	public complement?: string;
@@ -122,16 +132,18 @@ export class Address {
 	}
 
 	get fancyAddress(): string {
+		const cep = formatCep(this.cep);
+		const base = `${resolveFancyField(this.street?.value)},
+			${resolveFancyField(this.number)},
+			${resolveFancyField(this.neighborhood?.value)}`;
+
 		if (!this.city || !this.uf) {
-			return `${resolveFancyField(this.street?.value)},
-				${resolveFancyField(this.number)},
-				${resolveFancyField(this.neighborhood?.value)}`;
+			return cep ? `${base}, ${cep}` : base;
 		}
 
-		return `${resolveFancyField(this.street?.value)},
-			${resolveFancyField(this.number)},
-			${resolveFancyField(this.neighborhood?.value)},
-			${resolveFancyField(this.city?.value)} - ${resolveFancyField(this.uf?.shortName)}`;
+		const cityUf = `${resolveFancyField(this.city?.value)} - ${resolveFancyField(this.uf?.shortName)}`;
+
+		return cep ? `${base}, ${cityUf} - ${cep}` : `${base}, ${cityUf}`;
 	}
 
 	get isIncomplete(): boolean {

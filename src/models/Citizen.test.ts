@@ -86,6 +86,22 @@ describe('Citizen model', () => {
 		expect(citizen.fancyAddress).toEqual(address?.fancyAddress);
 	});
 
+	test('fancyAddress includes the formatted cep', () => {
+		expect(citizen.fancyAddress).toContain('56330-180');
+	});
+
+	test('fancyAddress without cep omits the cep segment', () => {
+		const citizenWithoutCep = new Citizen({
+			...citizenFixture,
+			address: {
+				...citizenFixture.address,
+				cep: undefined,
+			},
+		});
+
+		expect(citizenWithoutCep.fancyAddress).not.toContain('- 563');
+	});
+
 	test('cep is read from the response and returned by asRequestPayload', () => {
 		const payload = citizen.asRequestPayload();
 
