@@ -112,4 +112,20 @@ describe('Citizen model', () => {
 
 		expect(formData.cep).toEqual('56330180');
 	});
+
+	test('asRequestPayload removes the cep mask', () => {
+		const maskedCitizen = new Citizen({
+			...citizenFixture,
+			address: {
+				...citizenFixture.address,
+				cep: '56330-180',
+			},
+		});
+
+		const payload = maskedCitizen.asRequestPayload();
+
+		expect(payload.address).toEqual(
+			expect.objectContaining({ cep: '56330180' }),
+		);
+	});
 });

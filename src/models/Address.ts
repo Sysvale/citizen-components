@@ -161,7 +161,7 @@ export class Address {
 			street: typeof this.street === 'object' ? this.street.value : this.street,
 			number: this.number,
 			complement: this.complement,
-			cep: this.cep,
+			cep: this.cep ? this.cep.replace(/\D/g, '') : this.cep,
 			neighborhood:
 				typeof this.neighborhood === 'object'
 					? this.neighborhood?.value

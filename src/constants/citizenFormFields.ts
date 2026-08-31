@@ -137,6 +137,16 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			placeholder: 'seu.email@exemplo.com',
 		},
 		{
+			name: 'cep',
+			label: 'CEP',
+			required: false,
+			rules: '',
+			colSpan: 3,
+			component: 'CdsTextInput',
+			mask: '#####-###',
+			placeholder: '00000-000',
+		},
+		{
 			name: 'uf',
 			label: 'UF',
 			required: true,
