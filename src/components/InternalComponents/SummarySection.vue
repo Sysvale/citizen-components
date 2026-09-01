@@ -36,7 +36,7 @@
 							height="16"
 							width="16"
 							name="warning-outline"
-							color="#EDA831"
+							:color="item.critical ? '#E53935' : '#EDA831'"
 						/>
 					</CdsTooltip>
 				</CdsFlexbox>
@@ -55,15 +55,15 @@
 
 <script setup lang="ts">
 defineProps<{
-	title: string,
+	title: string;
 	items: Array<{
-		label: string,
-		value: Nullable<string>,
-		fill?: boolean,
-		incomplete?: boolean,
-	}>,
-}>()
+		label: string;
+		value: Nullable<string>;
+		fill?: boolean;
+		incomplete?: boolean;
+		critical?: boolean;
+	}>;
+}>();
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

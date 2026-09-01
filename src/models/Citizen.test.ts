@@ -39,30 +39,123 @@ describe('Citizen model', () => {
 		const fieldsToHide = ['race', 'mother_name'];
 
 		expect(citizen.getPersonalInfo()).toEqual([
-			{ label: 'CPF', value: maskCpf(citizenFixture.cpf), field: 'cpf', incomplete: false },
-			{ label: 'CNS', value: maskCns(citizenFixture.cns), field: 'cns', incomplete: false },
-			{ label: 'RG', value: 'Não informado', field: 'identification_document', incomplete: false },
-			{ label: 'Data de nascimento', value: DateTime.fromISO(citizenFixture.birth_date).toFormat('dd/MM/yyyy'), field: 'birth_date', incomplete: false },
+			{
+				label: 'CPF',
+				value: maskCpf(citizenFixture.cpf),
+				field: 'cpf',
+				incomplete: false,
+				critical: false,
+			},
+			{
+				label: 'CNS',
+				value: maskCns(citizenFixture.cns),
+				field: 'cns',
+				incomplete: false,
+			},
+			{
+				label: 'RG',
+				value: 'Não informado',
+				field: 'identification_document',
+				incomplete: false,
+			},
+			{
+				label: 'Data de nascimento',
+				value: DateTime.fromISO(citizenFixture.birth_date).toFormat('dd/MM/yyyy'),
+				field: 'birth_date',
+				incomplete: false,
+			},
 			{ label: 'Sexo', value: fancyGender, field: 'gender', incomplete: false },
 			{ label: 'Raça/Cor', value: fancyRace, field: 'race', incomplete: false },
-			{ label: 'Nome da mãe', value: citizenFixture.mother_name, field: 'mother_name', fill: true, incomplete: false },
+			{
+				label: 'Nome da mãe',
+				value: citizenFixture.mother_name,
+				field: 'mother_name',
+				fill: true,
+				incomplete: false,
+			},
 		]);
 
 		expect(citizen.getPersonalInfo(fieldsToHide)).toEqual([
-			{ label: 'CPF', value: maskCpf(citizenFixture.cpf), field: 'cpf', incomplete: false },
-			{ label: 'CNS', value: maskCns(citizenFixture.cns), field: 'cns', incomplete: false },
-			{ label: 'RG', value: 'Não informado', field: 'identification_document', incomplete: false },
-			{ label: 'Data de nascimento', value: DateTime.fromISO(citizenFixture.birth_date).toFormat('dd/MM/yyyy'), field: 'birth_date', incomplete: false },
+			{
+				label: 'CPF',
+				value: maskCpf(citizenFixture.cpf),
+				field: 'cpf',
+				incomplete: false,
+				critical: false,
+			},
+			{
+				label: 'CNS',
+				value: maskCns(citizenFixture.cns),
+				field: 'cns',
+				incomplete: false,
+			},
+			{
+				label: 'RG',
+				value: 'Não informado',
+				field: 'identification_document',
+				incomplete: false,
+			},
+			{
+				label: 'Data de nascimento',
+				value: DateTime.fromISO(citizenFixture.birth_date).toFormat('dd/MM/yyyy'),
+				field: 'birth_date',
+				incomplete: false,
+			},
 			{ label: 'Sexo', value: fancyGender, field: 'gender', incomplete: false },
 		]);
 	});
 
+	test('cpf field is critical when required and not informed', () => {
+		const withoutCpf = new Citizen({
+			...citizenFixture,
+			cpf: '',
+		});
+
+		const fields = withoutCpf.getPersonalInfo([], ['cpf']);
+
+		expect(fields.find(({ field }) => field === 'cpf')).toEqual({
+			label: 'CPF',
+			value: 'Não informado',
+			field: 'cpf',
+			incomplete: true,
+			critical: true,
+		});
+	});
+
+	test('cpf field is not critical when informed', () => {
+		const fields = citizen.getPersonalInfo([], ['cpf']);
+
+		expect(fields.find(({ field }) => field === 'cpf')).toEqual({
+			label: 'CPF',
+			value: maskCpf(citizenFixture.cpf),
+			field: 'cpf',
+			incomplete: false,
+			critical: false,
+		});
+	});
+
 	test('contactInfo is resolved correctly', () => {
 		expect(citizen.getContactInfo()).toEqual([
-			{ label: 'Telefone', value: 'Não informado', field: 'phone', incomplete: false },
-			{ label: 'Celular', value: maskPhone(citizenFixture.cellphone), field: 'cellphone', incomplete: false },
+			{
+				label: 'Telefone',
+				value: 'Não informado',
+				field: 'phone',
+				incomplete: false,
+			},
+			{
+				label: 'Celular',
+				value: maskPhone(citizenFixture.cellphone),
+				field: 'cellphone',
+				incomplete: false,
+			},
 			{ label: 'E-mail', value: 'Não informado', field: 'email', incomplete: false },
-			{ label: 'Endereço', value: citizen.fancyAddress, fill: true, field: 'address', incomplete: false },
+			{
+				label: 'Endereço',
+				value: citizen.fancyAddress,
+				fill: true,
+				field: 'address',
+				incomplete: false,
+			},
 		]);
 	});
 
@@ -106,9 +199,7 @@ describe('Citizen model', () => {
 		const payload = citizen.asRequestPayload();
 
 		expect(citizen.cep).toEqual('56330180');
-		expect(payload.address).toEqual(
-			expect.objectContaining({ cep: '56330180' }),
-		);
+		expect(payload.address).toEqual(expect.objectContaining({ cep: '56330180' }));
 	});
 
 	test('cep is preserved when address is passed as nested object', () => {
@@ -140,8 +231,6 @@ describe('Citizen model', () => {
 
 		const payload = maskedCitizen.asRequestPayload();
 
-		expect(payload.address).toEqual(
-			expect.objectContaining({ cep: '56330180' }),
-		);
+		expect(payload.address).toEqual(expect.objectContaining({ cep: '56330180' }));
 	});
 });

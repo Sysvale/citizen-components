@@ -1,14 +1,10 @@
 <template>
-	<div
-		:class="{ 'summary--limit-width': !fluid }"
-	>
+	<div :class="{ 'summary--limit-width': !fluid }">
 		<CdsBox
 			:variant="hasMissingFields ? 'amber' : 'gray'"
 			fluid
 		>
-			<CdsSpacer
-				v-if="!citizen"
-			>
+			<CdsSpacer v-if="!citizen">
 				<CdsEmptyState
 					:hide-action-button="hideCreateButton"
 					title="Nenhum cidadão selecionado"
@@ -30,9 +26,7 @@
 				gap="6"
 				direction="column"
 			>
-				<CdsFlexbox
-					justify="space-between"
-				>
+				<CdsFlexbox justify="space-between">
 					<CdsFlexbox
 						gap="3"
 						align="center"
@@ -53,10 +47,16 @@
 						>
 							Gestante
 						</CdsBadge>
+						<CdsBadge
+							v-if="hasMissingCpf"
+							data-testid="missing-cpf-badge"
+							size="sm"
+							variant="amber"
+						>
+							CPF não informado
+						</CdsBadge>
 					</CdsFlexbox>
-					<CdsFlexbox
-						gap="3"
-					>
+					<CdsFlexbox gap="3">
 						<CdsFlexbox
 							v-if="hasMissingFields"
 							align="center"
@@ -72,7 +72,7 @@
 							<CdsText
 								as="caption"
 								font-weight="semibold"
-								style="color: #EDA831"
+								style="color: #eda831"
 							>
 								Cadastro incompleto
 							</CdsText>
@@ -120,28 +120,31 @@ import { type Citizen } from '@/types';
 import emptyState from '../assets/images/summary-empty-state.svg';
 import SummarySection from './InternalComponents/SummarySection.vue';
 
-const props = withDefaults(defineProps<{
-	citizen?: Partial<Citizen> | null,
-	fluid?: boolean,
-	hideEditButton?: boolean,
-	hideCloseButton?: boolean,
-	hideActions?: boolean,
-	hideCreateButton?: boolean,
-	hiddenFields?: string[],
-}>(),
-{
-	citizen: null,
-	hideEditButton: false,
-	hideCloseButton: false,
-	hideActions: false,
-	hiddenFields: () => [],
-});
+const props = withDefaults(
+	defineProps<{
+		citizen?: Partial<Citizen> | null;
+		fluid?: boolean;
+		hideEditButton?: boolean;
+		hideCloseButton?: boolean;
+		hideActions?: boolean;
+		hideCreateButton?: boolean;
+		hiddenFields?: string[];
+	}>(),
+	{
+		citizen: null,
+		hideEditButton: false,
+		hideCloseButton: false,
+		hideActions: false,
+		hiddenFields: () => [],
+	}
+);
 
 const emits = defineEmits(['create', 'edit', 'close']);
 
 const internalCitizen = ref<CitizenModel>();
 const emptyStateImage = emptyState;
 const hasMissingFields = ref(false);
+const hasMissingCpf = ref(false);
 const requiredFields = [
 	'cpf',
 	'cns',
@@ -157,7 +160,7 @@ onMounted(() => {
 	fillCitizen(props.citizen);
 });
 
-watch(toRef(props, 'citizen'), (newValue) => {
+watch(toRef(props, 'citizen'), newValue => {
 	checkMissingRequiredFields(newValue);
 	fillCitizen(newValue);
 });
@@ -185,19 +188,25 @@ function checkMissingRequiredFields(value: Partial<Citizen> | null) {
 		uf: citizen['uf'],
 	};
 
-	const missingCpfField = isEmptyValue(citizen['cpf']) && !props.hiddenFields.includes('cpf');
-	const missingCnsField = isEmptyValue(citizen['cns']) && !props.hiddenFields.includes('cns');
+	const missingCpfField =
+		isEmptyValue(citizen['cpf']) && !props.hiddenFields.includes('cpf');
+	const missingCnsField =
+		isEmptyValue(citizen['cns']) && !props.hiddenFields.includes('cns');
 	const missingCpfAndCnsFields = missingCpfField && missingCnsField;
 
-	const missingCitizenFields = ['name', 'birth_date', 'mother_name', 'race'].some(
-		field => isEmptyValue(citizen[field]) && !props.hiddenFields.includes(field)
-	) || isEmptyValue(genderValue);
+	hasMissingCpf.value = missingCpfField;
+
+	const missingCitizenFields =
+		['name', 'birth_date', 'mother_name', 'race'].some(
+			field => isEmptyValue(citizen[field]) && !props.hiddenFields.includes(field)
+		) || isEmptyValue(genderValue);
 
 	const missingAddressFields = ['street', 'number', 'neighborhood', 'city', 'uf'].some(
 		field => isEmptyValue(addressSource?.[field]) && !props.hiddenFields.includes(field)
 	);
 
-	hasMissingFields.value = missingCitizenFields || missingAddressFields || missingCpfAndCnsFields;
+	hasMissingFields.value =
+		missingCitizenFields || missingAddressFields || missingCpfAndCnsFields;
 }
 
 function isEmptyValue(value: unknown) {
@@ -216,7 +225,7 @@ function isEmptyValue(value: unknown) {
 
 defineExpose({
 	hasMissingFields,
-})
+});
 </script>
 
 <style lang="scss" scoped>

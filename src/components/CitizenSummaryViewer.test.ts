@@ -45,12 +45,17 @@ const incompleteCitizen: Partial<Citizen> = {
 	mother_name: '',
 };
 
+const citizenWithoutCpf: Partial<Citizen> = {
+	...maleCitizen,
+	cpf: '',
+};
+
 const stubs = {
 	CdsText: true,
 	CdsBadge: true,
 	CdsIconButton: true,
 	SummarySection: true,
-}
+};
 
 describe('CitizenSummaryViewer', () => {
 	let wrapper: VueWrapper<any>;
@@ -86,8 +91,12 @@ describe('CitizenSummaryViewer', () => {
 			},
 		});
 
-		expect(wrapper.findComponent('[data-testid="pregnant-badge"]').exists()).toBeFalsy();
-		expect(pregnantCitizenWrapper.findComponent('[data-testid="pregnant-badge"]').exists()).toBeTruthy();
+		expect(
+			wrapper.findComponent('[data-testid="pregnant-badge"]').exists()
+		).toBeFalsy();
+		expect(
+			pregnantCitizenWrapper.findComponent('[data-testid="pregnant-badge"]').exists()
+		).toBeTruthy();
 
 		pregnantCitizenWrapper.unmount();
 	});
@@ -150,12 +159,16 @@ describe('CitizenSummaryViewer', () => {
 			},
 		});
 
-		const missingFieldsAlert = incompleteCitizenWrapper.find('[data-testid="missing-fields-alert"]');
+		const missingFieldsAlert = incompleteCitizenWrapper.find(
+			'[data-testid="missing-fields-alert"]'
+		);
 
 		expect(incompleteCitizenWrapper.vm.hasMissingFields).toBeTruthy();
 		expect(incompleteCitizenWrapper.find('.box--amber').exists()).toBeTruthy();
 		expect(missingFieldsAlert.exists()).toBeTruthy();
-		expect(missingFieldsAlert.find('svg[aria-labelledby="warning-outline"]').exists()).toBeTruthy();
+		expect(
+			missingFieldsAlert.find('svg[aria-labelledby="warning-outline"]').exists()
+		).toBeTruthy();
 		expect(missingFieldsAlert.text()).toContain('Cadastro incompleto');
 
 		incompleteCitizenWrapper.unmount();
@@ -176,10 +189,38 @@ describe('CitizenSummaryViewer', () => {
 			},
 		});
 
-		expect(incompleteCitizenWrapper.find('[data-testid="missing-fields-alert"]').exists()).toBeFalsy();
+		expect(
+			incompleteCitizenWrapper.find('[data-testid="missing-fields-alert"]').exists()
+		).toBeFalsy();
 		expect(incompleteCitizenWrapper.vm.hasMissingFields).toBeFalsy();
 		expect(incompleteCitizenWrapper.find('.box--amber').exists()).toBeFalsy();
 
 		incompleteCitizenWrapper.unmount();
+	});
+
+	test('shows missing cpf badge when cpf is not informed', async () => {
+		const citizenWithoutCpfWrapper = await mount(CitizenSummaryViewer, {
+			props: {
+				citizen: citizenWithoutCpf,
+			},
+			global: {
+				plugins: [Cuida],
+				stubs,
+			},
+		});
+
+		const missingCpfBadge = citizenWithoutCpfWrapper.find(
+			'[data-testid="missing-cpf-badge"]'
+		);
+
+		expect(citizenWithoutCpfWrapper.vm.hasMissingCpf).toBeTruthy();
+		expect(missingCpfBadge.exists()).toBeTruthy();
+
+		citizenWithoutCpfWrapper.unmount();
+	});
+
+	test('should not show missing cpf badge when cpf is informed', () => {
+		expect(wrapper.vm.hasMissingCpf).toBeFalsy();
+		expect(wrapper.find('[data-testid="missing-cpf-badge"]').exists()).toBeFalsy();
 	});
 });
