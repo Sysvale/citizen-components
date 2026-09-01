@@ -14,6 +14,16 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			component: 'CdsTextInput',
 		},
 		{
+			name: 'cpf',
+			label: 'CPF',
+			required: true,
+			rules: 'cpf|required_without:@cns',
+			colSpan: 12,
+			placeholder: '000.000.000-00',
+			mask: '###.###.###-##',
+			component: 'CdsTextInput',
+		},
+		{
 			name: 'cns',
 			label: 'CNS',
 			required: true,
@@ -21,16 +31,6 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			colSpan: 6,
 			placeholder: '000 0000 0000 0000',
 			mask: '### #### #### ####',
-			component: 'CdsTextInput',
-		},
-		{
-			name: 'cpf',
-			label: 'CPF',
-			required: true,
-			rules: 'cpf|required_without:@cns',
-			colSpan: 6,
-			placeholder: '000.000.000-00',
-			mask: '###.###.###-##',
 			component: 'CdsTextInput',
 		},
 		{
