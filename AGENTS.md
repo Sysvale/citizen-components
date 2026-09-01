@@ -54,6 +54,34 @@ Biblioteca de componentes **Vue 3** (TypeScript + Vite) para busca, listagem e e
 - **Componentes** montados com `defineProps`/`defineEmits` (Composition API, `<script setup>`).
 - **Conventional Commits**: `feat:`/`fix:`/`feat!:` disparam release via semantic-release; `docs:`/`chore:`/`style:`/`test:` não geram release (ver `README.md`).
 
+## RELEASE AUTOMATION (semantic-release)
+
+- **Ferramenta:** [semantic-release](https://github.com/semantic-release/semantic-release) v25 — bump de versão, changelog e publish **100% automatizados**.
+- **Trigger:** push na branch `main` (`.github/workflows/publish.yml`). Também pode ser disparado manualmente via `workflow_dispatch`.
+- **Config:** `.releaserc.json` na raiz do projeto.
+- **O que acontece no CI ao mergear na `main`:**
+  1. `npm ci` → instala dependências
+  2. `npm run build` → build do pacote (vite + tsc)
+  3. `npx semantic-release` → analisa commits, bumpa versão, publica no npm, cria release/tag no GitHub
+- **Regras de release (`releaseRules` no `.releaserc.json`):**
+
+  | Commit type | Bump | Exemplo |
+  |-------------|------|---------|
+  | `feat:` | **minor** | `feat: adiciona CitizenSummarySidesheet` |
+  | `fix:` | **patch** | `fix: corrige busca por CPF` |
+  | `feat!:` ou `BREAKING CHANGE:` | **major** | `feat!: remove prop obsoleta` |
+  | `refactor:`, `perf:` | **patch** | `refactor: extrai lógica de formatação` |
+  | `docs:`, `chore:`, `style:`, `test:`, `build:`, `ci:` | **Não gera release** | `docs: atualiza README` |
+
+- **Plugins utilizados:** `@semantic-release/commit-analyzer` → `@semantic-release/release-notes-generator` → `@semantic-release/npm` → `@semantic-release/github`.
+- **Publicação:** npm com `publishConfig.access: "public"`, via secret `NPM_AUTH_TOKEN`.
+- **Dry-run (sem publicar):**
+  ```bash
+  npm run semantic-release:dry    # simula release sem publicar
+  npm run semantic-release:test   # dry-run sem CI
+  ```
+- **IMPORTANT:** Seguir estritamente o formato Conventional Commits — commits fora do padrão (`docs:`, `chore:`, etc.) não geram release e não devem ser usados para features/corrections que precisam de bump.
+
 ## ANTI-PATTERNS (ESTE PROJETO)
 
 - **Não commitar `dist/`** (está no `.gitignore`; é gerado).
