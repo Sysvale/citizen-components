@@ -17,7 +17,7 @@
 				v-for="formField in formFields"
 				:key="formField.name"
 				:col-span="formField.colSpan"
-				:class="formField.name === 'pregnant' ? 'pregnant__container' : ''"
+				:class="['pregnant', 'is_in_street_situation'].includes(formField.name) ? 'pregnant__container' : ''"
 			>
 				<Field
 					:ref="`validation${startCase(formField.name)}Ref`"

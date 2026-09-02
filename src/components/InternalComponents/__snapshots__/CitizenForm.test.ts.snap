@@ -65,7 +65,10 @@ exports[`CitizenForm > is rendered correctly 1`] = `
       <cds-text-input-stub data-v-1916aed6="" label="Número" disabled="false" state="default" inputtype="text" required="true" placeholder="00" errormessage="Valor inválido" fluid="true" tooltipicon="info-outline" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="number" rules="required" colspan="4" component="CdsTextInput" data-testid="test-number" class="field__container"></cds-text-input-stub>
     </div>
     <div data-v-051eccea="" data-v-1916aed6="" class="grid-item">
-      <cds-text-input-stub data-v-1916aed6="" label="Complemento" disabled="false" state="default" inputtype="text" required="false" placeholder="Ex.: Casa, prédio..." errormessage="Valor inválido" fluid="true" tooltipicon="info-outline" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="complement" rules="" colspan="12" component="CdsTextInput" data-testid="test-complement" class="field__container"></cds-text-input-stub>
+      <cds-text-input-stub data-v-1916aed6="" label="Complemento" disabled="false" state="default" inputtype="text" required="false" placeholder="Ex.: Casa, prédio..." errormessage="Valor inválido" fluid="true" tooltipicon="info-outline" supportingtext="" lazy="false" mobile="false" floatinglabel="false" disableautocomplete="false" name="complement" rules="" colspan="8" component="CdsTextInput" data-testid="test-complement" class="field__container"></cds-text-input-stub>
+    </div>
+    <div data-v-051eccea="" data-v-1916aed6="" class="grid-item pregnant__container">
+      <cds-checkbox-stub data-v-1916aed6="" modelvalue="false" label="Está em situação de rua?" variant="green" indeterminate="false" prominent="false" disabled="false" name="is_in_street_situation" required="false" rules="" colspan="4" component="CdsCheckbox" data-testid="test-is_in_street_situation" state="default" class="field__container" fluid=""></cds-checkbox-stub>
     </div>
   </div>
 </form>"

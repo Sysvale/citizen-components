@@ -26,6 +26,7 @@ export class Citizen {
 	public birth_date?: string;
 	public identification_document: string;
 	public pregnant: boolean;
+	public is_in_street_situation?: boolean;
 	public mother_name?: string;
 	public cellphone?: string;
 	public phone: string;
@@ -47,6 +48,7 @@ export class Citizen {
 		this.identification_document = args.identification_document;
 		this.mother_name = args.mother_name;
 		this.pregnant = args.pregnant;
+		this.is_in_street_situation = args.is_in_street_situation;
 		this.phone = args.phone;
 		this.cellphone = args.cellphone;
 		this.email = args.email;
@@ -270,6 +272,7 @@ export class Citizen {
 			identification_document: this.identification_document,
 			mother_name: this.mother_name,
 			pregnant: this.pregnant,
+			is_in_street_situation: this.is_in_street_situation,
 			phone: this.phone,
 			cellphone: this.cellphone,
 			email: this.email,
@@ -291,6 +294,7 @@ export class Citizen {
 			identification_document: this.identification_document,
 			mother_name: this.mother_name,
 			pregnant: this.pregnant,
+			is_in_street_situation: this.is_in_street_situation,
 			address: this.address?.asRequestPayload || {},
 			phone: removePhoneMask(this.phone),
 			email: this.email,

@@ -192,9 +192,17 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 			label: 'Complemento',
 			required: false,
 			rules: '',
-			colSpan: 12,
+			colSpan: 8,
 			component: 'CdsTextInput',
 			placeholder: 'Ex.: Casa, prédio...',
+		},
+		{
+			name: 'is_in_street_situation',
+			label: 'Está em situação de rua?',
+			required: false,
+			rules: '',
+			colSpan: 4,
+			component: 'CdsCheckbox',
 		},
 	];
 

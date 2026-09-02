@@ -233,4 +233,20 @@ describe('Citizen model', () => {
 
 		expect(payload.address).toEqual(expect.objectContaining({ cep: '56330180' }));
 	});
+
+	test('is_in_street_situation is read from the response', () => {
+		expect(citizen.is_in_street_situation).toBe(citizenFixture.is_in_street_situation);
+	});
+
+	test('asFormData includes is_in_street_situation', () => {
+		const formData = citizen.asFormData();
+
+		expect(formData.is_in_street_situation).toBe(citizenFixture.is_in_street_situation);
+	});
+
+	test('asRequestPayload includes is_in_street_situation', () => {
+		const payload = citizen.asRequestPayload();
+
+		expect(payload.is_in_street_situation).toBe(citizenFixture.is_in_street_situation);
+	});
 });
