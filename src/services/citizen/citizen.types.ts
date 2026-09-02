@@ -43,6 +43,7 @@ export interface Citizen {
 	co_cidadao: number;
 	is_dead: boolean;
 	pregnant?: boolean | null;
+	is_in_street_situation?: Nullable<boolean>;
 	identification_document?: Nullable<string>;
 	issuing_agency?: Nullable<string>;
 }
@@ -58,6 +59,7 @@ export interface CitizenParams {
 	issuing_agency?: string;
 	mother_name?: string;
 	pregnant?: boolean;
+	is_in_street_situation?: boolean;
 	cpf_responsible?: string;
 	address: Address;
 	phone: string;
@@ -75,6 +77,7 @@ export interface CreateCitizenParams {
 	identification_document?: string;
 	issuing_agency?: string;
 	pregnant?: boolean;
+	is_in_street_situation?: boolean;
 	cpf_responsible?: string;
 	address: Address;
 	phone: string;
@@ -92,6 +95,7 @@ export interface UpdateCitizenParams {
 	gender: string;
 	identification_document?: string;
 	pregnant?: boolean;
+	is_in_street_situation?: boolean;
 	cpf_responsible?: string;
 	address: Address;
 	phone: string;

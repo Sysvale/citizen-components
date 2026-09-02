@@ -59,6 +59,7 @@ export interface Address {
 	};
 	number?: string;
 	complement?: string;
+	cep?: string;
 	neighborhood?: {
 		id: string;
 		value: string;

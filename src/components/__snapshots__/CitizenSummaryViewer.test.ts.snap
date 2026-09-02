@@ -10,6 +10,7 @@ exports[`CitizenSummaryViewer > is rendered correctly 1`] = `
             <div data-v-76655835="" data-v-07590091="" class="flexbox">
               <cds-text-stub data-v-07590091="" as="subheading-2" color="n-700" fontweight="semibold" textalign="start" nomargin="true"></cds-text-stub>
               <!--v-if-->
+              <!--v-if-->
             </div>
             <div data-v-76655835="" data-v-07590091="" class="flexbox">
               <!--v-if-->

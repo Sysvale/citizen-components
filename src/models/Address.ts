@@ -28,9 +28,20 @@ function resolveFancyField(field: string | undefined): string {
 	return field;
 }
 
+function formatCep(cep: string | undefined): string {
+	if (!cep) return '';
+
+	const digits = cep.replace(/\D/g, '');
+
+	if (digits.length !== 8) return cep;
+
+	return `${digits.slice(0, 5)}-${digits.slice(5)}`;
+}
+
 export class Address {
 	public number?: string;
 	public complement?: string;
+	public cep?: string;
 	private _city?: City;
 	private _uf?: Uf;
 	private _neighborhood?: Neighborhood;
@@ -39,6 +50,7 @@ export class Address {
 	constructor(args: any) {
 		this.number = args.number;
 		this.complement = args.complement;
+		this.cep = args.cep;
 		this.city = args.city;
 		this.uf = args.uf;
 		this.neighborhood = args.neighborhood;
@@ -120,16 +132,18 @@ export class Address {
 	}
 
 	get fancyAddress(): string {
+		const cep = formatCep(this.cep);
+		const base = `${resolveFancyField(this.street?.value)},
+			${resolveFancyField(this.number)},
+			${resolveFancyField(this.neighborhood?.value)}`;
+
 		if (!this.city || !this.uf) {
-			return `${resolveFancyField(this.street?.value)},
-				${resolveFancyField(this.number)},
-				${resolveFancyField(this.neighborhood?.value)}`;
+			return cep ? `${base}, ${cep}` : base;
 		}
 
-		return `${resolveFancyField(this.street?.value)},
-			${resolveFancyField(this.number)},
-			${resolveFancyField(this.neighborhood?.value)},
-			${resolveFancyField(this.city?.value)} - ${resolveFancyField(this.uf?.shortName)}`;
+		const cityUf = `${resolveFancyField(this.city?.value)} - ${resolveFancyField(this.uf?.shortName)}`;
+
+		return cep ? `${base}, ${cityUf} - ${cep}` : `${base}, ${cityUf}`;
 	}
 
 	get isIncomplete(): boolean {
@@ -147,6 +161,7 @@ export class Address {
 			street: this.street,
 			number: this.number,
 			complement: this.complement,
+			cep: this.cep,
 			neighborhood: this.neighborhood,
 			city: this.city,
 			uf: this.uf,
@@ -158,6 +173,7 @@ export class Address {
 			street: typeof this.street === 'object' ? this.street.value : this.street,
 			number: this.number,
 			complement: this.complement,
+			cep: this.cep ? this.cep.replace(/\D/g, '') : this.cep,
 			neighborhood:
 				typeof this.neighborhood === 'object'
 					? this.neighborhood?.value

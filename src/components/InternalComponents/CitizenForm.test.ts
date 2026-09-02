@@ -55,6 +55,41 @@ describe('CitizenForm', () => {
 		expect(pregnantCheckbox.attributes().disabled).toBe('false');
 	});
 
+	test('is_in_street_situation checkbox is rendered', () => {
+		const checkbox = wrapper.find('[data-testid="test-is_in_street_situation"]');
+
+		expect(checkbox.exists()).toBe(true);
+		expect(checkbox.attributes().disabled).toBe('false');
+	});
+
+	test('is_in_street_situation value is bound when form is filled with initial data', async () => {
+		await wrapper.unmount();
+
+		const citizenInfo = makeCitizen({ is_in_street_situation: true });
+
+		wrapper = await mount(CitizenForm, {
+			props: {
+				initialData: citizenInfo,
+			},
+			global: {
+				plugins: [Cuida],
+				stubs: {
+					CdsTextInput: true,
+					CdsSelect: true,
+					CdsCheckbox: true,
+					CdsDateInput: true,
+				},
+				provide: {
+					useToast: mockToast,
+				},
+			},
+		});
+
+		expect(wrapper.find('[data-testid="test-is_in_street_situation"]').attributes().value).toBe(
+			String(citizenInfo.asFormData().is_in_street_situation)
+		);
+	});
+
 	test('all fields are disabled correctly by different props', async () => {
 		await wrapper.setProps({
 			disabled: true,
