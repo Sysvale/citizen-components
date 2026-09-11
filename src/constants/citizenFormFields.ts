@@ -139,8 +139,8 @@ export default (hiddenFields: string[]): CitizenFormField[] => {
 		{
 			name: 'cep',
 			label: 'CEP',
-			required: false,
-			rules: '',
+			required: true,
+			rules: 'required',
 			colSpan: 3,
 			component: 'CdsTextInput',
 			mask: '#####-###',
