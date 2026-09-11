@@ -50,6 +50,14 @@ const citizenWithoutCpf: Partial<Citizen> = {
 	cpf: '',
 };
 
+const citizenWithoutAddressCep: Partial<Citizen> = {
+	...maleCitizen,
+	address: {
+		...maleCitizen.address!,
+		cep: '',
+	},
+};
+
 const stubs = {
 	CdsText: true,
 	CdsBadge: true,
@@ -222,5 +230,52 @@ describe('CitizenSummaryViewer', () => {
 	test('should not show missing cpf badge when cpf is informed', () => {
 		expect(wrapper.vm.hasMissingCpf).toBeFalsy();
 		expect(wrapper.find('[data-testid="missing-cpf-badge"]').exists()).toBeFalsy();
+	});
+
+	test('shows missing fields warning when address cep is missing and not hidden', async () => {
+		const withoutCepWrapper = await mount(CitizenSummaryViewer, {
+			props: {
+				citizen: citizenWithoutAddressCep,
+			},
+			global: {
+				plugins: [Cuida],
+				stubs: {
+					...stubs,
+					CdsText: false,
+				},
+			},
+		});
+
+		expect(withoutCepWrapper.vm.hasMissingFields).toBeTruthy();
+		expect(withoutCepWrapper.find('.box--amber').exists()).toBeTruthy();
+		expect(
+			withoutCepWrapper.find('[data-testid="missing-fields-alert"]').exists()
+		).toBeTruthy();
+
+		withoutCepWrapper.unmount();
+	});
+
+	test('should not show missing fields warning when address cep is missing and hidden', async () => {
+		const hiddenCepWrapper = await mount(CitizenSummaryViewer, {
+			props: {
+				citizen: citizenWithoutAddressCep,
+				hiddenFields: ['cep'],
+			},
+			global: {
+				plugins: [Cuida],
+				stubs: {
+					...stubs,
+					CdsText: false,
+				},
+			},
+		});
+
+		expect(hiddenCepWrapper.vm.hasMissingFields).toBeFalsy();
+		expect(hiddenCepWrapper.find('.box--amber').exists()).toBeFalsy();
+		expect(
+			hiddenCepWrapper.find('[data-testid="missing-fields-alert"]').exists()
+		).toBeFalsy();
+
+		hiddenCepWrapper.unmount();
 	});
 });
