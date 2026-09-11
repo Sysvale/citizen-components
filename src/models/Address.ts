@@ -152,8 +152,19 @@ export class Address {
 			!this.number ||
 			!this.neighborhood ||
 			!this.city ||
-			!this.uf
+			!this.uf ||
+			!this.cep
 		);
+	}
+
+	isIncompleteExcept(hiddenFields: string[] = []): boolean {
+		const addressFields = ['street', 'number', 'cep', 'neighborhood', 'city', 'uf'] as const;
+
+		return addressFields.some(field => {
+			if (hiddenFields.includes(field)) return false;
+
+			return !this[field];
+		});
 	}
 
 	get asFormData() {

@@ -159,6 +159,34 @@ describe('Citizen model', () => {
 		]);
 	});
 
+	test('contactInfo address is incomplete when an address field is missing and not hidden', () => {
+		const citizenWithoutCep = new Citizen({
+			...citizenFixture,
+			address: {
+				...citizenFixture.address,
+				cep: undefined,
+			},
+		});
+
+		const fields = citizenWithoutCep.getContactInfo([], ['address']);
+
+		expect(fields.find(({ field }) => field === 'address')?.incomplete).toBeTruthy();
+	});
+
+	test('contactInfo address is not incomplete when the missing address field is hidden', () => {
+		const citizenWithoutCep = new Citizen({
+			...citizenFixture,
+			address: {
+				...citizenFixture.address,
+				cep: undefined,
+			},
+		});
+
+		const fields = citizenWithoutCep.getContactInfo(['cep'], ['address']);
+
+		expect(fields.find(({ field }) => field === 'address')?.incomplete).toBeFalsy();
+	});
+
 	test('isPregnant is resolved correctly', () => {
 		expect.assertions(3);
 

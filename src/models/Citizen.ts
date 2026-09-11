@@ -34,7 +34,7 @@ export class Citizen {
 	public issuing_agency?: string;
 	private _gender: Gender | null = null;
 	private _race?: Race;
-	private _address: Address | null = null;
+	private _address: AddressModel | null = null;
 
 	constructor(args: any) {
 		this.id = args.id;
@@ -104,7 +104,7 @@ export class Citizen {
 		this._address = new AddressModel(address);
 	}
 
-	get address(): Address | null {
+	get address(): AddressModel | null {
 		return this._address;
 	}
 
@@ -238,7 +238,8 @@ export class Citizen {
 				fill: true,
 				field: 'address',
 				incomplete:
-					this.address?.isIncomplete && requiredFields?.includes('address'),
+					this.address?.isIncompleteExcept(fieldsToHide) &&
+					requiredFields?.includes('address'),
 			},
 		];
 

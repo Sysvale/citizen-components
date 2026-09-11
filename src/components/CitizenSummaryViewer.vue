@@ -186,6 +186,7 @@ function checkMissingRequiredFields(value: Partial<Citizen> | null) {
 		neighborhood: citizen['neighborhood'],
 		city: citizen['city'],
 		uf: citizen['uf'],
+		cep: citizen['cep'],
 	};
 
 	const missingCpfField =
@@ -201,7 +202,7 @@ function checkMissingRequiredFields(value: Partial<Citizen> | null) {
 			field => isEmptyValue(citizen[field]) && !props.hiddenFields.includes(field)
 		) || isEmptyValue(genderValue);
 
-	const missingAddressFields = ['street', 'number', 'neighborhood', 'city', 'uf'].some(
+	const missingAddressFields = ['street', 'number', 'cep', 'neighborhood', 'city', 'uf'].some(
 		field => isEmptyValue(addressSource?.[field]) && !props.hiddenFields.includes(field)
 	);
 
