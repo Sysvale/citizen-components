@@ -23,7 +23,7 @@
 			</CdsSpacer>
 			<CdsFlexbox
 				v-else
-				gap="6"
+				gap="2"
 				direction="column"
 			>
 				<CdsFlexbox justify="space-between">
@@ -39,22 +39,6 @@
 						>
 							{{ smartTitleCase(citizen?.name) }}
 						</CdsText>
-						<CdsBadge
-							v-if="internalCitizen?.isPregnant"
-							data-testid="pregnant-badge"
-							size="sm"
-							variant="pink"
-						>
-							Gestante
-						</CdsBadge>
-						<CdsBadge
-							v-if="hasMissingCpf"
-							data-testid="missing-cpf-badge"
-							size="sm"
-							variant="amber"
-						>
-							CPF não informado
-						</CdsBadge>
 					</CdsFlexbox>
 					<CdsFlexbox gap="3">
 						<CdsFlexbox
@@ -95,11 +79,45 @@
 						/>
 					</CdsFlexbox>
 				</CdsFlexbox>
-				<SummarySection
+				<CdsFlexbox
+					v-if="showBadgeSection"
+					gap="2"
+				>
+					<CdsBadge
+						v-if="hasMissingCpf"
+						data-testid="missing-cpf-badge"
+						size="sm"
+						variant="amber"
+					>
+						CPF não informado
+					</CdsBadge>
+					<CdsBadge
+						v-if="internalCitizen?.isPregnant"
+						data-testid="pregnant-badge"
+						size="sm"
+						variant="pink"
+					>
+						Gestante
+					</CdsBadge>
+					<CdsBadge
+						v-if="internalCitizen?.is_in_street_situation"
+						data-testid="street-situation-badge"
+						size="sm"
+						variant="amber"
+					>
+						Em situação de rua
+					</CdsBadge>
+				</CdsFlexbox>
+				<CdsSpacer
 					v-if="internalCitizen"
-					title="Dados pessoais"
-					:items="internalCitizen.getPersonalInfo(hiddenFields, requiredFields)"
-				/>
+					margin-top="4"
+					margin-bottom="4"
+				>
+					<SummarySection
+						title="Dados pessoais"
+						:items="internalCitizen.getPersonalInfo(hiddenFields, requiredFields)"
+					/>
+				</CdsSpacer>
 				<SummarySection
 					v-if="internalCitizen"
 					title="Informações de contato"
@@ -111,7 +129,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref, onMounted, toRef } from 'vue';
+import { watch, ref, onMounted, toRef, computed } from 'vue';
 import { isEmpty, isNil, isObject, isString } from 'lodash';
 // @ts-ignore
 import { smartTitleCase } from '@sysvale/foundry';
@@ -154,6 +172,10 @@ const requiredFields = [
 	'mother_name',
 	'birth_date',
 ];
+
+const showBadgeSection = computed(() => hasMissingCpf.value
+	|| internalCitizen.value?.isPregnant
+	|| internalCitizen.value?.is_in_street_situation);
 
 onMounted(() => {
 	checkMissingRequiredFields(props.citizen);
