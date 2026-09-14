@@ -9,8 +9,6 @@ exports[`CitizenSummaryViewer > is rendered correctly 1`] = `
           <div data-v-76655835="" data-v-07590091="" class="flexbox">
             <div data-v-76655835="" data-v-07590091="" class="flexbox">
               <cds-text-stub data-v-07590091="" as="subheading-2" color="n-700" fontweight="semibold" textalign="start" nomargin="true"></cds-text-stub>
-              <!--v-if-->
-              <!--v-if-->
             </div>
             <div data-v-76655835="" data-v-07590091="" class="flexbox">
               <!--v-if-->
@@ -18,7 +16,10 @@ exports[`CitizenSummaryViewer > is rendered correctly 1`] = `
               <cds-icon-button-stub data-v-07590091="" size="sm" icon="x-outline" disabled="false" tooltiptext="Fechar" feedbackonclick="false" feedbackicon="check-outline" variant="white" data-testid="close-button"></cds-icon-button-stub>
             </div>
           </div>
-          <summary-section-stub data-v-07590091="" title="Dados pessoais" items="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"></summary-section-stub>
+          <!--v-if-->
+          <div data-v-209b589c="" data-v-07590091="" class="spacer">
+            <summary-section-stub data-v-07590091="" title="Dados pessoais" items="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"></summary-section-stub>
+          </div>
           <summary-section-stub data-v-07590091="" title="Informações de contato" items="[object Object],[object Object],[object Object],[object Object]"></summary-section-stub>
         </div>
       </div>
