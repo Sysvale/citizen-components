@@ -90,6 +90,98 @@ describe('CitizenForm', () => {
 		);
 	});
 
+	test('unknown_mother_name checkbox is rendered right after mother_name', () => {
+		const checkbox = wrapper.find('[data-testid="test-unknown_mother_name"]');
+		const renderedFieldNames = wrapper
+			.findAll('[data-testid^="test-"]')
+			.map(field => field.attributes('data-testid'));
+		const motherNameIndex = renderedFieldNames.indexOf('test-mother_name');
+
+		expect(checkbox.exists()).toBe(true);
+		expect(checkbox.attributes().disabled).toBe('false');
+		expect(renderedFieldNames[motherNameIndex + 1]).toBe('test-unknown_mother_name');
+	});
+
+	test('unknown_mother_name value is bound when form is filled with initial data', async () => {
+		await wrapper.unmount();
+
+		const citizenInfo = makeCitizen({ unknown_mother_name: true, mother_name: undefined });
+
+		wrapper = await mount(CitizenForm, {
+			props: {
+				initialData: citizenInfo,
+			},
+			global: {
+				plugins: [Cuida],
+				stubs: {
+					CdsTextInput: true,
+					CdsSelect: true,
+					CdsCheckbox: true,
+					CdsDateInput: true,
+				},
+				provide: {
+					useToast: mockToast,
+				},
+			},
+		});
+
+		expect(wrapper.find('[data-testid="test-unknown_mother_name"]').attributes().value).toBe('true');
+		expect(wrapper.find('[data-testid="test-mother_name"]').attributes().disabled).toBe('true');
+	});
+
+	test('mother_name is disabled and cleared when unknown_mother_name is checked', async () => {
+		const formRefInstance = wrapper.vm.formRef;
+		const motherNameInput = wrapper.find('[data-testid="test-mother_name"]');
+
+		await formRefInstance.setFieldValue('mother_name', 'Maria da Silva');
+
+		expect(motherNameInput.attributes().disabled).toBe('false');
+
+		await formRefInstance.setFieldValue('unknown_mother_name', true);
+		await wrapper.vm.$nextTick();
+
+		expect(motherNameInput.attributes().disabled).toBe('true');
+		expect(formRefInstance.values.mother_name).toBeFalsy();
+	});
+
+	test('mother_name is not marked as required when unknown_mother_name is checked', async () => {
+		const formRefInstance = wrapper.vm.formRef;
+		const motherNameInput = wrapper.find('[data-testid="test-mother_name"]');
+
+		expect(motherNameInput.attributes().required).toBe('true');
+
+		await formRefInstance.setFieldValue('unknown_mother_name', true);
+		await wrapper.vm.$nextTick();
+
+		expect(motherNameInput.attributes().required).toBe('false');
+	});
+
+	test('mother_name does not block validation when unknown_mother_name is checked', async () => {
+		const formRefInstance = wrapper.vm.formRef;
+
+		await formRefInstance.setFieldValue('unknown_mother_name', true);
+		await wrapper.vm.$nextTick();
+
+		const { valid } = await formRefInstance.validateField('mother_name');
+
+		expect(valid).toBe(true);
+	});
+
+	test('mother_name is required again when unknown_mother_name is unchecked', async () => {
+		const formRefInstance = wrapper.vm.formRef;
+		const motherNameInput = wrapper.find('[data-testid="test-mother_name"]');
+
+		await formRefInstance.setFieldValue('unknown_mother_name', true);
+		await wrapper.vm.$nextTick();
+		await formRefInstance.setFieldValue('unknown_mother_name', false);
+		await wrapper.vm.$nextTick();
+
+		const { valid } = await formRefInstance.validateField('mother_name');
+
+		expect(motherNameInput.attributes().disabled).toBe('false');
+		expect(valid).toBe(false);
+	});
+
 	test('all fields are disabled correctly by different props', async () => {
 		await wrapper.setProps({
 			disabled: true,

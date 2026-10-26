@@ -45,6 +45,12 @@ const incompleteCitizen: Partial<Citizen> = {
 	mother_name: '',
 };
 
+const citizenWithUnknownMotherName: Partial<Citizen> = {
+	...maleCitizen,
+	mother_name: '',
+	unknown_mother_name: true,
+};
+
 const citizenWithoutCpf: Partial<Citizen> = {
 	...maleCitizen,
 	cpf: '',
@@ -278,4 +284,46 @@ describe('CitizenSummaryViewer', () => {
 
 		hiddenCepWrapper.unmount();
 	});
+
+	test('should not show missing fields warning when only mother_name is missing and unknown_mother_name is true', async () => {
+		const unknownMotherWrapper = await mount(CitizenSummaryViewer, {
+			props: {
+				citizen: citizenWithUnknownMotherName,
+			},
+			global: {
+				plugins: [Cuida],
+				stubs: {
+					...stubs,
+					CdsText: false,
+				},
+			},
+		});
+
+		expect(unknownMotherWrapper.vm.hasMissingFields).toBeFalsy();
+		expect(unknownMotherWrapper.find('.box--amber').exists()).toBeFalsy();
+		expect(
+			unknownMotherWrapper.find('[data-testid="missing-fields-alert"]').exists()
+		).toBeFalsy();
+
+		unknownMotherWrapper.unmount();
+	});
+
+	test.each([false, undefined])(
+		'still shows missing fields warning when mother_name is missing and unknown_mother_name is %s',
+		async unknownMotherName => {
+			const incompleteWrapper = await mount(CitizenSummaryViewer, {
+				props: {
+					citizen: { ...incompleteCitizen, unknown_mother_name: unknownMotherName },
+				},
+				global: {
+					plugins: [Cuida],
+					stubs,
+				},
+			});
+
+			expect(incompleteWrapper.vm.hasMissingFields).toBeTruthy();
+
+			incompleteWrapper.unmount();
+		}
+	);
 });
