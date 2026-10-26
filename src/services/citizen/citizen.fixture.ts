@@ -26,6 +26,7 @@ export const citizenFixture: Citizen = {
 	is_dead: false,
 	pregnant: false,
 	is_in_street_situation: false,
+	unknown_mother_name: false,
 	identification_document: null,
 	issuing_agency: null,
 };

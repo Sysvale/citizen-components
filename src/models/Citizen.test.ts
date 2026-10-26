@@ -277,4 +277,69 @@ describe('Citizen model', () => {
 
 		expect(payload.is_in_street_situation).toBe(citizenFixture.is_in_street_situation);
 	});
+
+	test('unknown_mother_name is read from the response', () => {
+		const unknownMotherCitizen = new Citizen({ ...citizenFixture, unknown_mother_name: true });
+
+		expect(unknownMotherCitizen.unknown_mother_name).toBe(true);
+	});
+
+	test('asFormData includes unknown_mother_name', () => {
+		const unknownMotherCitizen = new Citizen({ ...citizenFixture, unknown_mother_name: true });
+
+		expect(unknownMotherCitizen.asFormData().unknown_mother_name).toBe(true);
+	});
+
+	test('asRequestPayload includes unknown_mother_name with null mother_name when flag is true', () => {
+		const unknownMotherCitizen = new Citizen({
+			...citizenFixture,
+			unknown_mother_name: true,
+			mother_name: 'Tereza de Alcântara Sila',
+		});
+
+		const payload = unknownMotherCitizen.asRequestPayload();
+
+		expect(payload.unknown_mother_name).toBe(true);
+		expect(payload.mother_name).toBeNull();
+	});
+
+	test('asRequestPayload keeps mother_name when unknown_mother_name is false', () => {
+		const payload = new Citizen({
+			...citizenFixture,
+			unknown_mother_name: false,
+		}).asRequestPayload();
+
+		expect(payload.unknown_mother_name).toBe(false);
+		expect(payload.mother_name).toBe(citizenFixture.mother_name);
+	});
+
+	test('mother_name is shown as Desconhecido and not incomplete when unknown_mother_name is true', () => {
+		const unknownMotherCitizen = new Citizen({
+			...citizenFixture,
+			mother_name: null,
+			unknown_mother_name: true,
+		});
+
+		const field = unknownMotherCitizen
+			.getPersonalInfo([], ['mother_name'])
+			.find(({ field }) => field === 'mother_name');
+
+		expect(field).toEqual({
+			label: 'Nome da mãe',
+			value: 'Desconhecido',
+			field: 'mother_name',
+			fill: true,
+			incomplete: false,
+		});
+	});
+
+	test('mother_name is incomplete when empty and unknown_mother_name is false', () => {
+		const field = new Citizen({ ...citizenFixture, mother_name: '', unknown_mother_name: false })
+			.getPersonalInfo([], ['mother_name'])
+			.find(({ field }) => field === 'mother_name');
+
+		expect(field).toEqual(
+			expect.objectContaining({ value: 'Não informado', incomplete: true })
+		);
+	});
 });

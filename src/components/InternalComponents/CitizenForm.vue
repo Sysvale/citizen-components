@@ -17,7 +17,7 @@
 				v-for="formField in formFields"
 				:key="formField.name"
 				:col-span="formField.colSpan"
-				:class="['pregnant', 'is_in_street_situation'].includes(formField.name) ? 'pregnant__container' : ''"
+				:class="['pregnant', 'is_in_street_situation', 'unknown_mother_name'].includes(formField.name) ? 'pregnant__container' : ''"
 			>
 				<Field
 					:ref="`validation${startCase(formField.name)}Ref`"
@@ -147,9 +147,11 @@
 							...field,
 							...formField,
 						}"
+						:id="`citizen-form-${formField.name}`"
 						v-model="field.value"
 						:data-testid="`test-${formField.name}`"
 						:disabled="resolveDisabledState(formField.name)"
+						:required="resolveRequiredState(formField)"
 						:state="resolveInputState(meta)"
 						:error-message="errors[0]"
 						class="field__container"
@@ -166,6 +168,7 @@
 import citizenFormFields from '@/constants/citizenFormFields';
 import ufs from '@/constants/ufs';
 import { Citizen } from '@/models/Citizen';
+import type { CitizenFormField } from '@/types';
 import { getCitiesByUf } from '@/services/ibge';
 import { getNeighborhoodsByCityAndUf, getStreetsFromNeighborhoods } from '@/services/localities/localities.service';
 import { cleanVeeValidateField } from '@/utils/cleanVeeValidateField';
@@ -231,6 +234,15 @@ watch(
 	}
 );
 
+watch(
+	() => formRef.value?.values.unknown_mother_name,
+	(isUnknown) => {
+		if (!isUnknown) return;
+
+		formRef.value?.setFieldValue('mother_name', null);
+	}
+);
+
 function resolveInputState(meta: any) {
 	return inputStateResolver(meta);
 }
@@ -259,6 +271,8 @@ function resolveDisabledState(fieldName: string) {
 	switch (fieldName) {
 		case 'pregnant':
 			return resolvePregnantFieldDisabledState();
+		case 'mother_name':
+			return !!formRef.value?.values.unknown_mother_name;
 		case 'city':
 			return !formRef.value?.values.uf;
 		case 'neighborhood':
@@ -268,6 +282,14 @@ function resolveDisabledState(fieldName: string) {
 		default:
 			return false;
 	}
+}
+
+function resolveRequiredState(formField: CitizenFormField) {
+	if (formField.name === 'mother_name') {
+		return !formRef.value?.values.unknown_mother_name;
+	}
+
+	return formField.required;
 }
 
 function handleGenderChange(gender: 'M' | 'F') {

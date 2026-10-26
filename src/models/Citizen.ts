@@ -28,6 +28,7 @@ export class Citizen {
 	public pregnant: boolean;
 	public is_in_street_situation?: boolean;
 	public mother_name?: string;
+	public unknown_mother_name?: boolean;
 	public cellphone?: string;
 	public phone: string;
 	public email: string;
@@ -47,6 +48,7 @@ export class Citizen {
 		this.birth_date = args.birth_date;
 		this.identification_document = args.identification_document;
 		this.mother_name = args.mother_name;
+		this.unknown_mother_name = args.unknown_mother_name;
 		this.pregnant = args.pregnant;
 		this.is_in_street_situation = args.is_in_street_situation;
 		this.phone = args.phone;
@@ -199,10 +201,13 @@ export class Citizen {
 			},
 			{
 				label: 'Nome da mãe',
-				value: this.mother_name || 'Não informado',
+				value: this.mother_name || (this.unknown_mother_name ? 'Desconhecido' : 'Não informado'),
 				fill: true,
 				field: 'mother_name',
-				incomplete: !this.mother_name && requiredFields?.includes('mother_name'),
+				incomplete:
+					!this.mother_name
+					&& !this.unknown_mother_name
+					&& requiredFields?.includes('mother_name'),
 			},
 		];
 
@@ -272,6 +277,7 @@ export class Citizen {
 			birth_date: this.birth_date,
 			identification_document: this.identification_document,
 			mother_name: this.mother_name,
+			unknown_mother_name: this.unknown_mother_name,
 			pregnant: this.pregnant,
 			is_in_street_situation: this.is_in_street_situation,
 			phone: this.phone,
@@ -293,7 +299,8 @@ export class Citizen {
 			gender: this._gender?.value,
 			birth_date: this.birth_date,
 			identification_document: this.identification_document,
-			mother_name: this.mother_name,
+			mother_name: this.unknown_mother_name ? null : this.mother_name,
+			unknown_mother_name: this.unknown_mother_name,
 			pregnant: this.pregnant,
 			is_in_street_situation: this.is_in_street_situation,
 			address: this.address?.asRequestPayload || {},
