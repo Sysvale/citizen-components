@@ -147,6 +147,7 @@
 							...field,
 							...formField,
 						}"
+						:id="`citizen-form-${formField.name}`"
 						v-model="field.value"
 						:data-testid="`test-${formField.name}`"
 						:disabled="resolveDisabledState(formField.name)"

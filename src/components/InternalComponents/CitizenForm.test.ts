@@ -144,6 +144,18 @@ describe('CitizenForm', () => {
 		expect(formRefInstance.values.mother_name).toBeFalsy();
 	});
 
+	test('checkbox fields have distinct ids so each label toggles its own checkbox', () => {
+		const checkboxIds = ['pregnant', 'unknown_mother_name', 'is_in_street_situation'].map(
+			name => wrapper.find(`[data-testid="test-${name}"]`).attributes().id
+		);
+
+		expect(checkboxIds).toEqual([
+			'citizen-form-pregnant',
+			'citizen-form-unknown_mother_name',
+			'citizen-form-is_in_street_situation',
+		]);
+	});
+
 	test('mother_name is not marked as required when unknown_mother_name is checked', async () => {
 		const formRefInstance = wrapper.vm.formRef;
 		const motherNameInput = wrapper.find('[data-testid="test-mother_name"]');
