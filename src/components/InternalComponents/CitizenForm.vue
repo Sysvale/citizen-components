@@ -12,12 +12,18 @@
 		<CdsGrid
 			col-gap="2"
 			:cols="12"
+			rows="auto"
+			auto-rows="auto"
 		>
 			<CdsGridItem
 				v-for="formField in formFields"
 				:key="formField.name"
 				:col-span="formField.colSpan"
-				:class="['pregnant', 'is_in_street_situation', 'unknown_mother_name'].includes(formField.name) ? 'pregnant__container' : ''"
+				:class="{
+					'pregnant__container': ['pregnant', 'is_in_street_situation'].includes(formField.name),
+					'grid-item__container': formField.name !== 'unknown_mother_name',
+					'unknown-mother-name__container': formField.name === 'unknown_mother_name',
+				}"
 			>
 				<Field
 					:ref="`validation${startCase(formField.name)}Ref`"
@@ -154,7 +160,7 @@
 						:required="resolveRequiredState(formField)"
 						:state="resolveInputState(meta)"
 						:error-message="errors[0]"
-						class="field__container"
+						:class="{ field__container: formField.name !== 'unknown_mother_name' }"
 						fluid
 						@update:model-value="(event: any) => handleFieldInput(formField.name, event)"
 					/>
@@ -461,6 +467,16 @@ defineExpose({
 
 .field__container {
 	min-height: 80px;
+}
+
+// As linhas do grid são "auto" para que a linha do checkbox "Desconhece o nome da mãe"
+// ocupe só a própria altura; esta altura mínima mantém as demais linhas uniformes.
+.grid-item__container {
+	min-height: 88px;
+}
+
+.unknown-mother-name__container {
+	padding: pb(5);
 }
 
 .conditional__indicator {
