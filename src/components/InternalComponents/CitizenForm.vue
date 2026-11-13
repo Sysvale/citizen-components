@@ -12,12 +12,18 @@
 		<CdsGrid
 			col-gap="2"
 			:cols="12"
+			rows="auto"
+			auto-rows="auto"
 		>
 			<CdsGridItem
 				v-for="formField in formFields"
 				:key="formField.name"
 				:col-span="formField.colSpan"
-				:class="['pregnant', 'is_in_street_situation'].includes(formField.name) ? 'pregnant__container' : ''"
+				:class="{
+					'pregnant__container': ['pregnant', 'is_in_street_situation'].includes(formField.name),
+					'grid-item__container': formField.name !== 'unknown_mother_name',
+					'unknown-mother-name__container': formField.name === 'unknown_mother_name',
+				}"
 			>
 				<Field
 					:ref="`validation${startCase(formField.name)}Ref`"
@@ -147,12 +153,14 @@
 							...field,
 							...formField,
 						}"
+						:id="`citizen-form-${formField.name}`"
 						v-model="field.value"
 						:data-testid="`test-${formField.name}`"
 						:disabled="resolveDisabledState(formField.name)"
+						:required="resolveRequiredState(formField)"
 						:state="resolveInputState(meta)"
 						:error-message="errors[0]"
-						class="field__container"
+						:class="{ field__container: formField.name !== 'unknown_mother_name' }"
 						fluid
 						@update:model-value="(event: any) => handleFieldInput(formField.name, event)"
 					/>
@@ -166,6 +174,7 @@
 import citizenFormFields from '@/constants/citizenFormFields';
 import ufs from '@/constants/ufs';
 import { Citizen } from '@/models/Citizen';
+import type { CitizenFormField } from '@/types';
 import { getCitiesByUf } from '@/services/ibge';
 import { getNeighborhoodsByCityAndUf, getStreetsFromNeighborhoods } from '@/services/localities/localities.service';
 import { cleanVeeValidateField } from '@/utils/cleanVeeValidateField';
@@ -231,6 +240,15 @@ watch(
 	}
 );
 
+watch(
+	() => formRef.value?.values.unknown_mother_name,
+	(isUnknown) => {
+		if (!isUnknown) return;
+
+		formRef.value?.setFieldValue('mother_name', null);
+	}
+);
+
 function resolveInputState(meta: any) {
 	return inputStateResolver(meta);
 }
@@ -259,6 +277,8 @@ function resolveDisabledState(fieldName: string) {
 	switch (fieldName) {
 		case 'pregnant':
 			return resolvePregnantFieldDisabledState();
+		case 'mother_name':
+			return !!formRef.value?.values.unknown_mother_name;
 		case 'city':
 			return !formRef.value?.values.uf;
 		case 'neighborhood':
@@ -268,6 +288,14 @@ function resolveDisabledState(fieldName: string) {
 		default:
 			return false;
 	}
+}
+
+function resolveRequiredState(formField: CitizenFormField) {
+	if (formField.name === 'mother_name') {
+		return !formRef.value?.values.unknown_mother_name;
+	}
+
+	return formField.required;
 }
 
 function handleGenderChange(gender: 'M' | 'F') {
@@ -439,6 +467,16 @@ defineExpose({
 
 .field__container {
 	min-height: 80px;
+}
+
+// As linhas do grid são "auto" para que a linha do checkbox "Desconhece o nome da mãe"
+// ocupe só a própria altura; esta altura mínima mantém as demais linhas uniformes.
+.grid-item__container {
+	min-height: 88px;
+}
+
+.unknown-mother-name__container {
+	padding: pb(5);
 }
 
 .conditional__indicator {

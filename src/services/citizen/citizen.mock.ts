@@ -35,6 +35,7 @@ export const makeCitizen = (overrides?: Partial<Citizen>): CitizenModel => {
 		is_dead: faker.datatype.boolean(),
 		pregnant: faker.datatype.boolean(),
 		is_in_street_situation: faker.datatype.boolean(),
+		unknown_mother_name: false,
 		identification_document: faker.string.numeric(9).toUpperCase(),
 		issuing_agency: faker.helpers.arrayElement(['SSP', 'DETRAN', 'IFP']),
 		...overrides,
